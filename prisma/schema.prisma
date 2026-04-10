@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  password     String
+  name         String
+  balance      Float         @default(0)
+  role         String        @default("USER")
+  createdAt    DateTime      @default(now())
+  orders       Order[]
+  transactions Transaction[]
+}
+
+model Service {
+  id       Int     @id
+  name     String
+  type     String
+  category String
+  rate     Float
+  ourRate  Float
+  min      Int
+  max      Int
+  refill    Boolean
+  cancel    Boolean
+  active       Boolean @default(true)
+  targeting    String  @default("world")
+  platformSlug String  @default("")
+  groupSlug    String  @default("")
+  orders       Order[]
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  japOrderId      Int?     @unique
+  userId          String?
+  serviceId       Int
+  link            String
+  quantity        Int
+  charge          Float
+  status          String   @default("PENDING_PAYMENT")
+  startCount      Int?
+  remains         Int?
+  stripeSessionId String?  @unique
+  customerEmail   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User?    @relation(fields: [userId], references: [id])
+  service         Service  @relation(fields: [serviceId], references: [id])
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  type      String
+  status    String   @default("PENDING")
+  whopId    String?
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
