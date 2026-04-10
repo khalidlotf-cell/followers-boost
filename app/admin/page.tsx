@@ -47,7 +47,7 @@ export default function AdminPage() {
     const data = await res.json();
     setSyncResult(
       res.ok
-        ? { msg: `✓ ${data.created} nouveaux · ${data.updated} mis à jour · ${data.total} total`, ok: true }
+        ? { msg: `✓ ${data.created} nouveaux ajoutés · ${data.skipped ?? 0} déjà en base · ${data.total} total`, ok: true }
         : { msg: `✗ ${data.error}`, ok: false }
     );
     setSyncing(false);
