@@ -325,35 +325,46 @@ export default function ShopHome() {
       </section>
 
       {/* ── GUARANTEES ── */}
-      <section style={{ padding: "72px 0", background: "#fff", borderTop: "1.5px solid #ebebeb" }}>
+      <section style={{ padding: "80px 0", background: "#fafafa", borderTop: "1.5px solid #ebebeb" }}>
         <div className="container">
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 10 }}>
-              Pourquoi nous choisir ?
-            </h2>
-            <p style={{ fontSize: 15, color: "#888" }}>Des services pensés pour votre croissance, pas juste pour les chiffres</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
-            {[
-              { icon: "⚡", title: "Ultra-rapide", desc: "La plupart des commandes démarrent en moins de 5 minutes après paiement." },
-              { icon: "🔒", title: "100% sécurisé", desc: "Aucun mot de passe requis. Vos accès restent privés, toujours." },
-              { icon: "🎯", title: "Compatible algorithme", desc: "Nos services respectent les règles des plateformes pour une croissance naturelle." },
-              { icon: "💬", title: "Support 7j/7", desc: "Une question ? Notre équipe répond rapidement, même le week-end." },
-              { icon: "🔄", title: "Refill garanti", desc: "Si vous perdez des followers, on les remplace automatiquement sans frais." },
-              { icon: "💳", title: "Paiement sécurisé", desc: "CB, PayPal et autres méthodes. Paiement chiffré et protégé." },
-            ].map((g, i) => (
-              <div key={i} style={{
-                background: "#fafafa", border: "1.5px solid #ebebeb", borderRadius: 16,
-                padding: "24px 22px", transition: "border-color 0.15s, box-shadow 0.15s",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#111"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.06)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#ebebeb"; e.currentTarget.style.boxShadow = "none"; }}
-              >
-                <div style={{ fontSize: 28, marginBottom: 12 }}>{g.icon}</div>
-                <div style={{ fontWeight: 700, fontSize: 15, color: "#111", marginBottom: 6 }}>{g.title}</div>
-                <div style={{ fontSize: 13.5, color: "#777", lineHeight: 1.6 }}>{g.desc}</div>
-              </div>
-            ))}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px 80px", alignItems: "start" }} className="guarantees-grid">
+            <div>
+              <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 16, lineHeight: 1.15 }}>
+                Ce qui nous<br />différencie
+              </h2>
+              <p style={{ fontSize: 15, color: "#777", lineHeight: 1.75, maxWidth: 340 }}>
+                Des services pensés pour votre croissance réelle — pas juste pour les chiffres. Livraison rapide, sans risque, avec un vrai support humain.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {[
+                { title: "Livraison en moins de 5 minutes", desc: "La commande démarre automatiquement dès la confirmation du paiement." },
+                { title: "Aucun mot de passe requis", desc: "Vos accès restent privés. On a seulement besoin du lien de votre profil." },
+                { title: "Compatible avec l'algorithme", desc: "Des méthodes qui s'intègrent naturellement à votre activité sur la plateforme." },
+                { title: "Refill automatique inclus", desc: "Si des followers disparaissent, ils sont remplacés sans que vous ayez à intervenir." },
+                { title: "Support disponible 7j/7", desc: "Une vraie équipe qui répond rapidement — pas un bot, pas une FAQ." },
+              ].map((g, i, arr) => (
+                <div key={i} style={{
+                  display: "flex", gap: 16, alignItems: "flex-start",
+                  padding: "20px 0",
+                  borderBottom: i < arr.length - 1 ? "1px solid #e8e8e8" : "none",
+                }}>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: "50%", background: "#111",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0, marginTop: 2,
+                  }}>
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#111", marginBottom: 3 }}>{g.title}</div>
+                    <div style={{ fontSize: 13.5, color: "#888", lineHeight: 1.6 }}>{g.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -591,6 +602,7 @@ export default function ShopHome() {
           .steps-grid > div { padding: 0 !important; text-align: left !important; display: flex !important; align-items: flex-start !important; gap: 16px; }
           .steps-grid > div > div:first-child { flex-shrink: 0; margin: 0 !important; }
 
+          .guarantees-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
           .marquee-card { width: 240px !important; }
           .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
           .footer-bottom { flex-direction: column !important; text-align: center; gap: 6px !important; }
