@@ -2,92 +2,105 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { japGetServices } from "@/lib/jap";
 
+export const maxDuration = 60; // Vercel Pro allows up to 60s, free tier 10s
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const markup: number = parseFloat(body.markup) || 2;
     const recalculate: boolean = body.recalculate === true;
 
-    // Mode recalculate uniquement : applique markup × rate sur tous les services sans re-sync JAP
     if (recalculate) {
       const all = await prisma.service.findMany({ select: { id: true, rate: true } });
-      for (const s of all) {
-        await prisma.service.update({
-          where: { id: s.id },
-          data: { ourRate: parseFloat((s.rate * markup).toFixed(4)) },
-        });
+      // Batch update in chunks of 50
+      const chunks = [];
+      for (let i = 0; i < all.length; i += 50) chunks.push(all.slice(i, i + 50));
+      for (const chunk of chunks) {
+        await Promise.all(chunk.map(s =>
+          prisma.service.update({
+            where: { id: s.id },
+            data: { ourRate: parseFloat((s.rate * markup).toFixed(4)) },
+          })
+        ));
       }
       return NextResponse.json({ recalculated: all.length });
     }
 
-    // Sync JAP
     const japServices = await japGetServices();
     if (!Array.isArray(japServices)) {
-      return NextResponse.json({ error: "Erreur JAP API" }, { status: 502 });
+      return NextResponse.json({ error: "Erreur API fournisseur: " + JSON.stringify(japServices) }, { status: 502 });
     }
 
-    let created = 0;
-    let updated = 0;
-
-    for (const s of japServices) {
+    // Filter valid services
+    const valid = japServices.filter(s => {
       const rate = parseFloat(s.rate);
+      return !isNaN(rate) && rate > 0 && rate <= 500;
+    });
 
-      // Ignorer les séparateurs de catégorie (taux aberrants)
-      if (rate > 500 || isNaN(rate) || rate <= 0) continue;
+    // Detect targeting from name
+    function getTargeting(name: string, category: string) {
+      const text = (name + " " + category).toLowerCase();
+      if (text.includes("france") || text.includes("french") || text.includes("🇫🇷") || text.includes("francophone")) return "france";
+      if (text.includes("europe") || text.includes("european") || text.includes("🇪🇺")) return "europe";
+      return "world";
+    }
 
-      // Détecter le ciblage géographique depuis le nom du service
-      const nameLower = (s.name + " " + s.category).toLowerCase();
-      let targeting = "world";
-      if (nameLower.includes("france") || nameLower.includes("french") || nameLower.includes("🇫🇷") || nameLower.includes("francophone")) {
-        targeting = "france";
-      } else if (nameLower.includes("europe") || nameLower.includes("european") || nameLower.includes("🇪🇺")) {
-        targeting = "europe";
-      }
-      const existing = await prisma.service.findUnique({ where: { id: s.service } });
+    // Get existing service IDs
+    const existingIds = new Set(
+      (await prisma.service.findMany({ select: { id: true } })).map(s => s.id)
+    );
 
-      if (existing) {
-        // Préserve ourRate (prix manuel) — seules les métadonnées JAP sont mises à jour
-        await prisma.service.update({
+    const toCreate = valid.filter(s => !existingIds.has(s.service));
+    const toUpdate = valid.filter(s => existingIds.has(s.service));
+
+    // Batch create new services in chunks of 100
+    const createChunks = [];
+    for (let i = 0; i < toCreate.length; i += 100) createChunks.push(toCreate.slice(i, i + 100));
+    for (const chunk of createChunks) {
+      await prisma.service.createMany({
+        data: chunk.map(s => ({
+          id: s.service,
+          name: s.name,
+          type: s.type ?? "Default",
+          category: s.category,
+          rate: parseFloat(s.rate),
+          ourRate: parseFloat((parseFloat(s.rate) * markup).toFixed(4)),
+          min: parseInt(s.min),
+          max: parseInt(s.max),
+          refill: s.refill ?? false,
+          cancel: s.cancel ?? false,
+          targeting: getTargeting(s.name, s.category),
+          active: false,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    // Batch update existing in chunks of 20
+    const updateChunks = [];
+    for (let i = 0; i < toUpdate.length; i += 20) updateChunks.push(toUpdate.slice(i, i + 20));
+    for (const chunk of updateChunks) {
+      await Promise.all(chunk.map(s =>
+        prisma.service.update({
           where: { id: s.service },
           data: {
             name: s.name,
-            type: s.type,
+            type: s.type ?? "Default",
             category: s.category,
-            rate,
+            rate: parseFloat(s.rate),
             min: parseInt(s.min),
             max: parseInt(s.max),
-            refill: s.refill,
-            cancel: s.cancel,
-            targeting,
+            refill: s.refill ?? false,
+            cancel: s.cancel ?? false,
+            targeting: getTargeting(s.name, s.category),
           },
-        });
-        updated++;
-      } else {
-        // Nouveau service : applique le markup par défaut
-        await prisma.service.create({
-          data: {
-            id: s.service,
-            name: s.name,
-            type: s.type,
-            category: s.category,
-            rate,
-            ourRate: parseFloat((rate * markup).toFixed(4)),
-            min: parseInt(s.min),
-            max: parseInt(s.max),
-            refill: s.refill,
-            cancel: s.cancel,
-            targeting,
-            active: false,
-          },
-        });
-        created++;
-      }
+        })
+      ));
     }
 
-    return NextResponse.json({ created, updated, total: japServices.length });
+    return NextResponse.json({ created: toCreate.length, updated: toUpdate.length, total: valid.length });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Erreur serveur";
-    const status = msg === "Accès refusé" ? 403 : msg === "Non authentifié" ? 401 : 500;
-    return NextResponse.json({ error: msg }, { status });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
