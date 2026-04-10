@@ -72,25 +72,24 @@ export async function POST(req: NextRequest) {
     }
 
     // Tout s'est bien passé — mettre à jour la commande
-    await prisma.$transaction([
-      prisma.order.update({
-        where: { id: orderId },
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { japOrderId: japRes.order, status: "PENDING" },
+    });
+
+    // Créer une transaction uniquement si la commande est liée à un compte
+    if (order.userId) {
+      await prisma.transaction.create({
         data: {
-          japOrderId: japRes.order,
-          status: "PENDING",
-        },
-      }),
-      prisma.transaction.create({
-        data: {
-          userId: order.userId ?? undefined,
+          userId: order.userId,
           amount: order.charge,
           type: "ORDER_PAYMENT",
           status: "COMPLETED",
           whopId: whopPaymentId,
-          note: `Commande JAP #${japRes.order} — ${order.service.name}`,
+          note: `Commande JAP #${japRes.order} - ${order.service.name}`,
         },
-      }),
-    ]);
+      });
+    }
 
     return NextResponse.json({ received: true });
   } catch (e) {
