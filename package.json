@@ -4,20 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && prisma db push && next build",
     "start": "next start -p ${PORT:-3000}",
     "lint": "eslint",
     "create-admin": "npx tsx scripts/create-admin.ts"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.6.0",
     "@prisma/client": "^7.6.0",
     "@stripe/stripe-js": "^9.1.0",
     "@types/bcryptjs": "^2.4.6",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.8.0",
     "dotenv": "^17.4.1",
     "jsonwebtoken": "^9.0.3",
     "next": "16.2.2",
