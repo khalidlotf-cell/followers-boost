@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       }),
       prisma.transaction.create({
         data: {
-          userId: order.userId,
+          userId: order.userId ?? undefined,
           amount: order.charge,
           type: "ORDER_PAYMENT",
           status: "COMPLETED",
