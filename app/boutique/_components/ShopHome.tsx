@@ -150,116 +150,98 @@ export default function ShopHome() {
     <div style={{ background: "#fff", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* ── HERO ── */}
-      <section className="shop-hero" style={{ background: "radial-gradient(ellipse 110% 55% at 50% -5%, #ede9fe 0%, #fff 65%)", position: "relative", overflow: "hidden" }}>
-        {/* Background decoration blobs */}
-        <div style={{ position: "absolute", top: -80, right: -120, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -40, left: -100, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+      {/* ══ HERO — dark gradient + animated blobs ══ */}
+      <section className="shop-hero" style={{ background: "linear-gradient(135deg, #06040f 0%, #0d0721 50%, #130a28 100%)", position: "relative", overflow: "hidden" }}>
+        {/* Animated blobs */}
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
+        <div className="blob blob-3" />
+        {/* Noise texture overlay */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")", pointerEvents: "none", opacity: 0.4 }} />
 
-        <div className="container" style={{ textAlign: "center", position: "relative" }}>
-          {/* Trust badge */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.8)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(0,0,0,0.06)", borderRadius: 100, padding: "6px 16px 6px 10px", marginBottom: 28 }}>
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 0 3px rgba(34,197,94,0.2)" }} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#555" }}>Service actif · Livraison en 5 min</span>
+        <div className="container" style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+          {/* Live badge */}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 100, padding: "7px 18px 7px 12px", marginBottom: 32 }}>
+            <span className="live-dot" />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.75)" }}>Service actif · Livraison en 5 min</span>
           </div>
 
-          <h1 style={{ fontSize: "clamp(38px, 5.5vw, 68px)", fontWeight: 800, color: "#111", lineHeight: 1.08, letterSpacing: "-0.03em", maxWidth: 820, margin: "0 auto 22px" }}>
+          <h1 style={{ fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 800, color: "#fff", lineHeight: 1.06, letterSpacing: "-0.03em", maxWidth: 860, margin: "0 auto 24px" }}>
             Boostez votre présence<br />
-            <span style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>sur les réseaux sociaux</span>
+            <span className="grad-text">sur les réseaux sociaux</span>
           </h1>
 
-          <p style={{ fontSize: "clamp(16px, 2vw, 18px)", color: "#666", maxWidth: 500, margin: "0 auto 36px", lineHeight: 1.65 }}>
-            Followers, likes, vues — des services de qualité pour Instagram, TikTok, YouTube et bien plus.
+          <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "rgba(255,255,255,0.5)", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.7 }}>
+            Followers, likes, vues — des services premium pour Instagram, TikTok, YouTube et bien plus.
           </p>
 
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 36 }}>
-            <Link href="#plateformes" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "13px 26px", borderRadius: 100,
-              background: "#111", color: "#fff",
-              fontWeight: 700, fontSize: 15, textDecoration: "none",
-              boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
-              transition: "transform 0.15s, box-shadow 0.15s",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.22)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.18)"; }}
-            >
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 48 }}>
+            {/* Primary CTA — shimmer gradient */}
+            <Link href="#plateformes" className="btn-primary">
               Découvrir les services →
             </Link>
-            <Link href="/inscription" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "13px 26px", borderRadius: 100,
-              background: "rgba(255,255,255,0.9)", color: "#111",
-              fontWeight: 600, fontSize: 15, textDecoration: "none",
-              border: "1.5px solid rgba(0,0,0,0.1)",
-              backdropFilter: "blur(8px)",
-            }}>
+            {/* Secondary CTA — glass */}
+            <Link href="/inscription" className="btn-glass">
               Créer un compte gratuit
             </Link>
           </div>
 
-          {/* Platform logo strip */}
+          {/* Platform strip */}
           {platforms.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 12, color: "#bbb", fontWeight: 500 }}>Disponible sur</span>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 56 }}>
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase" }}>Disponible sur</span>
               {platforms.map(p => (
-                <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ opacity: 0.7, transition: "opacity 0.15s" }}
-                  onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-                  onMouseLeave={e => (e.currentTarget.style.opacity = "0.7")}
-                >
-                  <PlatformLogo slug={p.slug} size={26} />
+                <Link key={p.slug} href={`/boutique/${p.slug}`} className="platform-logo-btn">
+                  <PlatformLogo slug={p.slug} size={24} />
                 </Link>
               ))}
             </div>
           )}
 
-          {/* Stats */}
-          <div className="shop-stats" style={{ display: "flex", gap: 0, justifyContent: "center", marginTop: 56, flexWrap: "wrap" }}>
-            {STATS.map((s, i) => (
-              <div key={s.label} style={{
-                textAlign: "center", padding: "20px 32px",
-                borderLeft: i > 0 ? "1.5px solid #ebebeb" : "none",
-              }}>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#111", letterSpacing: "-0.03em" }}>{s.value}</div>
-                <div style={{ fontSize: 13, color: "#888", marginTop: 3 }}>{s.label}</div>
+          {/* Stats — glass cards */}
+          <div className="shop-stats">
+            {STATS.map((s) => (
+              <div key={s.label} className="stat-item">
+                <div style={{ fontSize: 26, fontWeight: 800, color: "#fff", letterSpacing: "-0.03em" }}>{s.value}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 4, fontWeight: 500 }}>{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PLATFORMS ── */}
-      <section id="plateformes" style={{ padding: "80px 0", background: "#fff", borderTop: "1.5px solid #ebebeb" }}>
+      {/* ══ PLATFORMS ══ */}
+      <section id="plateformes" style={{ padding: "88px 0", background: "#fff" }}>
         <div className="container">
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 40, flexWrap: "wrap", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 44, flexWrap: "wrap", gap: 16 }}>
             <div>
-              <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 8 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Catalogue</p>
+              <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 8 }}>
                 Choisissez votre plateforme
               </h2>
-              <p style={{ fontSize: 15, color: "#888" }}>Services disponibles pour toutes les grandes plateformes</p>
+              <p style={{ fontSize: 15, color: "#94a3b8" }}>Services disponibles pour toutes les grandes plateformes</p>
             </div>
-            {/* Search */}
             <div style={{ position: "relative", minWidth: 220 }}>
-              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#bbb", pointerEvents: "none" }}>
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#cbd5e1", pointerEvents: "none" }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </span>
               <input type="text" placeholder="Rechercher..." value={search} onChange={e => setSearch(e.target.value)}
-                style={{ padding: "9px 12px 9px 34px", borderRadius: 100, border: "1.5px solid #e8e8e8", fontSize: 14, color: "#111", background: "#fff", outline: "none", width: "100%", boxSizing: "border-box" }}
-                onFocus={e => (e.currentTarget.style.borderColor = "#111")}
-                onBlur={e => (e.currentTarget.style.borderColor = "#e8e8e8")}
+                style={{ padding: "10px 14px 10px 38px", borderRadius: 12, border: "1.5px solid #e2e8f0", fontSize: 14, color: "#0f172a", background: "#f8fafc", outline: "none", width: "100%", boxSizing: "border-box", transition: "border-color 0.15s, box-shadow 0.15s" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#7c3aed"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.1)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.boxShadow = "none"; }}
               />
-              {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#bbb", fontSize: 16, lineHeight: 1, padding: 2 }}>×</button>}
+              {search && <button onClick={() => setSearch("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, lineHeight: 1, padding: 2 }}>×</button>}
             </div>
           </div>
 
           {loading ? (
             <div className="platforms-grid">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} style={{ height: 190, borderRadius: 20, background: "#f3f3f3", animation: "pulse 1.5s infinite" }} />
+                <div key={i} style={{ height: 190, borderRadius: 20, background: "linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)", backgroundSize: "200% 100%", animation: "skeleton 1.5s ease infinite" }} />
               ))}
             </div>
           ) : platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
-            <div style={{ textAlign: "center", padding: "48px 0", color: "#aaa" }}>
+            <div style={{ textAlign: "center", padding: "56px 0", color: "#94a3b8" }}>
               {search ? `Aucun résultat pour « ${search} »` : "Aucun service disponible — synchronisez depuis l'admin."}
             </div>
           ) : (
@@ -267,21 +249,20 @@ export default function ShopHome() {
               {platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).map(p => (
                 <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ textDecoration: "none" }}>
                   <div className="platform-card">
-                    {/* Colored header */}
                     <div style={{
-                      height: 90, background: PLATFORM_COLORS[p.slug] ?? "linear-gradient(135deg, #333, #111)",
+                      height: 96, background: PLATFORM_COLORS[p.slug] ?? "linear-gradient(135deg, #333, #111)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      borderRadius: "16px 16px 0 0",
+                      borderRadius: "18px 18px 0 0", position: "relative", overflow: "hidden",
                     }}>
-                      <PlatformLogo slug={p.slug} size={48} />
+                      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.12)" }} />
+                      <div style={{ position: "relative", zIndex: 1 }}><PlatformLogo slug={p.slug} size={44} /></div>
                     </div>
-                    {/* Info */}
-                    <div style={{ padding: "16px 18px 18px" }}>
-                      <div style={{ fontWeight: 700, fontSize: 16, color: "#111", marginBottom: 3 }}>{p.label}</div>
-                      <div style={{ fontSize: 13, color: "#999" }}>{p.count} service{p.count !== 1 ? "s" : ""}</div>
-                      <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: "#555" }}>Voir les offres</span>
-                        <span className="card-arrow" style={{ fontSize: 16, color: "#bbb", transition: "transform 0.2s, color 0.2s" }}>→</span>
+                    <div style={{ padding: "18px 20px 20px" }}>
+                      <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", marginBottom: 4 }}>{p.label}</div>
+                      <div style={{ fontSize: 13, color: "#94a3b8" }}>{p.count} service{p.count !== 1 ? "s" : ""}</div>
+                      <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#7c3aed" }}>Voir les offres</span>
+                        <span className="card-arrow" style={{ fontSize: 15, color: "#c4b5fd", transition: "transform 0.2s" }}>→</span>
                       </div>
                     </div>
                   </div>
@@ -292,51 +273,53 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section style={{ padding: "80px 0", background: "#fafafa", borderTop: "1.5px solid #ebebeb" }}>
+      {/* ══ HOW IT WORKS ══ */}
+      <section style={{ padding: "88px 0", background: "#fafbff" }}>
         <div className="container">
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 10 }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Simple & rapide</p>
+            <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 10 }}>
               Comment ça marche ?
             </h2>
-            <p style={{ fontSize: 15, color: "#888" }}>3 étapes simples pour booster votre présence</p>
+            <p style={{ fontSize: 15, color: "#94a3b8" }}>3 étapes, moins de 2 minutes</p>
           </div>
           <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, position: "relative" }}>
-            {/* Connecting dotted line */}
-            <div className="steps-line" style={{ position: "absolute", top: 22, left: "calc(16.7% + 16px)", right: "calc(16.7% + 16px)", height: 1, background: "repeating-linear-gradient(90deg, #d4d4d4 0, #d4d4d4 5px, transparent 5px, transparent 12px)", pointerEvents: "none" }} />
+            <div className="steps-line" style={{ position: "absolute", top: 24, left: "calc(16.7% + 24px)", right: "calc(16.7% + 24px)", height: 1, background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3) 20%, rgba(124,58,237,0.3) 80%, transparent)", pointerEvents: "none" }} />
             {STEPS.map((s, i) => (
-              <div key={i} style={{ textAlign: "center", padding: "0 32px", position: "relative" }}>
-                {/* Number circle */}
+              <div key={i} style={{ textAlign: "center", padding: "0 40px", position: "relative" }}>
                 <div style={{
-                  width: 44, height: 44, borderRadius: "50%",
-                  background: "#111", color: "#fff",
-                  fontWeight: 800, fontSize: 16,
+                  width: 48, height: 48, borderRadius: "50%",
+                  background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                  boxShadow: "0 4px 20px rgba(124,58,237,0.35)",
+                  color: "#fff", fontWeight: 800, fontSize: 18,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  margin: "0 auto 20px", position: "relative", zIndex: 1,
+                  margin: "0 auto 24px", position: "relative", zIndex: 1,
                 }}>
                   {i + 1}
                 </div>
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#111", marginBottom: 10 }}>{s.title}</h3>
-                <p style={{ fontSize: 14, color: "#777", lineHeight: 1.7 }}>{s.desc}</p>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0f172a", marginBottom: 10 }}>{s.title}</h3>
+                <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.75 }}>{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── GUARANTEES ── */}
-      <section style={{ padding: "80px 0", background: "#fafafa", borderTop: "1.5px solid #ebebeb" }}>
-        <div className="container">
+      {/* ══ GUARANTEES — dark section ══ */}
+      <section style={{ padding: "88px 0", background: "linear-gradient(135deg, #06040f 0%, #0d0721 100%)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div className="container" style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px 80px", alignItems: "start" }} className="guarantees-grid">
             <div>
-              <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 16, lineHeight: 1.15 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Nos engagements</p>
+              <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.025em", marginBottom: 18, lineHeight: 1.15 }}>
                 Ce qui nous<br />différencie
               </h2>
-              <p style={{ fontSize: 15, color: "#777", lineHeight: 1.75, maxWidth: 340 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 340 }}>
                 Des services pensés pour votre croissance réelle — pas juste pour les chiffres. Livraison rapide, sans risque, avec un vrai support humain.
               </p>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               {[
                 { title: "Livraison en moins de 5 minutes", desc: "La commande démarre automatiquement dès la confirmation du paiement." },
                 { title: "Aucun mot de passe requis", desc: "Vos accès restent privés. On a seulement besoin du lien de votre profil." },
@@ -347,20 +330,22 @@ export default function ShopHome() {
                 <div key={i} style={{
                   display: "flex", gap: 16, alignItems: "flex-start",
                   padding: "20px 0",
-                  borderBottom: i < arr.length - 1 ? "1px solid #e8e8e8" : "none",
+                  borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
                 }}>
                   <div style={{
-                    width: 20, height: 20, borderRadius: "50%", background: "#111",
+                    width: 22, height: 22, borderRadius: "50%",
+                    background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0, marginTop: 2,
+                    flexShrink: 0, marginTop: 1,
+                    boxShadow: "0 2px 8px rgba(124,58,237,0.4)",
                   }}>
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                       <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#111", marginBottom: 3 }}>{g.title}</div>
-                    <div style={{ fontSize: 13.5, color: "#888", lineHeight: 1.6 }}>{g.desc}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#f1f5f9", marginBottom: 4 }}>{g.title}</div>
+                    <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.4)", lineHeight: 1.65 }}>{g.desc}</div>
                   </div>
                 </div>
               ))}
@@ -369,49 +354,46 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <section style={{ padding: "80px 0", background: "#fafafa", borderTop: "1.5px solid #ebebeb", overflow: "hidden" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }} className="container">
-          <h2 style={{ fontSize: "clamp(28px, 3vw, 40px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 12 }}>
+      {/* ══ TESTIMONIALS ══ */}
+      <section style={{ padding: "88px 0 72px", background: "#fff", overflow: "hidden" }}>
+        <div style={{ textAlign: "center", marginBottom: 56 }} className="container">
+          <p style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Avis clients</p>
+          <h2 style={{ fontSize: "clamp(28px, 3vw, 42px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 12 }}>
             Ce que disent nos clients
           </h2>
-          <p style={{ fontSize: 16, color: "#888" }}>Plus de 12 000 commandes livrées · Note moyenne 4.9/5</p>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 100, padding: "6px 16px" }}>
+            <span style={{ color: "#f59e0b", fontSize: 14 }}>★★★★★</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#92400e" }}>4.9/5 · 12 000+ commandes livrées</span>
+          </div>
         </div>
 
-        {/* Row 1 — gauche */}
         <div style={{ overflow: "hidden", marginBottom: 16 }}>
           <div className="marquee-track">
             {[...ROW_1, ...ROW_1].map((t, i) => (
               <div key={i} className="marquee-card">
-                <div style={{ display: "flex", gap: 3, marginBottom: 12 }}>
-                  {Array.from({ length: t.stars }).map((_, j) => (
-                    <span key={j} style={{ color: "#22c55e", fontSize: 14 }}>★</span>
-                  ))}
+                <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
+                  {Array.from({ length: t.stars }).map((_, j) => <span key={j} style={{ color: "#f59e0b", fontSize: 13 }}>★</span>)}
                 </div>
-                <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.65, marginBottom: 16, flexGrow: 1 }}>&ldquo;{t.text}&rdquo;</p>
+                <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.7, marginBottom: 16, flexGrow: 1 }}>&ldquo;{t.text}&rdquo;</p>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: "#111" }}>{t.name}</div>
-                  <div style={{ fontSize: 12, color: "#bbb" }}>{t.handle}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: "#0f172a" }}>{t.name}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{t.handle}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Row 2 — droite */}
         <div style={{ overflow: "hidden" }}>
           <div className="marquee-track-r">
             {[...ROW_2, ...ROW_2].map((t, i) => (
               <div key={i} className="marquee-card">
-                <div style={{ display: "flex", gap: 3, marginBottom: 12 }}>
-                  {Array.from({ length: t.stars }).map((_, j) => (
-                    <span key={j} style={{ color: "#22c55e", fontSize: 14 }}>★</span>
-                  ))}
+                <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
+                  {Array.from({ length: t.stars }).map((_, j) => <span key={j} style={{ color: "#f59e0b", fontSize: 13 }}>★</span>)}
                 </div>
-                <p style={{ fontSize: 13.5, color: "#444", lineHeight: 1.65, marginBottom: 16, flexGrow: 1 }}>&ldquo;{t.text}&rdquo;</p>
+                <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.7, marginBottom: 16, flexGrow: 1 }}>&ldquo;{t.text}&rdquo;</p>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: "#111" }}>{t.name}</div>
-                  <div style={{ fontSize: 12, color: "#bbb" }}>{t.handle}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: "#0f172a" }}>{t.name}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>{t.handle}</div>
                 </div>
               </div>
             ))}
@@ -419,11 +401,12 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section style={{ padding: "80px 0", background: "#fff", borderTop: "1.5px solid #ebebeb" }}>
+      {/* ══ FAQ ══ */}
+      <section style={{ padding: "88px 0", background: "#fafbff" }}>
         <div className="container" style={{ maxWidth: 720 }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2 style={{ fontSize: "clamp(28px, 3vw, 40px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 12 }}>
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
+            <h2 style={{ fontSize: "clamp(28px, 3vw, 42px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em" }}>
               Questions fréquentes
             </h2>
           </div>
@@ -431,7 +414,12 @@ export default function ShopHome() {
             <div key={i} className="faq-item">
               <button className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                 {f.q}
-                <span style={{ fontSize: 22, color: "#bbb", transition: "transform 0.2s", transform: openFaq === i ? "rotate(45deg)" : "none", flexShrink: 0 }}>+</span>
+                <span style={{ width: 28, height: 28, borderRadius: "50%", border: "1.5px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.2s, border-color 0.2s", background: openFaq === i ? "#7c3aed" : "transparent", borderColor: openFaq === i ? "#7c3aed" : "#e2e8f0" }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: openFaq === i ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>
+                    <line x1="6" y1="1" x2="6" y2="11" stroke={openFaq === i ? "white" : "#94a3b8"} strokeWidth="1.8" strokeLinecap="round"/>
+                    <line x1="1" y1="6" x2="11" y2="6" stroke={openFaq === i ? "white" : "#94a3b8"} strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                </span>
               </button>
               {openFaq === i && <p className="faq-answer">{f.a}</p>}
             </div>
@@ -439,173 +427,274 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ── CTA BANNER ── */}
-      <section style={{ padding: "80px 0", background: "#111", borderTop: "1.5px solid #222" }}>
-        <div className="container" style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: "clamp(26px, 3vw, 42px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.02em", marginBottom: 16 }}>
+      {/* ══ CTA BANNER — gradient ══ */}
+      <section style={{ padding: "96px 0", background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 300, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
+        <div className="container" style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+          <h2 style={{ fontSize: "clamp(28px, 3.5vw, 48px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.025em", marginBottom: 16 }}>
             Prêt à booster votre compte ?
           </h2>
-          <p style={{ fontSize: 16, color: "#999", marginBottom: 32 }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.7)", marginBottom: 40 }}>
             Plus de 12 000 commandes livrées. Sans mot de passe. Livraison en 5 min.
           </p>
-          <Link href="#plateformes" style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "#fff", color: "#111",
-            padding: "15px 32px", borderRadius: 100,
-            fontWeight: 700, fontSize: 16, textDecoration: "none",
-            transition: "opacity 0.2s",
-          }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
-          >
+          <Link href="#plateformes" className="btn-cta-white">
             Voir les services →
           </Link>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ background: "#0a0a0a", padding: "48px 0 32px", borderTop: "1px solid #1f1f1f" }}>
+      {/* ══ FOOTER ══ */}
+      <footer style={{ background: "#06040f", padding: "56px 0 32px" }}>
         <div className="container">
           <div className="footer-grid" style={{ display: "grid", gap: 40, marginBottom: 48 }}>
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontWeight: 800, fontSize: 12, color: "#111" }}>FB</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+                <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontWeight: 800, fontSize: 13, color: "#fff" }}>FB</span>
                 </div>
                 <span style={{ fontWeight: 800, fontSize: 16, color: "#fff" }}>Followers Boost</span>
               </div>
-              <p style={{ fontSize: 14, color: "#666", lineHeight: 1.7, maxWidth: 260 }}>
-                Le panel SMM N°1 en Europe pour booster votre présence sur les réseaux sociaux.
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 240 }}>
+                Services SMM premium pour booster votre présence sur les réseaux sociaux.
               </p>
             </div>
             {[
               { title: "Services", links: ["Instagram", "TikTok", "YouTube", "Facebook"] },
               { title: "Compte", links: ["Connexion", "Inscription", "Mes commandes"] },
-              { title: "Aide", links: ["FAQ", "Contact", "Conditions d'utilisation"] },
+              { title: "Aide", links: ["FAQ", "Contact", "CGU"] },
             ].map(col => (
               <div key={col.title}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: "#fff", marginBottom: 16 }}>{col.title}</div>
+                <div style={{ fontWeight: 700, fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.06em" }}>{col.title}</div>
                 {col.links.map(l => (
                   <div key={l} style={{ marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, color: "#666", cursor: "pointer" }}>{l}</span>
+                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", cursor: "pointer", transition: "color 0.15s" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+                    >{l}</span>
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <div className="footer-bottom" style={{ borderTop: "1px solid #1f1f1f", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-            <span style={{ fontSize: 13, color: "#555" }}>© {new Date().getFullYear()} Followers Boost. Tous droits réservés.</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              {["Visa", "Mastercard", "CB", "PayPal"].map(m => (
-                <span key={m} style={{ fontSize: 11, fontWeight: 600, color: "#555", background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 5, padding: "3px 8px" }}>{m}</span>
+          <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.2)" }}>© {new Date().getFullYear()} Followers Boost. Tous droits réservés.</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {["Visa", "MC", "CB", "PayPal"].map(m => (
+                <span key={m} style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "4px 9px", letterSpacing: "0.02em" }}>{m}</span>
               ))}
-              <span style={{ fontSize: 13, color: "#555", marginLeft: 4 }}>· Paiement sécurisé SSL</span>
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", marginLeft: 4 }}>· SSL</span>
             </div>
           </div>
         </div>
       </footer>
 
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+        /* ── ANIMATIONS ── */
+        @keyframes shimmer-btn {
+          0%   { background-position: 0% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes float-blob {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33%       { transform: translate(30px, -20px) scale(1.05); }
+          66%       { transform: translate(-20px, 15px) scale(0.97); }
+        }
+        @keyframes live-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+          50%       { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+        }
+        @keyframes skeleton {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
         }
         @keyframes marquee-l {
           from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          to   { transform: translateX(-50%); }
         }
         @keyframes marquee-r {
           from { transform: translateX(-50%); }
-          to { transform: translateX(0); }
+          to   { transform: translateX(0); }
         }
 
-        /* Hero */
-        .shop-hero { padding-top: 130px; padding-bottom: 80px; }
-        .shop-stats { background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 20px; display: inline-flex !important; }
+        /* ── HERO ── */
+        .shop-hero { padding-top: 136px; padding-bottom: 88px; }
 
-        /* Platforms grid */
+        .blob {
+          position: absolute; border-radius: 50%;
+          filter: blur(80px); pointer-events: none; will-change: transform;
+        }
+        .blob-1 {
+          width: 520px; height: 520px; top: -120px; left: -100px;
+          background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%);
+          animation: float-blob 12s ease-in-out infinite;
+        }
+        .blob-2 {
+          width: 400px; height: 400px; top: 40px; right: -80px;
+          background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, transparent 70%);
+          animation: float-blob 16s ease-in-out infinite reverse;
+        }
+        .blob-3 {
+          width: 300px; height: 300px; bottom: -80px; left: 40%;
+          background: radial-gradient(circle, rgba(147,51,234,0.15) 0%, transparent 70%);
+          animation: float-blob 20s ease-in-out infinite;
+        }
+
+        .live-dot {
+          display: inline-block; width: 8px; height: 8px;
+          border-radius: 50%; background: #22c55e;
+          animation: live-pulse 2s ease-in-out infinite;
+        }
+
+        .grad-text {
+          background: linear-gradient(135deg, #a78bfa 0%, #818cf8 40%, #67e8f9 100%);
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 14px 28px; border-radius: 100px;
+          background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #7c3aed 100%);
+          background-size: 200% auto;
+          color: #fff; font-weight: 700; font-size: 15px;
+          text-decoration: none; letter-spacing: -0.01em;
+          box-shadow: 0 4px 24px rgba(124,58,237,0.45), 0 0 0 0 rgba(124,58,237,0);
+          animation: shimmer-btn 3s linear infinite;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(124,58,237,0.55), 0 0 0 4px rgba(124,58,237,0.15);
+        }
+
+        .btn-glass {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 14px 28px; border-radius: 100px;
+          background: rgba(255,255,255,0.07);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255,255,255,0.15);
+          color: rgba(255,255,255,0.85); font-weight: 600; font-size: 15px;
+          text-decoration: none; transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .btn-glass:hover {
+          background: rgba(255,255,255,0.12);
+          border-color: rgba(255,255,255,0.25);
+          transform: translateY(-2px);
+        }
+
+        .btn-cta-white {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 16px 36px; border-radius: 100px;
+          background: #fff; color: #4f46e5;
+          font-weight: 800; font-size: 16px; text-decoration: none;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-cta-white:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 36px rgba(0,0,0,0.2);
+        }
+
+        /* ── STATS ── */
+        .shop-stats {
+          display: inline-flex; gap: 0; border-radius: 20px;
+          background: rgba(255,255,255,0.05);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255,255,255,0.1);
+          overflow: hidden;
+        }
+        .stat-item {
+          padding: 22px 36px; text-align: center;
+          border-right: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-item:last-child { border-right: none; }
+
+        .platform-logo-btn {
+          opacity: 0.5; transition: opacity 0.2s, transform 0.2s;
+          display: flex; align-items: center;
+        }
+        .platform-logo-btn:hover { opacity: 1; transform: scale(1.1); }
+
+        /* ── PLATFORMS ── */
         .platforms-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
           gap: 16px;
         }
         .platform-card {
-          border: 1.5px solid #ebebeb;
-          border-radius: 18px;
-          overflow: hidden;
-          background: #fff;
-          transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+          border: 1.5px solid #e2e8f0; border-radius: 20px;
+          overflow: hidden; background: #fff;
+          transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
           cursor: pointer;
         }
         .platform-card:hover {
-          box-shadow: 0 8px 32px rgba(0,0,0,0.10);
-          transform: translateY(-3px);
-          border-color: #ddd;
+          box-shadow: 0 12px 40px rgba(124,58,237,0.12), 0 2px 8px rgba(0,0,0,0.05);
+          transform: translateY(-4px);
+          border-color: #c4b5fd;
         }
-        .platform-card:hover .card-arrow {
-          transform: translateX(4px);
-          color: #111 !important;
-        }
+        .platform-card:hover .card-arrow { transform: translateX(5px); }
 
-        /* Steps */
+        /* ── STEPS ── */
         .steps-grid { max-width: 860px; margin: 0 auto; }
 
-        /* Marquee */
+        /* ── MARQUEE ── */
         .marquee-track {
-          display: flex;
-          gap: 16px;
-          width: max-content;
-          animation: marquee-l 55s linear infinite;
-          padding: 4px 8px;
+          display: flex; gap: 16px; width: max-content;
+          animation: marquee-l 55s linear infinite; padding: 6px 8px;
         }
         .marquee-track-r {
-          display: flex;
-          gap: 16px;
-          width: max-content;
-          animation: marquee-r 55s linear infinite;
-          padding: 4px 8px;
+          display: flex; gap: 16px; width: max-content;
+          animation: marquee-r 55s linear infinite; padding: 6px 8px;
         }
-        .marquee-track:hover, .marquee-track-r:hover {
-          animation-play-state: paused;
-        }
+        .marquee-track:hover, .marquee-track-r:hover { animation-play-state: paused; }
         .marquee-card {
-          width: 280px;
-          flex-shrink: 0;
-          background: #fff;
-          border: 1.5px solid #ebebeb;
-          border-radius: 16px;
-          padding: 22px 20px;
-          display: flex;
-          flex-direction: column;
-          cursor: default;
+          width: 280px; flex-shrink: 0;
+          background: #fff; border: 1.5px solid #e2e8f0;
+          border-radius: 18px; padding: 22px 20px;
+          display: flex; flex-direction: column; cursor: default;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
 
-        /* Footer */
+        /* ── FAQ ── */
+        .faq-item { border-bottom: 1px solid #e2e8f0; }
+        .faq-question {
+          width: 100%; display: flex; justify-content: space-between;
+          align-items: center; gap: 16px;
+          padding: 22px 0; background: none; border: none;
+          font-size: 16px; font-weight: 600; color: #0f172a;
+          cursor: pointer; text-align: left; font-family: inherit;
+          transition: color 0.15s;
+        }
+        .faq-question:hover { color: #7c3aed; }
+        .faq-answer {
+          padding: 0 0 20px; font-size: 14.5px;
+          color: #64748b; line-height: 1.75; margin: 0;
+        }
+
+        /* ── FOOTER ── */
         .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
-        .footer-bottom { flex-direction: row; }
 
         /* ── MOBILE ── */
         @media (max-width: 768px) {
-          .shop-hero { padding-top: 90px !important; padding-bottom: 52px !important; }
-          .shop-stats { display: grid !important; grid-template-columns: 1fr 1fr; border-radius: 16px !important; }
-          .shop-stats > div { border-left: none !important; border-top: 1.5px solid #ebebeb; }
-          .shop-stats > div:first-child, .shop-stats > div:nth-child(2) { border-top: none; }
-          .shop-stats > div:nth-child(odd) { border-right: 1.5px solid #ebebeb; }
+          .shop-hero { padding-top: 100px !important; padding-bottom: 60px !important; }
+          .shop-stats { display: grid !important; grid-template-columns: 1fr 1fr; }
+          .stat-item { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+          .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08) !important; }
+          .stat-item:last-child, .stat-item:nth-last-child(2):nth-child(odd) { border-bottom: none !important; }
 
-          .platforms-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
-          }
+          .platforms-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
 
-          .steps-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+          .steps-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
           .steps-line { display: none !important; }
-          .steps-grid > div { padding: 0 !important; text-align: left !important; display: flex !important; align-items: flex-start !important; gap: 16px; }
+          .steps-grid > div { padding: 0 !important; text-align: left !important; display: flex !important; align-items: flex-start !important; gap: 18px; }
           .steps-grid > div > div:first-child { flex-shrink: 0; margin: 0 !important; }
 
-          .guarantees-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .guarantees-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
           .marquee-card { width: 240px !important; }
           .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
-          .footer-bottom { flex-direction: column !important; text-align: center; gap: 6px !important; }
+          .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+          .btn-primary, .btn-glass { padding: 13px 22px !important; font-size: 14px !important; }
         }
       `}</style>
     </div>
