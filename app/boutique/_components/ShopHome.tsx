@@ -123,14 +123,32 @@ const STATS = [
   { value: "7j/7", label: "Support disponible" },
 ];
 
-const PLATFORM_COLORS: Record<string, string> = {
-  instagram: "radial-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
-  tiktok:    "linear-gradient(135deg, #010101 0%, #1a1a2e 100%)",
-  youtube:   "linear-gradient(135deg, #FF0000 0%, #cc0000 100%)",
-  facebook:  "linear-gradient(135deg, #1877F2 0%, #1565c0 100%)",
-  twitter:   "linear-gradient(135deg, #14171A 0%, #1a1a1a 100%)",
-  spotify:   "linear-gradient(135deg, #1DB954 0%, #138040 100%)",
-  threads:   "linear-gradient(135deg, #101010 0%, #2c2c2c 100%)",
+const PLATFORM_SOLID: Record<string, string> = {
+  instagram: "#e1306c",
+  tiktok:    "#010101",
+  youtube:   "#FF0000",
+  facebook:  "#1877F2",
+  twitter:   "#14171A",
+  spotify:   "#1DB954",
+  threads:   "#101010",
+};
+const PLATFORM_BG: Record<string, string> = {
+  instagram: "rgba(225,48,108,0.07)",
+  tiktok:    "rgba(1,1,1,0.05)",
+  youtube:   "rgba(255,0,0,0.07)",
+  facebook:  "rgba(24,119,242,0.07)",
+  twitter:   "rgba(20,23,26,0.05)",
+  spotify:   "rgba(29,185,84,0.07)",
+  threads:   "rgba(16,16,16,0.05)",
+};
+const PLATFORM_SERVICES: Record<string, string[]> = {
+  instagram: ["Abonnés", "Likes", "Vues", "Commentaires"],
+  tiktok:    ["Abonnés", "Likes", "Vues"],
+  youtube:   ["Abonnés", "Vues", "Likes"],
+  facebook:  ["Abonnés", "Likes", "Vues"],
+  twitter:   ["Abonnés", "Likes"],
+  spotify:   ["Streams", "Auditeurs"],
+  threads:   ["Abonnés", "Likes"],
 };
 
 export default function ShopHome() {
@@ -235,9 +253,9 @@ export default function ShopHome() {
           </div>
 
           {loading ? (
-            <div className="platforms-grid">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} style={{ height: 190, borderRadius: 20, background: "linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)", backgroundSize: "200% 100%", animation: "skeleton 1.5s ease infinite" }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} style={{ height: 80, borderRadius: 16, background: "linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)", backgroundSize: "200% 100%", animation: "skeleton 1.5s ease infinite" }} />
               ))}
             </div>
           ) : platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
@@ -245,29 +263,56 @@ export default function ShopHome() {
               {search ? `Aucun résultat pour « ${search} »` : "Aucun service disponible — synchronisez depuis l'admin."}
             </div>
           ) : (
-            <div className="platforms-grid">
-              {platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).map(p => (
-                <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ textDecoration: "none" }}>
-                  <div className="platform-card">
-                    <div style={{
-                      height: 96, background: PLATFORM_COLORS[p.slug] ?? "linear-gradient(135deg, #333, #111)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      borderRadius: "18px 18px 0 0", position: "relative", overflow: "hidden",
-                    }}>
-                      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.12)" }} />
-                      <div style={{ position: "relative", zIndex: 1 }}><PlatformLogo slug={p.slug} size={44} /></div>
-                    </div>
-                    <div style={{ padding: "18px 20px 20px" }}>
-                      <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", marginBottom: 4 }}>{p.label}</div>
-                      <div style={{ fontSize: 13, color: "#94a3b8" }}>{p.count} service{p.count !== 1 ? "s" : ""}</div>
-                      <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: "#7c3aed" }}>Voir les offres</span>
-                        <span className="card-arrow" style={{ fontSize: 15, color: "#c4b5fd", transition: "transform 0.2s" }}>→</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).map(p => {
+                const accent = PLATFORM_SOLID[p.slug] ?? "#7c3aed";
+                const bg = PLATFORM_BG[p.slug] ?? "rgba(124,58,237,0.06)";
+                const tags = PLATFORM_SERVICES[p.slug] ?? [];
+                return (
+                  <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ textDecoration: "none" }}>
+                    <div className="platform-row"
+                      style={{ borderLeft: `3px solid ${accent}` }}
+                    >
+                      {/* Icon */}
+                      <div style={{
+                        width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                        background: bg,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <PlatformLogo slug={p.slug} size={26} />
+                      </div>
+
+                      {/* Name + tags */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", marginBottom: 5 }}>{p.label}</div>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          {tags.map(t => (
+                            <span key={t} style={{
+                              fontSize: 11, fontWeight: 600, color: accent,
+                              background: bg, borderRadius: 100,
+                              padding: "2px 10px", letterSpacing: "0.01em",
+                            }}>{t}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Count + arrow */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
+                        <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500, whiteSpace: "nowrap" }}>
+                          {p.count} service{p.count !== 1 ? "s" : ""}
+                        </span>
+                        <div className="row-arrow" style={{
+                          width: 36, height: 36, borderRadius: "50%",
+                          border: "1.5px solid #e2e8f0",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#94a3b8", fontSize: 16, flexShrink: 0,
+                          transition: "background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s",
+                        }}>→</div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
@@ -617,23 +662,24 @@ export default function ShopHome() {
         .platform-logo-btn:hover { opacity: 1; transform: scale(1.1); }
 
         /* ── PLATFORMS ── */
-        .platforms-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-          gap: 16px;
-        }
-        .platform-card {
-          border: 1.5px solid #e2e8f0; border-radius: 20px;
-          overflow: hidden; background: #fff;
-          transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+        .platform-row {
+          display: flex; align-items: center; gap: 20px;
+          padding: 18px 22px; background: #fff;
+          border-radius: 14px; border: 1.5px solid #e2e8f0;
           cursor: pointer;
+          transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
         }
-        .platform-card:hover {
-          box-shadow: 0 12px 40px rgba(124,58,237,0.12), 0 2px 8px rgba(0,0,0,0.05);
-          transform: translateY(-4px);
+        .platform-row:hover {
+          box-shadow: 0 4px 20px rgba(0,0,0,0.07);
           border-color: #c4b5fd;
+          transform: translateX(4px);
         }
-        .platform-card:hover .card-arrow { transform: translateX(5px); }
+        .platform-row:hover .row-arrow {
+          background: #7c3aed !important;
+          border-color: #7c3aed !important;
+          color: #fff !important;
+          transform: translateX(2px);
+        }
 
         /* ── STEPS ── */
         .steps-grid { max-width: 860px; margin: 0 auto; }
@@ -683,7 +729,8 @@ export default function ShopHome() {
           .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08) !important; }
           .stat-item:last-child, .stat-item:nth-last-child(2):nth-child(odd) { border-bottom: none !important; }
 
-          .platforms-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+          .platform-row { padding: 14px 16px !important; }
+          .platform-row { transform: none !important; }
 
           .steps-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
           .steps-line { display: none !important; }
