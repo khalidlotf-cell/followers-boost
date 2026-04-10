@@ -1,5 +1,5 @@
-const JAP_URL = "https://justanotherpanel.com/api/v2";
-const JAP_KEY = process.env.JAP_API_KEY!;
+const JAP_URL = "https://morethanpanel.com/api/v2";
+const JAP_KEY = process.env.MTP_API_KEY!;
 
 async function japPost(params: Record<string, string>) {
   const body = new URLSearchParams({ key: JAP_KEY, ...params });
