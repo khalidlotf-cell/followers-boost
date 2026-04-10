@@ -117,10 +117,10 @@ const FAQS = [
 ];
 
 const STATS = [
-  { value: "500K+", label: "Commandes livrées" },
-  { value: "98%", label: "Clients satisfaits" },
+  { value: "12 000+", label: "Commandes livrées" },
+  { value: "4.9/5", label: "Satisfaction clients" },
   { value: "5 min", label: "Délai moyen" },
-  { value: "24/7", label: "Support disponible" },
+  { value: "7j/7", label: "Support disponible" },
 ];
 
 const PLATFORM_COLORS: Record<string, string> = {
@@ -160,7 +160,7 @@ export default function ShopHome() {
           {/* Trust badge */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.8)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(0,0,0,0.06)", borderRadius: 100, padding: "6px 16px 6px 10px", marginBottom: 28 }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 0 3px rgba(34,197,94,0.2)" }} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#555" }}>N°1 en Europe · Livraison en 5 min</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#555" }}>Service actif · Livraison en 5 min</span>
           </div>
 
           <h1 style={{ fontSize: "clamp(38px, 5.5vw, 68px)", fontWeight: 800, color: "#111", lineHeight: 1.08, letterSpacing: "-0.03em", maxWidth: 820, margin: "0 auto 22px" }}>
@@ -324,13 +324,47 @@ export default function ShopHome() {
         </div>
       </section>
 
+      {/* ── GUARANTEES ── */}
+      <section style={{ padding: "72px 0", background: "#fff", borderTop: "1.5px solid #ebebeb" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <h2 style={{ fontSize: "clamp(26px, 3vw, 38px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 10 }}>
+              Pourquoi nous choisir ?
+            </h2>
+            <p style={{ fontSize: 15, color: "#888" }}>Des services pensés pour votre croissance, pas juste pour les chiffres</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
+            {[
+              { icon: "⚡", title: "Ultra-rapide", desc: "La plupart des commandes démarrent en moins de 5 minutes après paiement." },
+              { icon: "🔒", title: "100% sécurisé", desc: "Aucun mot de passe requis. Vos accès restent privés, toujours." },
+              { icon: "🎯", title: "Compatible algorithme", desc: "Nos services respectent les règles des plateformes pour une croissance naturelle." },
+              { icon: "💬", title: "Support 7j/7", desc: "Une question ? Notre équipe répond rapidement, même le week-end." },
+              { icon: "🔄", title: "Refill garanti", desc: "Si vous perdez des followers, on les remplace automatiquement sans frais." },
+              { icon: "💳", title: "Paiement sécurisé", desc: "CB, PayPal et autres méthodes. Paiement chiffré et protégé." },
+            ].map((g, i) => (
+              <div key={i} style={{
+                background: "#fafafa", border: "1.5px solid #ebebeb", borderRadius: 16,
+                padding: "24px 22px", transition: "border-color 0.15s, box-shadow 0.15s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#111"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.06)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#ebebeb"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ fontSize: 28, marginBottom: 12 }}>{g.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: 15, color: "#111", marginBottom: 6 }}>{g.title}</div>
+                <div style={{ fontSize: 13.5, color: "#777", lineHeight: 1.6 }}>{g.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── TESTIMONIALS ── */}
       <section style={{ padding: "80px 0", background: "#fafafa", borderTop: "1.5px solid #ebebeb", overflow: "hidden" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }} className="container">
           <h2 style={{ fontSize: "clamp(28px, 3vw, 40px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 12 }}>
             Ce que disent nos clients
           </h2>
-          <p style={{ fontSize: 16, color: "#888" }}>Plus de 50 000 clients satisfaits en Europe · Note moyenne 4.8/5</p>
+          <p style={{ fontSize: 16, color: "#888" }}>Plus de 12 000 commandes livrées · Note moyenne 4.9/5</p>
         </div>
 
         {/* Row 1 — gauche */}
@@ -401,7 +435,7 @@ export default function ShopHome() {
             Prêt à booster votre compte ?
           </h2>
           <p style={{ fontSize: 16, color: "#999", marginBottom: 32 }}>
-            Rejoignez des milliers de créateurs qui font confiance à Followers Boost.
+            Plus de 12 000 commandes livrées. Sans mot de passe. Livraison en 5 min.
           </p>
           <Link href="#plateformes" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
@@ -450,7 +484,12 @@ export default function ShopHome() {
           </div>
           <div className="footer-bottom" style={{ borderTop: "1px solid #1f1f1f", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
             <span style={{ fontSize: 13, color: "#555" }}>© {new Date().getFullYear()} Followers Boost. Tous droits réservés.</span>
-            <span style={{ fontSize: 13, color: "#555" }}>Paiement sécurisé · Livraison garantie</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              {["Visa", "Mastercard", "CB", "PayPal"].map(m => (
+                <span key={m} style={{ fontSize: 11, fontWeight: 600, color: "#555", background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 5, padding: "3px 8px" }}>{m}</span>
+              ))}
+              <span style={{ fontSize: 13, color: "#555", marginLeft: 4 }}>· Paiement sécurisé SSL</span>
+            </div>
           </div>
         </div>
       </footer>
