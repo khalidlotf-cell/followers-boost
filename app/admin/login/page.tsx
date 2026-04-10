@@ -11,16 +11,21 @@ export default function AdminLoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(""); setLoading(true);
-    const res = await fetch("/api/admin/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (res.ok) {
-      router.push("/admin");
-      router.refresh();
-    } else {
-      setError("Mot de passe incorrect");
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        router.push("/admin");
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Mot de passe incorrect");
+      }
+    } catch {
+      setError("Erreur réseau — réessayez");
     }
     setLoading(false);
   }
