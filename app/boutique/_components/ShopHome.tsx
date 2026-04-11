@@ -253,9 +253,9 @@ export default function ShopHome() {
           </div>
 
           {loading ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} style={{ height: 80, borderRadius: 16, background: "linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)", backgroundSize: "200% 100%", animation: "skeleton 1.5s ease infinite" }} />
+            <div className="bento-grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} style={{ borderRadius: 20, background: "linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)", backgroundSize: "200% 100%", animation: "skeleton 1.5s ease infinite", gridColumn: i === 0 ? "span 2" : undefined, minHeight: i === 0 ? 220 : 160 }} />
               ))}
             </div>
           ) : platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
@@ -263,51 +263,37 @@ export default function ShopHome() {
               {search ? `Aucun résultat pour « ${search} »` : "Aucun service disponible — synchronisez depuis l'admin."}
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).map(p => {
+            <div className="bento-grid">
+              {platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).map((p, idx) => {
                 const accent = PLATFORM_SOLID[p.slug] ?? "#7c3aed";
-                const bg = PLATFORM_BG[p.slug] ?? "rgba(124,58,237,0.06)";
                 const tags = PLATFORM_SERVICES[p.slug] ?? [];
+                const isBig = idx === 0;
                 return (
-                  <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ textDecoration: "none" }}>
-                    <div className="platform-row"
-                      style={{ borderLeft: `3px solid ${accent}` }}
-                    >
-                      {/* Icon */}
-                      <div style={{
-                        width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                        background: bg,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <PlatformLogo slug={p.slug} size={26} />
-                      </div>
+                  <Link key={p.slug} href={`/boutique/${p.slug}`} style={{ textDecoration: "none", gridColumn: isBig ? "span 2" : undefined }} className="bento-cell">
+                    {/* Background gradient glow */}
+                    <div className="bento-glow" style={{ background: `radial-gradient(ellipse at 0% 100%, ${accent}22 0%, transparent 60%)` }} />
 
-                      {/* Name + tags */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", marginBottom: 5 }}>{p.label}</div>
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                          {tags.map(t => (
-                            <span key={t} style={{
-                              fontSize: 11, fontWeight: 600, color: accent,
-                              background: bg, borderRadius: 100,
-                              padding: "2px 10px", letterSpacing: "0.01em",
-                            }}>{t}</span>
-                          ))}
-                        </div>
+                    {/* Top row: icon + count */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "auto" }}>
+                      <div style={{ width: isBig ? 52 : 44, height: isBig ? 52 : 44, borderRadius: 14, background: `${accent}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <PlatformLogo slug={p.slug} size={isBig ? 32 : 26} />
                       </div>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: "#94a3b8", background: "#f1f5f9", borderRadius: 100, padding: "4px 12px" }}>
+                        {p.count} services
+                      </span>
+                    </div>
 
-                      {/* Count + arrow */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-                        <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 500, whiteSpace: "nowrap" }}>
-                          {p.count} service{p.count !== 1 ? "s" : ""}
-                        </span>
-                        <div className="row-arrow" style={{
-                          width: 36, height: 36, borderRadius: "50%",
-                          border: "1.5px solid #e2e8f0",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          color: "#94a3b8", fontSize: 16, flexShrink: 0,
-                          transition: "background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s",
-                        }}>→</div>
+                    {/* Bottom: name + tags + arrow */}
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: isBig ? 26 : 20, color: "#0f172a", letterSpacing: "-0.02em", marginBottom: 10 }}>{p.label}</div>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+                        {tags.slice(0, isBig ? 4 : 3).map(t => (
+                          <span key={t} style={{ fontSize: 11, fontWeight: 600, color: accent, background: `${accent}14`, borderRadius: 100, padding: "3px 10px" }}>{t}</span>
+                        ))}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, color: accent, fontSize: 13, fontWeight: 700 }}>
+                        Commander
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                       </div>
                     </div>
                   </Link>
@@ -661,25 +647,31 @@ export default function ShopHome() {
         }
         .platform-logo-btn:hover { opacity: 1; transform: scale(1.1); }
 
-        /* ── PLATFORMS ── */
-        .platform-row {
-          display: flex; align-items: center; gap: 20px;
-          padding: 18px 22px; background: #fff;
-          border-radius: 14px; border: 1.5px solid #e2e8f0;
-          cursor: pointer;
-          transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+        /* ── PLATFORMS BENTO ── */
+        .bento-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 14px;
         }
-        .platform-row:hover {
-          box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-          border-color: #c4b5fd;
-          transform: translateX(4px);
+        .bento-cell {
+          position: relative; overflow: hidden;
+          background: #fff; border: 1.5px solid #e2e8f0;
+          border-radius: 20px; padding: 24px;
+          display: flex; flex-direction: column; gap: 20px;
+          min-height: 180px; cursor: pointer;
+          transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
         }
-        .platform-row:hover .row-arrow {
-          background: #7c3aed !important;
-          border-color: #7c3aed !important;
-          color: #fff !important;
-          transform: translateX(2px);
+        .bento-cell:hover {
+          box-shadow: 0 8px 32px rgba(0,0,0,0.09);
+          border-color: #ddd6fe;
+          transform: translateY(-3px);
         }
+        .bento-glow {
+          position: absolute; inset: 0; pointer-events: none;
+          transition: opacity 0.3s;
+          opacity: 0;
+        }
+        .bento-cell:hover .bento-glow { opacity: 1; }
 
         /* ── STEPS ── */
         .steps-grid { max-width: 860px; margin: 0 auto; }
@@ -729,8 +721,9 @@ export default function ShopHome() {
           .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.08) !important; }
           .stat-item:last-child, .stat-item:nth-last-child(2):nth-child(odd) { border-bottom: none !important; }
 
-          .platform-row { padding: 14px 16px !important; }
-          .platform-row { transform: none !important; }
+          .bento-grid { grid-template-columns: 1fr 1fr !important; }
+          .bento-cell[style*="span 2"] { grid-column: span 2 !important; min-height: 160px !important; }
+          .bento-cell { padding: 18px !important; min-height: 150px !important; }
 
           .steps-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
           .steps-line { display: none !important; }
