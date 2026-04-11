@@ -387,6 +387,20 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   const ptStyle = PLATFORM_STYLE[platform] ?? { bg: "#111" };
   const activeReviews = REVIEWS_BY_TYPE[activeGroupSlug] ?? REVIEWS_BY_TYPE.abonnes;
 
+  // Compteurs par type de service (total ~6 000+)
+  const SERVICE_COUNTS: Record<string, string> = {
+    abonnes:         "2 500",
+    likes:           "1 200",
+    vues:            "950",
+    commentaires:    "320",
+    partages:        "280",
+    enregistrements: "230",
+    auditeurs:       "200",
+    streams:         "180",
+    retweets:        "140",
+  };
+  const serviceCount = SERVICE_COUNTS[activeGroupSlug] ?? "600";
+
   // Platform accent colors
   const ACCENT: Record<string, string> = { instagram: "#e1306c", tiktok: "#010101", youtube: "#FF0000", facebook: "#1877F2", twitter: "#000", spotify: "#1DB954", threads: "#000" };
   const accent = ACCENT[platform] ?? "#7c3aed";
@@ -441,7 +455,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 100, padding: "7px 14px" }}>
               <span style={{ fontSize: 13, color: "rgba(255,255,255,0.9)" }}>✓</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>6 000+ commandes</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{serviceCount}+ commandes</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(74,222,128,0.2)", backdropFilter: "blur(10px)", border: "1px solid rgba(74,222,128,0.4)", borderRadius: 100, padding: "7px 14px" }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", boxShadow: "0 0 6px #4ade80" }} />
@@ -688,7 +702,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
                     </svg>
                   ))}
                 </div>
-                <span style={{ fontSize: 13, color: "#555", fontWeight: 600 }}>4.9/5 · 6 000+ avis vérifiés</span>
+                <span style={{ fontSize: 13, color: "#555", fontWeight: 600 }}>4.9/5 · {serviceCount}+ avis vérifiés</span>
               </div>
             </div>
             {/* Marquee carousel */}
