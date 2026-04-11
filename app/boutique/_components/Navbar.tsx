@@ -98,10 +98,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" onClick={() => setMenuOpen(false)} style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none", flexShrink: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 12 }}>FB</span>
+              <span style={{ color: "#fff", fontWeight: 800, fontSize: 12 }}>V</span>
             </div>
             <span style={{ fontWeight: 800, fontSize: 16, color: "#111", letterSpacing: "-0.02em" }}>
-              Followers<span style={{ color: "#999" }}>Boost</span>
+              Vyr<span style={{ color: "#999" }}>lo</span>
             </span>
           </Link>
 

@@ -9,7 +9,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Followers Boost - N°1 en Europe",
+  title: "Vyrlo - Services SMM Premium",
   description: "Achetez des followers, likes et vues pour Instagram, TikTok, YouTube et plus encore.",
 };
 

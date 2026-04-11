@@ -9,6 +9,9 @@ const COLS = [
       { label: "TikTok",    href: "/boutique/tiktok" },
       { label: "YouTube",   href: "/boutique/youtube" },
       { label: "Facebook",  href: "/boutique/facebook" },
+      { label: "Spotify",   href: "/boutique/spotify" },
+      { label: "X / Twitter", href: "/boutique/twitter" },
+      { label: "Threads",   href: "/boutique/threads" },
     ],
   },
   {
@@ -23,7 +26,7 @@ const COLS = [
     title: "Aide",
     links: [
       { label: "FAQ",     href: "/#faq" },
-      { label: "Contact", href: "mailto:support@followerboost.fr" },
+      { label: "Contact", href: "/contact" },
       { label: "CGU",     href: "/cgu" },
     ],
   },
@@ -46,9 +49,9 @@ export default function Footer() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontWeight: 800, fontSize: 13, color: "#fff" }}>FB</span>
+                <span style={{ fontWeight: 800, fontSize: 13, color: "#fff" }}>V</span>
               </div>
-              <span style={{ fontWeight: 800, fontSize: 16, color: "#fff" }}>Followers Boost</span>
+              <span style={{ fontWeight: 800, fontSize: 16, color: "#fff" }}>Vyrlo</span>
             </div>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 240 }}>
               Services SMM premium pour booster votre présence sur les réseaux sociaux.
@@ -78,7 +81,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <span style={{ fontSize: 13, color: "rgba(255,255,255,0.2)" }}>
-            © {new Date().getFullYear()} Followers Boost. Tous droits réservés.
+            © {new Date().getFullYear()} Vyrlo. Tous droits réservés.
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {["Visa", "MC", "CB", "PayPal"].map(m => (

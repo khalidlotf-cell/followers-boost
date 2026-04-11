@@ -33,9 +33,9 @@ export default function InscriptionPage() {
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <Link href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>FB</span>
+              <span style={{ color: "#fff", fontWeight: 800, fontSize: 16 }}>V</span>
             </div>
-            <span style={{ fontWeight: 800, fontSize: 20, color: "#111" }}>Followers Boost</span>
+            <span style={{ fontWeight: 800, fontSize: 20, color: "#111" }}>Vyrlo</span>
           </Link>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#111", letterSpacing: "-0.02em" }}>Créer un compte</h1>
           <p style={{ fontSize: 15, color: "#888", marginTop: 6 }}>Gratuit et sans engagement</p>

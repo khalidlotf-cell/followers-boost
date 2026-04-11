@@ -152,6 +152,105 @@ const PLATFORM_SERVICES: Record<string, string[]> = {
   threads:   ["Abonnés", "Likes"],
 };
 
+const COMPARATIF_DATA = {
+  "1K": {
+    label: "1 000 abonnés",
+    organic: { duree: "2 à 5 mois", travail: "2–3h / jour", cout: "300 – 500 €", garanti: false },
+    service: { duree: "24 à 72h", travail: "2 minutes", cout: "À partir de 8,90 €", garanti: true },
+  },
+  "5K": {
+    label: "5 000 abonnés",
+    organic: { duree: "8 à 18 mois", travail: "3–4h / jour", cout: "500 – 1 500 €", garanti: false },
+    service: { duree: "3 à 5 jours", travail: "2 minutes", cout: "À partir de 29,90 €", garanti: true },
+  },
+  "10K": {
+    label: "10 000 abonnés",
+    organic: { duree: "1 à 3 ans", travail: "4–5h / jour", cout: "2 000 – 3 000 €", garanti: false },
+    service: { duree: "5 à 8 jours", travail: "2 minutes", cout: "À partir de 74,90 €", garanti: true },
+  },
+} as const;
+
+function ComparatifSection() {
+  const [tab, setTab] = useState<"1K" | "5K" | "10K">("1K");
+  const data = COMPARATIF_DATA[tab];
+
+  const rows = [
+    { label: "Durée estimée", organic: data.organic.duree, service: data.service.duree },
+    { label: "Effort quotidien", organic: data.organic.travail, service: data.service.travail },
+    { label: "Coût réel", organic: data.organic.cout, service: data.service.cout },
+    { label: "Résultat garanti", organic: "Non — dépend de l'algo et du contenu", service: "Oui", isLast: true },
+  ];
+
+  return (
+    <section id="comparatif" style={{ padding: "88px 0", background: "#fafbff" }}>
+      <div className="container">
+        <div style={{ textAlign: "center", marginBottom: 52 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>Comparatif</p>
+          <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 12 }}>
+            Croissance organique vs notre service
+          </h2>
+          <p style={{ fontSize: 15, color: "#94a3b8" }}>Même objectif, deux réalités très différentes.</p>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 48 }}>
+          {(["1K", "5K", "10K"] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{
+              padding: "10px 28px", borderRadius: 100, fontWeight: 700, fontSize: 15,
+              border: "1.5px solid",
+              borderColor: tab === t ? "#7c3aed" : "#e2e8f0",
+              background: tab === t ? "#7c3aed" : "#fff",
+              color: tab === t ? "#fff" : "#64748b",
+              cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
+            }}>
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ maxWidth: 780, margin: "0 auto", border: "1.5px solid #e2e8f0", borderRadius: 20, overflow: "hidden", background: "#fff" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", background: "#f8fafc", borderBottom: "1.5px solid #e2e8f0" }}>
+            <div style={{ padding: "16px 24px", fontSize: 12, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              {data.label}
+            </div>
+            <div style={{ padding: "16px 24px", fontSize: 12, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em", borderLeft: "1px solid #e2e8f0" }}>
+              Croissance organique
+            </div>
+            <div style={{ padding: "16px 24px", fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.08em", borderLeft: "1px solid #e2e8f0", background: "rgba(124,58,237,0.03)" }}>
+              Notre service
+            </div>
+          </div>
+
+          {rows.map((row, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: row.isLast ? "none" : "1px solid #f1f5f9" }}>
+              <div style={{ padding: "20px 24px", fontSize: 13, fontWeight: 600, color: "#475569" }}>
+                {row.label}
+              </div>
+              <div style={{ padding: "20px 24px", fontSize: 14, color: "#64748b", borderLeft: "1px solid #f1f5f9" }}>
+                {row.organic === "Non — dépend de l'algo et du contenu"
+                  ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ color: "#f87171", fontWeight: 700 }}>✕</span> Non garanti
+                    </span>
+                  : row.organic}
+              </div>
+              <div style={{ padding: "20px 24px", fontSize: 14, fontWeight: row.isLast ? 700 : 600, color: row.isLast ? "#059669" : "#0f172a", borderLeft: "1px solid #f1f5f9", background: "rgba(124,58,237,0.02)" }}>
+                {row.service === "Oui"
+                  ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ color: "#059669", fontWeight: 700 }}>✓</span> Oui
+                    </span>
+                  : row.service}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ textAlign: "center", fontSize: 13, color: "#94a3b8", marginTop: 20 }}>
+          * Les coûts organiques incluent le temps, l&apos;équipement et les outils. Le résultat dépend toujours de l&apos;algorithme.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export default function ShopHome() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [loading, setLoading] = useState(true);
@@ -190,18 +289,18 @@ export default function ShopHome() {
             <span className="grad-text">sur les réseaux sociaux</span>
           </h1>
 
-          <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "rgba(255,255,255,0.5)", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.7 }}>
+          <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.7 }}>
             Followers, likes, vues : des services premium pour Instagram, TikTok, YouTube et bien plus.
+            <br />
+            <span style={{ fontSize: 13, opacity: 0.6 }}>À partir de <b>8,90 €</b> · Livraison en 24h · Sans mot de passe</span>
           </p>
 
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 48 }}>
-            {/* Primary CTA — shimmer gradient */}
             <Link href="#plateformes" className="btn-primary">
               Découvrir les services →
             </Link>
-            {/* Secondary CTA — glass */}
-            <Link href="/inscription" className="btn-glass">
-              Créer un compte gratuit
+            <Link href="#comparatif" className="btn-glass">
+              Voir le comparatif
             </Link>
           </div>
 
@@ -337,51 +436,45 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ══ GUARANTEES — dark section ══ */}
-      <section style={{ padding: "88px 0", background: "linear-gradient(135deg, #06040f 0%, #0d0721 100%)", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div className="container" style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px 80px", alignItems: "start" }} className="guarantees-grid">
+      {/* ══ GUARANTEES — editorial list ══ */}
+      <section style={{ padding: "88px 0", background: "#fff", borderTop: "1px solid #f1f5f9" }}>
+        <div className="container">
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 64, flexWrap: "wrap", gap: 20 }}>
             <div>
-              <p style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Nos engagements</p>
-              <h2 style={{ fontSize: "clamp(26px, 3vw, 40px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.025em", marginBottom: 18, lineHeight: 1.15 }}>
-                Ce qui nous<br />différencie
+              <p style={{ fontSize: 11, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 10 }}>Nos engagements</p>
+              <h2 style={{ fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
+                Ce qui nous différencie
               </h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 340 }}>
-                Des services pensés pour votre croissance réelle, pas juste pour les chiffres. Livraison rapide, sans risque, avec un vrai support humain.
-              </p>
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {[
-                { title: "Livraison en moins de 20 minutes", desc: "La commande démarre automatiquement dès la confirmation du paiement." },
-                { title: "Aucun mot de passe requis", desc: "Vos accès restent privés. On a seulement besoin du lien de votre profil." },
-                { title: "Compatible avec l'algorithme", desc: "Des méthodes qui s'intègrent naturellement à votre activité sur la plateforme." },
-                { title: "Refill automatique inclus", desc: "Si des followers disparaissent, ils sont remplacés sans que vous ayez à intervenir." },
-                { title: "Support disponible 7j/7", desc: "Une vraie équipe qui répond rapidement, pas un bot, pas une FAQ." },
-              ].map((g, i, arr) => (
-                <div key={i} style={{
-                  display: "flex", gap: 16, alignItems: "flex-start",
-                  padding: "20px 0",
-                  borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
-                }}>
-                  <div style={{
-                    width: 22, height: 22, borderRadius: "50%",
-                    background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0, marginTop: 1,
-                    boxShadow: "0 2px 8px rgba(124,58,237,0.4)",
-                  }}>
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#f1f5f9", marginBottom: 4 }}>{g.title}</div>
-                    <div style={{ fontSize: 13.5, color: "rgba(255,255,255,0.4)", lineHeight: 1.65 }}>{g.desc}</div>
-                  </div>
+            <p style={{ fontSize: 15, color: "#94a3b8", maxWidth: 320, lineHeight: 1.75 }}>
+              Des services pensés pour votre croissance réelle, pas juste pour les chiffres.
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 0 }} className="guarantees-list">
+            {[
+              { num: "01", title: "Livraison progressive", desc: "Les abonnés arrivent sur plusieurs heures, pas d'un coup. L'algorithme ne détecte rien d'anormal et continue à vous pousser." },
+              { num: "02", title: "Profils ciblés France", desc: "Option France disponible pour attirer une audience qui parle français et qui s'engage réellement sur votre contenu." },
+              { num: "03", title: "Refill automatique", desc: "Un drop ? Le refill compense sans que vous ayez à faire quoi que ce soit. Disponible sur les offres sélectionnées." },
+              { num: "04", title: "Démarrage en quelques heures", desc: "Pas besoin d'attendre des semaines. La plupart des commandes démarrent dans les 6 à 12 premières heures." },
+              { num: "05", title: "Aucun mot de passe requis", desc: "Vos accès restent privés. On a seulement besoin du lien de votre profil ou de votre publication." },
+              { num: "06", title: "Support humain 7j/7", desc: "Une vraie équipe qui répond en moins d'une heure. Pas un bot, pas une FAQ automatique." },
+            ].map((g, i) => (
+              <div key={i} style={{
+                padding: "32px 0",
+                borderBottom: "1px solid #f1f5f9",
+                borderRight: i % 2 === 0 ? "1px solid #f1f5f9" : "none",
+                paddingRight: i % 2 === 0 ? 48 : 0,
+                paddingLeft: i % 2 === 1 ? 48 : 0,
+                display: "flex", gap: 24, alignItems: "flex-start",
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 800, color: "#cbd5e1", letterSpacing: "0.05em", flexShrink: 0, marginTop: 4 }}>{g.num}</span>
+                <div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a", marginBottom: 8, letterSpacing: "-0.015em" }}>{g.title}</div>
+                  <div style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>{g.desc}</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -433,8 +526,11 @@ export default function ShopHome() {
         </div>
       </section>
 
+      {/* ══ COMPARATIF ══ */}
+      <ComparatifSection />
+
       {/* ══ FAQ ══ */}
-      <section style={{ padding: "88px 0", background: "#fafbff" }}>
+      <section id="faq" style={{ padding: "88px 0", background: "#fafbff" }}>
         <div className="container" style={{ maxWidth: 720 }}>
           <div style={{ textAlign: "center", marginBottom: 52 }}>
             <p style={{ fontSize: 12, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
@@ -470,7 +566,7 @@ export default function ShopHome() {
             Plus de 6 000 commandes livrées. Sans mot de passe. Livraison en 20 min.
           </p>
           <Link href="#plateformes" className="btn-cta-white">
-            Voir les services →
+            Choisir mon offre →
           </Link>
         </div>
       </section>
@@ -669,6 +765,9 @@ export default function ShopHome() {
         }
 
         /* ── FOOTER ── */
+        /* ── GUARANTEES LIST ── */
+        .guarantees-list { border-top: 1px solid #f1f5f9; }
+
         .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
 
         /* ── MOBILE ── */
@@ -688,7 +787,8 @@ export default function ShopHome() {
           .steps-grid > div { padding: 0 !important; text-align: left !important; display: flex !important; align-items: flex-start !important; gap: 18px; }
           .steps-grid > div > div:first-child { flex-shrink: 0; margin: 0 !important; }
 
-          .guarantees-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+          .guarantees-list { grid-template-columns: 1fr !important; }
+          .guarantees-list > div { border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; }
           .marquee-card { width: 240px !important; }
           .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
           .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
