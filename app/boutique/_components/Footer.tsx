@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 
 const COLS = [
   {
@@ -47,11 +48,8 @@ export default function Footer() {
         >
           {/* Brand */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontWeight: 800, fontSize: 13, color: "#fff" }}>V</span>
-              </div>
-              <span style={{ fontWeight: 800, fontSize: 16, color: "#fff" }}>Vyrlo</span>
+            <div style={{ marginBottom: 18 }}>
+              <Image src="/logo-dark.png" alt="Vyrlo" width={110} height={44} style={{ objectFit: "contain" }} />
             </div>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 240 }}>
               Services SMM premium pour booster votre présence sur les réseaux sociaux.

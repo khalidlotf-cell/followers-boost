@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -96,13 +97,8 @@ export default function Navbar() {
         <div style={{ maxWidth: 1160, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60 }}>
 
           {/* Logo */}
-          <Link href="/" onClick={() => setMenuOpen(false)} style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none", flexShrink: 0 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 12 }}>V</span>
-            </div>
-            <span style={{ fontWeight: 800, fontSize: 16, color: "#111", letterSpacing: "-0.02em" }}>
-              Vyr<span style={{ color: "#999" }}>lo</span>
-            </span>
+          <Link href="/" onClick={() => setMenuOpen(false)} style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}>
+            <Image src="/logo-light.png" alt="Vyrlo" width={100} height={40} style={{ objectFit: "contain" }} priority />
           </Link>
 
           {/* Desktop platform links */}
