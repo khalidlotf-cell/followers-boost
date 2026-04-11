@@ -110,16 +110,16 @@ const ROW_2 = [
 
 const FAQS = [
   { q: "Est-ce que c'est sécurisé ?", a: "Oui, totalement. Nous n'avons jamais besoin de votre mot de passe. Nos méthodes respectent les conditions d'utilisation des plateformes." },
-  { q: "Combien de temps prend la livraison ?", a: "La plupart des commandes démarrent en moins de 5 minutes. Le délai complet dépend de la quantité commandée." },
+  { q: "Combien de temps prend la livraison ?", a: "La plupart des commandes démarrent en moins de 20 minutes. Le délai complet dépend de la quantité commandée." },
   { q: "Les followers/likes sont-ils réels ?", a: "Nos services varient selon les offres. Certains proviennent de vrais comptes actifs, d'autres sont des comptes de haute qualité. Chaque service est clairement décrit." },
   { q: "Que faire si ma commande ne démarre pas ?", a: "Contactez notre support disponible 7j/7. Nous garantissons le remboursement ou le remplacement si la commande n'est pas livrée." },
   { q: "Puis-je commander pour n'importe quel compte ?", a: "Oui, tant que le compte est public au moment de la commande. Pour les likes et vues, la publication doit être accessible." },
 ];
 
 const STATS = [
-  { value: "12 000+", label: "Commandes livrées" },
+  { value: "6 000+", label: "Commandes livrées" },
   { value: "4.9/5", label: "Satisfaction clients" },
-  { value: "5 min", label: "Délai moyen" },
+  { value: "20 min", label: "Délai moyen" },
   { value: "7j/7", label: "Support disponible" },
 ];
 
@@ -181,7 +181,7 @@ export default function ShopHome() {
           {/* Live badge */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 100, padding: "7px 18px 7px 12px", marginBottom: 32 }}>
             <span className="live-dot" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.75)" }}>Service actif · Livraison en 5 min</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.75)" }}>Service actif · Livraison en 20 min</span>
           </div>
 
           <h1 style={{ fontSize: "clamp(40px, 5.5vw, 72px)", fontWeight: 800, color: "#fff", lineHeight: 1.06, letterSpacing: "-0.03em", maxWidth: 860, margin: "0 auto 24px" }}>
@@ -190,7 +190,7 @@ export default function ShopHome() {
           </h1>
 
           <p style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "rgba(255,255,255,0.5)", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.7 }}>
-            Followers, likes, vues — des services premium pour Instagram, TikTok, YouTube et bien plus.
+            Followers, likes, vues : des services premium pour Instagram, TikTok, YouTube et bien plus.
           </p>
 
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 48 }}>
@@ -260,7 +260,7 @@ export default function ShopHome() {
             </div>
           ) : platforms.filter(p => p.label.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
             <div style={{ textAlign: "center", padding: "56px 0", color: "#94a3b8" }}>
-              {search ? `Aucun résultat pour « ${search} »` : "Aucun service disponible — synchronisez depuis l'admin."}
+              {search ? `Aucun résultat pour « ${search} »` : "Aucun service disponible, synchronisez depuis l'admin."}
             </div>
           ) : (
             <div className="bento-grid">
@@ -347,16 +347,16 @@ export default function ShopHome() {
                 Ce qui nous<br />différencie
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 340 }}>
-                Des services pensés pour votre croissance réelle — pas juste pour les chiffres. Livraison rapide, sans risque, avec un vrai support humain.
+                Des services pensés pour votre croissance réelle, pas juste pour les chiffres. Livraison rapide, sans risque, avec un vrai support humain.
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {[
-                { title: "Livraison en moins de 5 minutes", desc: "La commande démarre automatiquement dès la confirmation du paiement." },
+                { title: "Livraison en moins de 20 minutes", desc: "La commande démarre automatiquement dès la confirmation du paiement." },
                 { title: "Aucun mot de passe requis", desc: "Vos accès restent privés. On a seulement besoin du lien de votre profil." },
                 { title: "Compatible avec l'algorithme", desc: "Des méthodes qui s'intègrent naturellement à votre activité sur la plateforme." },
                 { title: "Refill automatique inclus", desc: "Si des followers disparaissent, ils sont remplacés sans que vous ayez à intervenir." },
-                { title: "Support disponible 7j/7", desc: "Une vraie équipe qui répond rapidement — pas un bot, pas une FAQ." },
+                { title: "Support disponible 7j/7", desc: "Une vraie équipe qui répond rapidement, pas un bot, pas une FAQ." },
               ].map((g, i, arr) => (
                 <div key={i} style={{
                   display: "flex", gap: 16, alignItems: "flex-start",
@@ -394,7 +394,7 @@ export default function ShopHome() {
           </h2>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 100, padding: "6px 16px" }}>
             <span style={{ color: "#f59e0b", fontSize: 14 }}>★★★★★</span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#92400e" }}>4.9/5 · 12 000+ commandes livrées</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#92400e" }}>4.9/5 · 6 000+ commandes livrées</span>
           </div>
         </div>
 
@@ -466,7 +466,7 @@ export default function ShopHome() {
             Prêt à booster votre compte ?
           </h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,0.7)", marginBottom: 40 }}>
-            Plus de 12 000 commandes livrées. Sans mot de passe. Livraison en 5 min.
+            Plus de 6 000 commandes livrées. Sans mot de passe. Livraison en 20 min.
           </p>
           <Link href="#plateformes" className="btn-cta-white">
             Voir les services →

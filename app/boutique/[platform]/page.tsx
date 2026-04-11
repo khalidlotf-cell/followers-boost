@@ -386,217 +386,259 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   const ptStyle = PLATFORM_STYLE[platform] ?? { bg: "#111" };
   const activeReviews = REVIEWS_BY_TYPE[activeGroupSlug] ?? REVIEWS_BY_TYPE.abonnes;
 
+  // Platform accent colors
+  const ACCENT: Record<string, string> = { instagram: "#e1306c", tiktok: "#010101", youtube: "#FF0000", facebook: "#1877F2", twitter: "#000", spotify: "#1DB954", threads: "#000" };
+  const accent = ACCENT[platform] ?? "#7c3aed";
+  const heroBg = platform === "instagram"
+    ? "radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)"
+    : ptStyle.bg;
+
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f5f5" }}>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+
+      {/* ── Announcement bar ── */}
+      <div style={{ background: "linear-gradient(90deg, #7c3aed, #4f46e5)", color: "#fff", textAlign: "center", fontSize: 13, fontWeight: 600, padding: "10px 16px", letterSpacing: "0.01em" }}>
+        <span style={{ marginRight: 6 }}>⚡</span> Livraison express · Démarrage sous 12h · Satisfait ou remboursé
+      </div>
+
       <Navbar />
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px", paddingTop: 80 }}>
+      {/* ── Hero header ── */}
+      <div style={{ background: heroBg, paddingTop: 72, paddingBottom: 0, position: "relative", overflow: "hidden" }}>
+        {/* subtle noise overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.08)", pointerEvents: "none" }} />
 
-        {/* Breadcrumb */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#aaa", marginTop: 24, marginBottom: 20 }}>
-          <Link href="/" style={{ color: "#aaa", textDecoration: "none" }}>Accueil</Link>
-          <span>/</span>
-          <Link href={`/boutique/${platform}`} style={{ color: "#aaa", textDecoration: "none" }}>{data.platform.label}</Link>
-          {activeGroup && <><span>/</span><span style={{ color: "#111", fontWeight: 500 }}>{activeGroup.label}</span></>}
-        </div>
+        <div style={{ maxWidth: 680, margin: "0 auto", padding: "44px 20px 0", textAlign: "center", position: "relative", zIndex: 1 }}>
+          {/* Breadcrumb */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.6)", marginBottom: 28 }}>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Accueil</Link>
+            <span style={{ opacity: 0.4 }}>/</span>
+            <Link href={`/boutique/${platform}`} style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>{data.platform.label}</Link>
+            {activeGroup && <><span style={{ opacity: 0.4 }}>/</span><span style={{ color: "#fff", fontWeight: 600 }}>{activeGroup.label}</span></>}
+          </div>
 
-        {/* Service tabs */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 24, overflowX: "auto", paddingBottom: 4 }}>
-          {data.groups.map(g => (
-            <button key={g.slug} onClick={() => setActiveGroupSlug(g.slug)}
-              style={{
-                flexShrink: 0, padding: "9px 20px", borderRadius: 100, fontSize: 14, fontWeight: 600,
-                cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", border: "2px solid",
-                borderColor: activeGroupSlug === g.slug ? "#111" : "#ddd",
-                background: activeGroupSlug === g.slug ? "#111" : "#fff",
-                color: activeGroupSlug === g.slug ? "#fff" : "#555",
-              }}>
-              {g.icon} {g.label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── Product layout ── */}
-        <div className="product-layout" style={{ background: "#fff", borderRadius: 20, overflow: "hidden", border: "1px solid #e8e8e8", marginBottom: 48 }}>
-          <div className="product-inner">
-
-            {/* LEFT — image */}
-            <div className="product-left">
-              {/* Main logo card */}
-              <div style={{
-                borderRadius: 16,
-                background: platform === "instagram"
-                  ? "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)"
-                  : ptStyle.bg,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                aspectRatio: "1 / 1", maxWidth: 340, width: "100%",
-                padding: 40,
-              }}>
+          {/* Platform icon with glow */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
+            <div style={{ position: "relative" }}>
+              <div style={{ position: "absolute", inset: -12, borderRadius: 32, background: "rgba(255,255,255,0.2)", filter: "blur(16px)", pointerEvents: "none" }} />
+              <div style={{ width: 96, height: 96, borderRadius: 24, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(12px)", border: "1.5px solid rgba(255,255,255,0.35)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 40px rgba(0,0,0,0.25)", position: "relative" }}>
                 <PlatformLogoLarge slug={platform} />
-              </div>
-
-              {/* Thumbnail row (same logo, smaller, decorative) */}
-              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-                {[0, 1, 2].map(i => (
-                  <div key={i} style={{
-                    width: 64, height: 64, borderRadius: 10, cursor: "pointer",
-                    background: platform === "instagram"
-                      ? "radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)"
-                      : ptStyle.bg,
-                    border: i === 0 ? "2px solid #111" : "2px solid transparent",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    opacity: i === 0 ? 1 : 0.5,
-                  }}>
-                    <svg width="28" height="28" viewBox="0 0 120 120">
-                      <PlatformLogoLarge slug={platform} />
-                    </svg>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* RIGHT — info + form */}
-            <div className="product-right">
-
-              {/* Title */}
-              <h1 style={{ fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em", marginBottom: 8 }}>
-                {activeGroup?.label} {data.platform.label}
-              </h1>
-
-              {/* Stars */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-                <div style={{ display: "flex", gap: 2 }}>
-                  {[1,2,3,4,5].map(s => (
-                    <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill="#22c55e">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-                <span style={{ fontSize: 13, fontWeight: 600, color: "#22c55e" }}>4.8/5</span>
-                <span style={{ fontSize: 13, color: "#888" }}>· 20 000 clients satisfaits</span>
-              </div>
-
-              {/* Description */}
-              <p style={{ fontSize: 14, color: "#555", lineHeight: 1.65, marginBottom: 16, maxWidth: 480 }}>
-                {seo.desc}
-              </p>
-
-              {/* Badges */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-                {seo.badges.map(b => (
-                  <span key={b} style={{ fontSize: 12, fontWeight: 600, padding: "5px 12px", borderRadius: 100, background: "#111", color: "#fff" }}>
-                    {b}
-                  </span>
-                ))}
-              </div>
-
-              {/* Price */}
-              <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 24 }}>
-                <span style={{ fontSize: 15, color: "#aaa", textDecoration: "line-through" }}>
-                  {formatPrice(currentOriginal)}
-                </span>
-                <span style={{ fontSize: 28, fontWeight: 800, color: "#111", letterSpacing: "-0.02em" }}>
-                  {formatPrice(currentPrice)}
-                </span>
-              </div>
-
-              {/* ── Form ── */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-                {/* 1 - Ciblage */}
-                <div>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#888", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                    1. Ciblage
-                  </label>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    {(["world" as const, ...(franceService ? ["france" as const] : []), ...(europeService ? ["europe" as const] : [])]).map(t => {
-                      const labels: Record<string, string> = { world: "🌍 Monde", france: "🇫🇷 Francophone", europe: "🇪🇺 Europe" };
-                      const active = targeting === t;
-                      return (
-                        <button key={t} onClick={() => { setTargeting(t); setSelectedQty((QUANTITIES[activeGroupSlug] ?? [100])[0]); }}
-                          style={{
-                            padding: "9px 16px", borderRadius: 100, fontSize: 14, fontWeight: active ? 700 : 500,
-                            border: `1.5px solid ${active ? "#111" : "#e0e0e0"}`,
-                            background: active ? "#111" : "#fff", color: active ? "#fff" : "#555",
-                            cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
-                          }}>
-                          {labels[t]}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 2 - Quantité en pills */}
-                <div>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#888", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                    2. Quantité
-                  </label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {quantities.map(q => {
-                      const active = selectedQty === q;
-                      return (
-                        <button key={q} onClick={() => setSelectedQty(q)}
-                          style={{
-                            padding: "8px 14px", borderRadius: 100, fontSize: 13, fontWeight: active ? 700 : 500,
-                            border: `1.5px solid ${active ? "#111" : "#e0e0e0"}`,
-                            background: active ? "#111" : "#fff", color: active ? "#fff" : "#555",
-                            cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
-                          }}>
-                          {formatQty(q)}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 3 - Lien */}
-                <div>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                    3. {seo.linkLabel}
-                  </label>
-                  <input type="text" value={link} onChange={e => setLink(e.target.value)}
-                    placeholder={seo.linkPlaceholder}
-                    style={{ width: "100%", padding: "12px 14px", border: "1.5px solid #e0e0e0", borderRadius: 10, fontSize: 14, color: "#111", outline: "none", fontFamily: "inherit", boxSizing: "border-box", transition: "border-color 0.15s" }}
-                    onFocus={e => (e.currentTarget.style.borderColor = "#111")}
-                    onBlur={e => (e.currentTarget.style.borderColor = "#e0e0e0")}
-                  />
-                  <p style={{ fontSize: 12, color: "#aaa", marginTop: 6 }}>Votre profil doit être public durant la livraison.</p>
-                </div>
-
-                {error && (
-                  <div style={{ background: "#fff5f5", border: "1.5px solid #fecaca", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#e84e4e" }}>
-                    {error}
-                  </div>
-                )}
-
-                {/* CTA */}
-                <button onClick={handleOrder} disabled={submitting || !canOrder}
-                  style={{
-                    width: "100%", padding: "16px", borderRadius: 100,
-                    background: canOrder && !submitting ? "#111" : "#e0e0e0",
-                    color: canOrder && !submitting ? "#fff" : "#999",
-                    fontWeight: 700, fontSize: 16, border: "none",
-                    cursor: canOrder && !submitting ? "pointer" : "not-allowed",
-                    fontFamily: "inherit", transition: "all 0.15s",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-                  }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-                  </svg>
-                  {submitting ? "Redirection…" : `Ajouter au panier${currentPrice > 0 ? ` · ${formatPrice(currentPrice)}` : ""}`}
-                </button>
-
-                {/* Trust badges */}
-                <div style={{ display: "flex", gap: 16, justifyContent: "center", paddingTop: 4, flexWrap: "wrap" }}>
-                  {["🔒 Paiement sécurisé", "⚡ Livraison rapide", "🛡️ Satisfait ou remboursé"].map(b => (
-                    <span key={b} style={{ fontSize: 12, color: "#888" }}>{b}</span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
+
+          {/* Title */}
+          <h1 style={{ fontSize: "clamp(30px, 6vw, 48px)", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.08, marginBottom: 18, textShadow: "0 2px 20px rgba(0,0,0,0.2)" }}>
+            Achetez des {activeGroup?.label}<br />{data.platform.label}
+          </h1>
+
+          {/* Trust pills row */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 36 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 100, padding: "7px 14px" }}>
+              {[1,2,3,4,5].map(s => <span key={s} style={{ color: "#fbbf24", fontSize: 12 }}>★</span>)}
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginLeft: 4 }}>4.9/5</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 100, padding: "7px 14px" }}>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.9)" }}>✓</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>6 000+ commandes</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(74,222,128,0.2)", backdropFilter: "blur(10px)", border: "1px solid rgba(74,222,128,0.4)", borderRadius: 100, padding: "7px 14px" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", boxShadow: "0 0 6px #4ade80" }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Service actif</span>
+            </div>
+          </div>
         </div>
+
+        {/* Tabs sticky below hero */}
+        <div style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 16px", display: "flex", gap: 2, overflowX: "auto", scrollbarWidth: "none" }}>
+            {data.groups.map(g => (
+              <button key={g.slug} onClick={() => setActiveGroupSlug(g.slug)}
+                style={{
+                  flexShrink: 0, padding: "15px 22px", fontSize: 14, fontWeight: 600,
+                  cursor: "pointer", fontFamily: "inherit", border: "none", background: "none",
+                  color: activeGroupSlug === g.slug ? "#fff" : "rgba(255,255,255,0.5)",
+                  borderBottom: activeGroupSlug === g.slug ? "2px solid #fff" : "2px solid transparent",
+                  transition: "all 0.15s", whiteSpace: "nowrap", letterSpacing: "0.01em",
+                }}>
+                {g.icon} {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main product card ── */}
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 16px 80px" }}>
+
+        {/* Trust line */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, marginBottom: 16, flexWrap: "wrap" }}>
+          {["Démarrage rapide", "Sans mot de passe", "Refill inclus", "Support 7j/7"].map((label, i, arr) => (
+            <span key={label} style={{ display: "flex", alignItems: "center", gap: 0 }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#64748b", padding: "0 10px" }}>✓ {label}</span>
+              {i < arr.length - 1 && <span style={{ color: "#cbd5e1", fontSize: 12 }}>·</span>}
+            </span>
+          ))}
+        </div>
+
+        {/* Order form card */}
+        <div style={{ background: "#fff", borderRadius: 20, border: "1.5px solid #e2e8f0", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
+
+          {/* Price header */}
+          <div style={{ padding: "20px 24px 18px", borderBottom: "1px solid #f1f5f9", background: "linear-gradient(to right, #fafbff, #fff)" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Prix total</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 36, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.03em", lineHeight: 1 }}>
+                {currentPrice > 0 ? formatPrice(currentPrice) : <span style={{ fontSize: 20, color: "#94a3b8", fontWeight: 600 }}>Choisissez une quantité</span>}
+              </span>
+              {currentOriginal > 0 && (
+                <span style={{ fontSize: 15, color: "#cbd5e1", textDecoration: "line-through" }}>
+                  {formatPrice(currentOriginal)}
+                </span>
+              )}
+              {currentPrice > 0 && (
+                <span style={{ fontSize: 12, fontWeight: 800, color: "#fff", background: "linear-gradient(135deg, #16a34a, #15803d)", borderRadius: 100, padding: "4px 11px", marginLeft: "auto" }}>
+                  -23%
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 22 }}>
+
+            {/* Ciblage */}
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                <span>🎯</span> Ciblage
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {(["world" as const, ...(franceService ? ["france" as const] : []), ...(europeService ? ["europe" as const] : [])]).map(t => {
+                  const labels: Record<string, string> = { world: "🌍 Monde", france: "🇫🇷 Francophone", europe: "🇪🇺 Europe" };
+                  const active = targeting === t;
+                  return (
+                    <button key={t} onClick={() => { setTargeting(t); setSelectedQty((QUANTITIES[activeGroupSlug] ?? [100])[0]); }}
+                      style={{
+                        padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: active ? 700 : 500,
+                        border: `1.5px solid ${active ? accent : "#e2e8f0"}`,
+                        background: active ? accent : "#f8fafc", color: active ? "#fff" : "#64748b",
+                        cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
+                        boxShadow: active ? `0 2px 12px ${accent}40` : "none",
+                      }}>
+                      {labels[t]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quantité */}
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span>📦</span> Quantité</span>
+                {selectedQty > 0 && <span style={{ fontSize: 12, color: accent, fontWeight: 700, background: `${accent}12`, padding: "2px 10px", borderRadius: 100 }}>{formatQty(selectedQty)} sélectionné·s</span>}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 8 }}>
+                {quantities.map((q, idx) => {
+                  const active = selectedQty === q;
+                  const isPopular = idx === 2;
+                  return (
+                    <div key={q} style={{ position: "relative" }}>
+                      {isPopular && <div style={{ position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)", fontSize: 9, fontWeight: 800, color: "#fff", background: accent, borderRadius: 100, padding: "2px 7px", whiteSpace: "nowrap", zIndex: 1, letterSpacing: "0.04em" }}>POPULAIRE</div>}
+                      <button onClick={() => setSelectedQty(q)}
+                        style={{
+                          width: "100%", padding: "11px 8px", borderRadius: 12, fontSize: 13, fontWeight: active ? 800 : 500,
+                          border: `1.5px solid ${active ? accent : isPopular ? `${accent}50` : "#e2e8f0"}`,
+                          background: active ? accent : "#f8fafc",
+                          color: active ? "#fff" : "#475569",
+                          cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s", textAlign: "center",
+                          boxShadow: active ? `0 2px 12px ${accent}40` : "none",
+                        }}>
+                        {formatQty(q)}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Lien */}
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                <span>🔗</span> {seo.linkLabel}
+              </div>
+              <input type="text" value={link} onChange={e => setLink(e.target.value)}
+                placeholder={seo.linkPlaceholder}
+                style={{ width: "100%", padding: "14px 16px", border: "1.5px solid #e2e8f0", borderRadius: 14, fontSize: 14, color: "#0f172a", outline: "none", fontFamily: "inherit", boxSizing: "border-box", background: "#f8fafc", transition: "border-color 0.15s, box-shadow 0.15s" }}
+                onFocus={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}20`; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.boxShadow = "none"; }}
+              />
+              <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}>
+                <span>🔒</span> Profil public requis pendant la livraison. Aucun mot de passe demandé.
+              </p>
+            </div>
+
+            {error && (
+              <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 12, padding: "12px 16px", fontSize: 13, color: "#dc2626", display: "flex", alignItems: "center", gap: 8 }}>
+                <span>⚠️</span> {error}
+              </div>
+            )}
+
+            {/* CTA */}
+            <button onClick={handleOrder} disabled={submitting || !canOrder}
+              style={{
+                width: "100%", padding: "18px", borderRadius: 16,
+                background: canOrder && !submitting
+                  ? `linear-gradient(135deg, ${accent} 0%, #4f46e5 100%)`
+                  : "#e2e8f0",
+                color: canOrder && !submitting ? "#fff" : "#94a3b8",
+                fontWeight: 800, fontSize: 16, border: "none",
+                cursor: canOrder && !submitting ? "pointer" : "not-allowed",
+                fontFamily: "inherit",
+                boxShadow: canOrder && !submitting ? `0 6px 24px ${accent}50` : "none",
+                transition: "all 0.2s",
+                letterSpacing: "0.01em",
+              }}>
+              {submitting ? "Redirection en cours…" : currentPrice > 0 ? `Commander · ${formatPrice(currentPrice)} →` : "Commander →"}
+            </button>
+
+            {/* Trust strip */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+              {[["🔒", "Stripe sécurisé"], ["⚡", "Démarrage <12h"], ["🛡️", "Remboursé si échoue"]].map(([icon, label]) => (
+                <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, background: "#f8fafc", border: "1px solid #f1f5f9", borderRadius: 12, padding: "10px 6px" }}>
+                  <span style={{ fontSize: 16 }}>{icon}</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textAlign: "center", lineHeight: 1.3 }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Description + badges */}
+        <div style={{ background: "#fff", borderRadius: 20, padding: "22px 24px", marginTop: 14, border: "1px solid #e2e8f0" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>À propos de ce service</div>
+          <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.75, margin: "0 0 16px" }}>
+            {seo.desc}
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {seo.badges.map((b, i) => {
+              const colors = [
+                { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+                { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+                { bg: "#fefce8", color: "#ca8a04", border: "#fde68a" },
+                { bg: "#fdf4ff", color: "#9333ea", border: "#e9d5ff" },
+              ];
+              const c = colors[i % colors.length];
+              return (
+                <span key={b} style={{ fontSize: 12, fontWeight: 700, padding: "5px 13px", borderRadius: 100, background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>
+                  {b}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 16px" }}>
 
         {/* ── SEO Content ─────────────────────────────────────────────────────── */}
         <div style={{ maxWidth: 860, margin: "0 auto", paddingBottom: 80 }}>
@@ -645,7 +687,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
                     </svg>
                   ))}
                 </div>
-                <span style={{ fontSize: 13, color: "#555", fontWeight: 600 }}>4.8/5 · 20 137 avis vérifiés</span>
+                <span style={{ fontSize: 13, color: "#555", fontWeight: 600 }}>4.9/5 · 6 000+ avis vérifiés</span>
               </div>
             </div>
             {/* Marquee carousel */}
@@ -676,7 +718,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
 
           {/* Confiance banner */}
           <div style={{ background: "#111", borderRadius: 16, padding: "28px 24px", marginBottom: 48, display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-around" }}>
-            {[["⚡", "Livraison en 5 min"], ["🔒", "Stripe sécurisé"], ["🛡️", "Garantie remboursement"], ["👥", "+50K clients"], ["💬", "Support 7j/7"]].map(([icon, label]) => (
+            {[["⚡", "Livraison en 20 min"], ["🔒", "Stripe sécurisé"], ["🛡️", "Garantie remboursement"], ["👥", "+50K clients"], ["💬", "Support 7j/7"]].map(([icon, label]) => (
               <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 18 }}>{icon}</span>
                 <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{label}</span>
