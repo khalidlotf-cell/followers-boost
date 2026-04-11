@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_SESSION_TOKEN = "fb_admin_ok";
+async function getAdminSessionToken(): Promise<string | null> {
+  const password = process.env.ADMIN_PASSWORD;
+  if (!password) return null;
+  const data = new TextEncoder().encode(`vyrlo_admin:${password}`);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Protection admin par token de session
   if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
-    const adminToken = req.cookies.get("admin_token")?.value;
-    if (adminToken !== ADMIN_SESSION_TOKEN) {
-      return NextResponse.redirect(new URL("/admin/login", req.url));
-    }
-  }
+    const token = req.cookies.get("admin_token")?.value ?? "";
+    const expected = await getAdminSessionToken();
 
-  // Protection API admin
-  if (pathname.startsWith("/api/admin") && pathname !== "/api/admin/auth") {
-    const adminToken = req.cookies.get("admin_token")?.value;
-    if (adminToken !== ADMIN_SESSION_TOKEN) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    if (!expected || token !== expected) {
+      return NextResponse.redirect(new URL("/admin/login", req.url));
     }
   }
 
@@ -25,5 +26,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*"],
 };
