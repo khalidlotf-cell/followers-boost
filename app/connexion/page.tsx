@@ -2,6 +2,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import Footer from "../boutique/_components/Footer";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -28,7 +29,8 @@ function ConnexionForm() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fafafa", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+    <div style={{ minHeight: "100vh", background: "#fafafa", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 36 }}>
@@ -78,6 +80,8 @@ function ConnexionForm() {
           <Link href="/inscription" style={{ color: "#111", fontWeight: 700, textDecoration: "none" }}>S&apos;inscrire</Link>
         </p>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

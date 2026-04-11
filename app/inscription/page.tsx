@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Footer from "../boutique/_components/Footer";
 
 export default function InscriptionPage() {
   const router = useRouter();
@@ -26,7 +27,8 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fafafa", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+    <div style={{ minHeight: "100vh", background: "#fafafa", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <Link href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
@@ -77,6 +79,8 @@ export default function InscriptionPage() {
           <Link href="/connexion" style={{ color: "#111", fontWeight: 700, textDecoration: "none" }}>Se connecter</Link>
         </p>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

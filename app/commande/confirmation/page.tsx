@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import Footer from "../../boutique/_components/Footer";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -33,7 +34,8 @@ function ConfirmationContent() {
   }, [orderId]);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#111118", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
+    <div style={{ minHeight: "100vh", background: "#111118", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
         {loading ? (
           <>
@@ -89,6 +91,8 @@ function ConfirmationContent() {
           </>
         )}
       </div>
+      </div>
+      <Footer />
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }`}</style>
     </div>
   );

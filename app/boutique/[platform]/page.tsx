@@ -3,6 +3,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../_components/Navbar"), { ssr: false });
+import Footer from "../_components/Footer";
 
 interface Service {
   id: number; name: string; ourRate: number;
@@ -744,6 +745,8 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
           </div>
         </div>
       </div>
+
+      <Footer />
 
       <style>{`
         @keyframes marquee-l {

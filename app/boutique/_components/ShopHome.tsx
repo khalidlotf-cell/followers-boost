@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Footer from "./Footer";
 const Navbar = dynamic(() => import("./Navbar"), { ssr: false });
 
 interface Platform {
@@ -474,50 +475,7 @@ export default function ShopHome() {
         </div>
       </section>
 
-      {/* ══ FOOTER ══ */}
-      <footer style={{ background: "#06040f", padding: "56px 0 32px" }}>
-        <div className="container">
-          <div className="footer-grid" style={{ display: "grid", gap: 40, marginBottom: 48 }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-                <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontWeight: 800, fontSize: 13, color: "#fff" }}>FB</span>
-                </div>
-                <span style={{ fontWeight: 800, fontSize: 16, color: "#fff" }}>Followers Boost</span>
-              </div>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 240 }}>
-                Services SMM premium pour booster votre présence sur les réseaux sociaux.
-              </p>
-            </div>
-            {[
-              { title: "Services", links: ["Instagram", "TikTok", "YouTube", "Facebook"] },
-              { title: "Compte", links: ["Connexion", "Inscription", "Mes commandes"] },
-              { title: "Aide", links: ["FAQ", "Contact", "CGU"] },
-            ].map(col => (
-              <div key={col.title}>
-                <div style={{ fontWeight: 700, fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.06em" }}>{col.title}</div>
-                {col.links.map(l => (
-                  <div key={l} style={{ marginBottom: 10 }}>
-                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", cursor: "pointer", transition: "color 0.15s" }}
-                      onMouseEnter={e => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
-                      onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
-                    >{l}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.2)" }}>© {new Date().getFullYear()} Followers Boost. Tous droits réservés.</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {["Visa", "MC", "CB", "PayPal"].map(m => (
-                <span key={m} style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "4px 9px", letterSpacing: "0.02em" }}>{m}</span>
-              ))}
-              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", marginLeft: 4 }}>· SSL</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <style>{`
         /* ── ANIMATIONS ── */
