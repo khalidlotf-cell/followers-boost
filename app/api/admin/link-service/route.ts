@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getPlatform } from "@/lib/catalog";
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 // GET /api/admin/link-service?platform=instagram&group=abonnes&q=france
 // Retourne les services du fournisseur correspondant à la plateforme+groupe, filtrés par recherche
 export async function GET(req: NextRequest) {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   const { searchParams } = req.nextUrl;
   const platformSlug = searchParams.get("platform") ?? "";
   const groupSlug    = searchParams.get("group") ?? "";
@@ -43,6 +47,9 @@ export async function GET(req: NextRequest) {
 // { serviceId, platformSlug, groupSlug, targeting }
 // Lie le service au type+ciblage (désactive les autres du même type+ciblage, active celui-ci)
 export async function POST(req: NextRequest) {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   try {
     const { serviceId, platformSlug, groupSlug, targeting } = await req.json();
 

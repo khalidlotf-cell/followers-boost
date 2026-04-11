@@ -26,44 +26,67 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
 
+    // Validation URL — protection XSS/injection
+    try {
+      const parsed = new URL(link);
+      if (!["http:", "https:"].includes(parsed.protocol)) {
+        return NextResponse.json({ error: "URL invalide" }, { status: 400 });
+      }
+    } catch {
+      return NextResponse.json({ error: "URL invalide" }, { status: 400 });
+    }
+
+    const qty = Math.floor(Number(quantity));
+    if (!Number.isFinite(qty) || qty <= 0) {
+      return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
+    }
+
     const service = await prisma.service.findUnique({ where: { id: serviceId, active: true } });
     if (!service) {
       return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
     }
 
-    if (quantity < service.min || quantity > service.max) {
+    if (qty < service.min || qty > service.max) {
       return NextResponse.json(
         { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
         { status: 400 }
       );
     }
 
-    const charge = (quantity / 1000) * service.ourRate;
-    const user = await prisma.user.findUnique({ where: { id: session.id } });
+    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(4));
 
-    if (!user || user.balance < charge) {
+    // Vérification et débit atomiques — évite la race condition sur le solde
+    let updatedUser;
+    try {
+      updatedUser = await prisma.user.update({
+        where: { id: session.id, balance: { gte: charge } },
+        data: { balance: { decrement: charge } },
+      });
+    } catch {
       return NextResponse.json({ error: "Solde insuffisant" }, { status: 402 });
     }
+    void updatedUser;
 
     // Envoyer la commande à JAP
-    const japRes = await japAddOrder(serviceId, link, quantity);
+    const japRes = await japAddOrder(serviceId, link, qty);
     if (!japRes.order) {
+      // Rembourser si JAP échoue
+      await prisma.user.update({
+        where: { id: session.id },
+        data: { balance: { increment: charge } },
+      });
       return NextResponse.json({ error: japRes.error || "Erreur JAP" }, { status: 502 });
     }
 
-    // Débiter le solde et créer la commande
+    // Créer la commande et la transaction
     await prisma.$transaction([
-      prisma.user.update({
-        where: { id: session.id },
-        data: { balance: { decrement: charge } },
-      }),
       prisma.order.create({
         data: {
           japOrderId: japRes.order,
           userId: session.id,
           serviceId,
           link,
-          quantity,
+          quantity: qty,
           charge,
           status: "PENDING",
         },

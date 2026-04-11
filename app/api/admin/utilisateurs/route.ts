@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 export async function GET() {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   try {
     const users = await prisma.user.findMany({
       select: {
@@ -18,6 +22,9 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   try {
     const { id, balance, role } = await req.json();
 

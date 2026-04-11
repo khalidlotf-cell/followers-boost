@@ -92,9 +92,13 @@ export default function AdminCommandesPage() {
                       <div className="text-xs" style={{ color: "#6b7280" }}>{order.service.category}</div>
                     </td>
                     <td className="px-4 py-3">
-                      <a href={order.link} target="_blank" rel="noopener noreferrer" className="text-xs truncate max-w-28 block hover:underline" style={{ color: "#a78bfa" }}>
-                        {order.link}
-                      </a>
+                      {/^https?:\/\//.test(order.link) ? (
+                        <a href={order.link} target="_blank" rel="noopener noreferrer" className="text-xs truncate max-w-28 block hover:underline" style={{ color: "#a78bfa" }}>
+                          {order.link}
+                        </a>
+                      ) : (
+                        <span className="text-xs truncate max-w-28 block" style={{ color: "#6b7280" }}>{order.link}</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-white text-xs">{order.quantity.toLocaleString()}</td>
                     <td className="px-4 py-3 text-white text-xs">${order.charge.toFixed(4)}</td>

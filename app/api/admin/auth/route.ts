@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const ADMIN_SESSION_TOKEN = "fb_admin_ok";
+import crypto from "crypto";
+import { getAdminSessionToken } from "@/lib/adminAuth";
 
 export async function POST(req: NextRequest) {
   const { password } = await req.json();
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  const expected = process.env.ADMIN_PASSWORD ?? "";
+  const provided = password ?? "";
+
+  // Comparaison résistante aux timing attacks
+  const match =
+    provided.length > 0 &&
+    expected.length > 0 &&
+    provided.length === expected.length &&
+    crypto.timingSafeEqual(Buffer.from(provided), Buffer.from(expected));
+
+  if (!match) {
     return NextResponse.json({ error: "Mot de passe incorrect" }, { status: 401 });
   }
 
+  const sessionToken = getAdminSessionToken();
   const res = NextResponse.json({ ok: true });
-  res.cookies.set("admin_token", ADMIN_SESSION_TOKEN, {
+  res.cookies.set("admin_token", sessionToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

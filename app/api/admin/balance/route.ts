@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 export async function GET() {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   try {
     const res = await fetch("https://morethanpanel.com/api/v2", {
       method: "POST",

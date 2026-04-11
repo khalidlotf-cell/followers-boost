@@ -85,5 +85,5 @@ function ConnexionForm() {
 }
 
 export default function ConnexionPage() {
-  return <Suspense><ConnexionForm /></Suspense>;
+  return <Suspense fallback={<div style={{ minHeight: "100vh", background: "#fafafa" }} />}><ConnexionForm /></Suspense>;
 }

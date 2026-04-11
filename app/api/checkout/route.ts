@@ -10,27 +10,46 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
 
+    // Validation URL
+    try {
+      const parsed = new URL(link);
+      if (!["http:", "https:"].includes(parsed.protocol)) {
+        return NextResponse.json({ error: "URL invalide" }, { status: 400 });
+      }
+    } catch {
+      return NextResponse.json({ error: "URL invalide" }, { status: 400 });
+    }
+
+    const qty = Math.floor(Number(quantity));
+    if (!Number.isFinite(qty) || qty <= 0) {
+      return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
+    }
+
     const service = await prisma.service.findUnique({ where: { id: serviceId, active: true } });
     if (!service) {
       return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
     }
 
-    if (quantity < service.min || quantity > service.max) {
+    if (qty < service.min || qty > service.max) {
       return NextResponse.json(
         { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
         { status: 400 }
       );
     }
 
-    const charge = parseFloat(((quantity / 1000) * service.ourRate).toFixed(2));
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!siteUrl) {
+      console.error("NEXT_PUBLIC_SITE_URL is not set");
+      return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
+    }
 
     // Créer la commande en attente de paiement
     const order = await prisma.order.create({
       data: {
         serviceId,
         link,
-        quantity,
+        quantity: qty,
         charge,
         status: "PENDING_PAYMENT",
         customerEmail: email || null,

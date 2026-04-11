@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "change-me-in-production";
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("JWT_SECRET environment variable is required");
+  return secret;
+}
 
 export interface Session {
   id: string;
@@ -10,12 +14,12 @@ export interface Session {
 }
 
 export function signToken(payload: Session): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
 }
 
 export function verifyToken(token: string): Session | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as Session;
+    return jwt.verify(token, getJwtSecret()) as Session;
   } catch {
     return null;
   }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { japGetServices } from "@/lib/jap";
+import { requireAdminAuth } from "@/lib/adminAuth";
 
 function getTargeting(name: string, category: string) {
   const text = (name + " " + category).toLowerCase();
@@ -10,6 +11,9 @@ function getTargeting(name: string, category: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const authError = await requireAdminAuth();
+  if (authError) return authError;
+
   try {
     const body = await req.json().catch(() => ({}));
     const markup: number = parseFloat(body.markup) || 2;
