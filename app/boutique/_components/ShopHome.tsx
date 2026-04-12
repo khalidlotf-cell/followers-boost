@@ -383,18 +383,20 @@ export default function ShopHome() {
                       </span>
                     </div>
 
-                    {/* Bottom: name + tags + arrow */}
+                    {/* Bottom: name + tags */}
                     <div>
                       <div style={{ fontWeight: 800, fontSize: isBig ? 26 : 20, color: "#0f172a", letterSpacing: "-0.02em", marginBottom: 10 }}>{p.label}</div>
-                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+                      <div className="bento-tags" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                         {tags.slice(0, isBig ? 4 : 3).map(t => (
                           <span key={t} style={{ fontSize: 11, fontWeight: 600, color: accent, background: `${accent}14`, borderRadius: 100, padding: "3px 10px" }}>{t}</span>
                         ))}
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, color: accent, fontSize: 13, fontWeight: 700 }}>
-                        Commander
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      </div>
+                    </div>
+
+                    {/* Hover reveal — Commander */}
+                    <div className="bento-reveal" style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accent}cc 100%)` }}>
+                      <span style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.07em", textTransform: "uppercase" }}>Commander</span>
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                   </Link>
                 );
@@ -769,6 +771,20 @@ export default function ShopHome() {
           opacity: 0;
         }
         .bento-cell:hover .bento-glow { opacity: 1; }
+        .bento-reveal {
+          position: absolute; bottom: 0; left: 0; right: 0;
+          padding: 13px 20px;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          color: #fff;
+          transform: translateY(100%);
+          transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border-radius: 0 0 18px 18px;
+        }
+        .bento-cell:hover .bento-reveal { transform: translateY(0); }
+        @media (max-width: 768px) {
+          .bento-reveal { transform: translateY(0); }
+          .bento-tags { display: none; }
+        }
 
         /* ── STEPS ── */
         .steps-grid { max-width: 860px; margin: 0 auto; }
