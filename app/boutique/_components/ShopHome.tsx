@@ -555,6 +555,49 @@ export default function ShopHome() {
         </div>
       </section>
 
+      {/* ══ CONTENU ÉDITORIAL SEO ══ */}
+      <section style={{ padding: "88px 0", background: "#fff", borderTop: "1px solid #f1f5f9" }}>
+        <div className="container" style={{ maxWidth: 900 }}>
+
+          <div style={{ marginBottom: 64 }}>
+            <h2 style={{ fontSize: "clamp(22px, 2.5vw, 32px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 16 }}>
+              Pourquoi acheter des followers sur les réseaux sociaux ?
+            </h2>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85, marginBottom: 14 }}>
+              Le nombre d&apos;abonnés d&apos;un profil est la première chose qu&apos;un visiteur regarde avant de décider de s&apos;abonner ou d&apos;acheter. Un compte avec 500 followers et un compte avec 20 000 followers proposant le même contenu n&apos;obtiendront pas le même taux de conversion — c&apos;est la preuve sociale. Les algorithmes de toutes les plateformes (Instagram, TikTok, YouTube) fonctionnent pareil : ils poussent les comptes qui grossissent vite vers de nouvelles audiences. Acheter des followers ou des likes, c&apos;est enclencher ce mécanisme et donner à votre compte la visibilité initiale qu&apos;il mérite.
+            </p>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85 }}>
+              Combiné à du contenu de qualité, un boost initial peut multiplier votre portée organique par 5 à 20 dans les semaines qui suivent. Des créateurs et des marques utilisent ces services régulièrement avant des lancements, des collaborations ou des campagnes pour maximiser leur impact dès le départ.
+            </p>
+          </div>
+
+          <div style={{ marginBottom: 64 }}>
+            <h2 style={{ fontSize: "clamp(22px, 2.5vw, 32px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 16 }}>
+              Comment fonctionne Vyrlo, le panel SMM français ?
+            </h2>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85, marginBottom: 14 }}>
+              Vyrlo est une plateforme SMM (Social Media Marketing) qui connecte votre commande à un réseau de services adaptés à chaque plateforme. Contrairement aux panels low-cost qui livrent en masse du jour au lendemain — ce qui alerterait immédiatement les algorithmes — Vyrlo livre de manière progressive sur plusieurs heures pour simuler une croissance naturelle.
+            </p>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85 }}>
+              Aucun mot de passe ne vous est demandé. Le service fonctionne uniquement à partir du lien public de votre profil ou de votre publication. Le paiement est sécurisé par Stripe (CB, Visa, Mastercard, PayPal) et la commande démarre automatiquement après validation. Le support est disponible 7j/7 en français pour tout suivi de commande.
+            </p>
+          </div>
+
+          <div>
+            <h2 style={{ fontSize: "clamp(22px, 2.5vw, 32px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 16 }}>
+              Acheter des abonnés Instagram, TikTok ou YouTube : ce qu&apos;il faut savoir
+            </h2>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85, marginBottom: 14 }}>
+              Chaque plateforme a ses propres mécaniques. Sur <strong>Instagram</strong>, les abonnés renforcent la crédibilité du profil et améliorent le taux de distribution des Reels. Sur <strong>TikTok</strong>, les vues initiales sont le facteur le plus déterminant pour passer sur le FYP (For You Page). Sur <strong>YouTube</strong>, les abonnés et les vues permettent d&apos;atteindre les seuils de monétisation plus rapidement et d&apos;améliorer le référencement des vidéos dans les recommandations.
+            </p>
+            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85 }}>
+              Sur <strong>Spotify</strong>, les streams et auditeurs mensuels déclenchent les playlists algorithmiques (Discover Weekly, Release Radar) qui sont le vrai moteur de croissance pour les artistes. Sur <strong>Facebook</strong> et <strong>Threads</strong>, la présence d&apos;abonnés crédibilise les pages professionnelles auprès des prospects et partenaires. Vyrlo propose des services spécifiques à chaque plateforme, à partir de <strong>8,90 €</strong>.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
       {/* ══ CTA BANNER — gradient ══ */}
       <section style={{ padding: "96px 0", background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 300, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
