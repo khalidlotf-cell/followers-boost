@@ -782,8 +782,9 @@ export default function ShopHome() {
         }
         .bento-cell:hover .bento-reveal { transform: translateY(0); }
         @media (max-width: 768px) {
-          .bento-reveal { transform: translateY(0); }
-          .bento-tags { display: none; }
+          .bento-reveal { transform: translateY(0) !important; }
+          .bento-tags { display: none !important; }
+          .bento-cell { padding-bottom: 56px; }
         }
 
         /* ── STEPS ── */
