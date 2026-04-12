@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PlatformPageClient from "./PlatformPageClient";
 
-const BASE = "https://vyrlo.com";
+const BASE = "https://vyrlo.fr";
 
 const PLATFORM_META: Record<
   string,

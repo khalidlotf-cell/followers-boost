@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { createWhopCheckout } from "@/lib/whop";
+import { stripe } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,7 +39,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(4));
+    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    if (!siteUrl) {
+      return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
+    }
 
     // Créer la commande en attente de paiement
     const order = await prisma.order.create({
@@ -50,28 +54,45 @@ export async function POST(req: NextRequest) {
         quantity: qty,
         charge,
         status: "PENDING_PAYMENT",
+        customerEmail: session.email,
       },
     });
 
-    const origin = process.env.NEXT_PUBLIC_SITE_URL || req.headers.get("origin");
-    if (!origin) {
-      await prisma.order.delete({ where: { id: order.id } });
-      return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
-    }
-    const whop = await createWhopCheckout({
-      orderId: order.id,
-      amountUsd: charge,
-      redirectUrl: `${origin}/commande/confirmation?id=${order.id}`,
-      email: session.email,
+    // Créer la session Stripe Checkout
+    const stripeSession = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      customer_email: session.email,
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: service.name,
+              description: `${qty.toLocaleString("fr-FR")} unités · ${link}`,
+            },
+            unit_amount: Math.round(charge * 100),
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        orderId: order.id,
+        serviceId: String(serviceId),
+        link,
+        quantity: String(qty),
+        userId: session.id,
+      },
+      success_url: `${siteUrl}/commande/confirmation?id=${order.id}`,
+      cancel_url: `${siteUrl}/commande/annulation`,
     });
 
-    if (!whop.purchase_url) {
-      // Annuler la commande si Whop échoue
-      await prisma.order.delete({ where: { id: order.id } });
-      return NextResponse.json({ error: "Erreur lors de la création du paiement" }, { status: 502 });
-    }
+    await prisma.order.update({
+      where: { id: order.id },
+      data: { stripeSessionId: stripeSession.id },
+    });
 
-    return NextResponse.json({ checkoutUrl: whop.purchase_url, orderId: order.id });
+    return NextResponse.json({ url: stripeSession.url });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Erreur serveur";
     const status = msg === "Non authentifié" ? 401 : 500;

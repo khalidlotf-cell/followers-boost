@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/dashboard/", "/api/"],
       },
     ],
-    sitemap: "https://vyrlo.com/sitemap.xml",
-    host: "https://vyrlo.com",
+    sitemap: "https://vyrlo.fr/sitemap.xml",
+    host: "https://vyrlo.fr",
   };
 }

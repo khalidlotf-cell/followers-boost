@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = "https://vyrlo.com";
+const BASE = "https://vyrlo.fr";
 
 const PLATFORMS = [
   "instagram",

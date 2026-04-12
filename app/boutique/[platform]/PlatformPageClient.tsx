@@ -318,7 +318,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   const activeGroup = data?.groups.find(g => g.slug === activeGroupSlug);
   useEffect(() => {
     if (data && activeGroup) {
-      document.title = `${activeGroup.label} ${data.platform.label} · FollowersBoost`;
+      document.title = `${activeGroup.label} ${data.platform.label} · Vyrlo`;
     }
   }, [data, activeGroup]);
 

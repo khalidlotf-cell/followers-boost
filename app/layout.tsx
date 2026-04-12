@@ -8,7 +8,7 @@ const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const BASE = "https://vyrlo.com";
+const BASE = "https://vyrlo.fr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
