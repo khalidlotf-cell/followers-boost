@@ -2,8 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signToken, setAuthCookie } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
+  // Rate limiting : 5 tentatives de connexion / 15 minutes par IP (anti brute force)
+  const ip = getClientIp(req);
+  if (!checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives. Réessayez dans 15 minutes." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { email, password } = await req.json();
 

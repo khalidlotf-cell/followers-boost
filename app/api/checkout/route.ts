@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
+  // Rate limiting : 10 tentatives de checkout / 10 minutes par IP
+  const ip = getClientIp(req);
+  if (!checkRateLimit(`checkout:${ip}`, 10, 10 * 60 * 1000)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives. Réessayez dans quelques minutes." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { serviceId, link, quantity, email } = await req.json();
 

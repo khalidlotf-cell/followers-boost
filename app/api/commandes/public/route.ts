@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
 
   const order = await prisma.order.findUnique({
     where: { id },
-    select: { id: true, status: true, quantity: true, charge: true, createdAt: true, service: { select: { name: true } } },
+    // charge (montant payé) intentionnellement exclu — données financières non publiques
+    select: { id: true, status: true, quantity: true, createdAt: true, service: { select: { name: true } } },
   });
 
   if (!order) return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });

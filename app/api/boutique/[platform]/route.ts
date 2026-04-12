@@ -16,6 +16,22 @@ export async function GET(
   const allActive = await prisma.service.findMany({
     where: { active: true },
     orderBy: [{ ourRate: "asc" }],
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      category: true,
+      ourRate: true,
+      min: true,
+      max: true,
+      refill: true,
+      cancel: true,
+      targeting: true,
+      platformSlug: true,
+      groupSlug: true,
+      active: true,
+      // rate (prix fournisseur) intentionnellement exclu
+    },
   });
 
   // Grouper selon les types définis dans le catalogue
