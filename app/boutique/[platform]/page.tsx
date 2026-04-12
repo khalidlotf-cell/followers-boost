@@ -59,8 +59,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!meta) {
     return {
-      title: "Services SMM",
-      description: "Achetez des services SMM premium sur Vyrlo.",
+      title: "Services Vyrlo",
+      description: "Achetez des followers, likes et vues sur Vyrlo.",
     };
   }
 

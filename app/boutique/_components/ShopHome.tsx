@@ -251,13 +251,14 @@ function ComparatifSection() {
   );
 }
 
-export default function ShopHome() {
-  const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function ShopHome({ initialPlatforms = [] }: { initialPlatforms?: Platform[] }) {
+  const [platforms, setPlatforms] = useState<Platform[]>(initialPlatforms);
+  const [loading, setLoading] = useState(initialPlatforms.length === 0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    if (initialPlatforms.length > 0) return; // déjà chargé côté serveur
     fetch("/api/boutique")
       .then(r => r.json())
       .then(d => setPlatforms(Array.isArray(d) ? d : []))
@@ -575,10 +576,10 @@ export default function ShopHome() {
 
           <div style={{ marginBottom: 64 }}>
             <h2 style={{ fontSize: "clamp(22px, 2.5vw, 32px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.025em", marginBottom: 16 }}>
-              Comment fonctionne Vyrlo, le panel SMM français ?
+              Comment fonctionne Vyrlo ?
             </h2>
             <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85, marginBottom: 14 }}>
-              Vyrlo est une plateforme SMM (Social Media Marketing) qui connecte votre commande à un réseau de services adaptés à chaque plateforme. Contrairement aux panels low-cost qui livrent en masse du jour au lendemain — ce qui alerterait immédiatement les algorithmes — Vyrlo livre de manière progressive sur plusieurs heures pour simuler une croissance naturelle.
+              Vyrlo connecte votre commande à des services de croissance adaptés à chaque plateforme. Contrairement aux offres bas de gamme qui livrent en masse du jour au lendemain — ce qui alerterait immédiatement les algorithmes — Vyrlo livre de manière progressive sur plusieurs heures pour une croissance naturelle.
             </p>
             <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.85 }}>
               Aucun mot de passe ne vous est demandé. Le service fonctionne uniquement à partir du lien public de votre profil ou de votre publication. Le paiement est sécurisé par Stripe (CB, Visa, Mastercard, PayPal) et la commande démarre automatiquement après validation. Le support est disponible 7j/7 en français pour tout suivi de commande.

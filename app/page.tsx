@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import { CATALOG } from "@/lib/catalog";
 import ShopWrapper from "./boutique/_components/ShopWrapper";
 
 const faqSchema = {
@@ -75,7 +77,28 @@ const serviceSchema = {
   },
 };
 
-export default function Home() {
+async function getPlatforms() {
+  try {
+    const services = await prisma.service.findMany({
+      where: { active: true },
+      select: { category: true, name: true },
+    });
+    return CATALOG.map(platform => {
+      const count = services.filter(s => {
+        const haystack = (s.category + " " + s.name).toLowerCase();
+        return haystack.includes(platform.slug) ||
+          haystack.includes(platform.label.toLowerCase().split("/")[0].trim());
+      }).length;
+      return { ...platform, count, services: undefined };
+    }).filter(p => p.count > 0);
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const initialPlatforms = await getPlatforms();
+
   return (
     <>
       <script
@@ -86,7 +109,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
-      <ShopWrapper />
+      <ShopWrapper initialPlatforms={initialPlatforms} />
     </>
   );
 }

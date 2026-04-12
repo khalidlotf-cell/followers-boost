@@ -53,7 +53,7 @@ export default function Footer() {
               <Image src="/logo-dark.png" alt="Vyrlo" width={110} height={44} style={{ objectFit: "contain" }} />
             </div>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, maxWidth: 240 }}>
-              Services SMM premium pour booster votre présence sur les réseaux sociaux.
+              Développez votre audience sur les réseaux sociaux rapidement et en toute sécurité.
             </p>
           </div>
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Vyrlo est une plateforme française qui aide les créateurs, artistes et entreprises à développer leur audience sur les réseaux sociaux. Followers et likes 100% sécurisés, livraison rapide.",
   alternates: { canonical: "https://vyrlo.fr/a-propos" },
   openGraph: {
-    title: "À propos de Vyrlo — Services SMM Français",
+    title: "À propos de Vyrlo — Développez votre audience",
     description:
       "Vyrlo aide les créateurs et entreprises à développer leur audience sur Instagram, TikTok, YouTube, Spotify et plus. Plateforme française, support 7j/7.",
     url: "https://vyrlo.fr/a-propos",

@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Vyrlo — Services SMM Premium",
+        alt: "Vyrlo — Followers, Likes, Vues",
       },
     ],
     locale: "fr_FR",
