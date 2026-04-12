@@ -65,8 +65,8 @@ model Transaction {
   amount    Float
   type      String
   status    String   @default("PENDING")
-  whopId    String?
-  note      String?
+  stripePaymentId String?
+  note            String?
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 
