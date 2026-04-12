@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "../boutique/_components/Footer";
 
 export default function ContactPage() {
@@ -23,11 +24,8 @@ export default function ContactPage() {
       {/* Simple header */}
       <header style={{ borderBottom: "1px solid #f0f0f0", padding: "16px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none" }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 12 }}>V</span>
-            </div>
-            <span style={{ fontWeight: 800, fontSize: 16, color: "#111" }}>Vyrlo</span>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Image src="/logo-dark.png" alt="Vyrlo" width={100} height={40} style={{ objectFit: "contain" }} />
           </Link>
           <Link href="/" style={{ fontSize: 14, color: "#888", textDecoration: "none" }}>← Retour</Link>
         </div>

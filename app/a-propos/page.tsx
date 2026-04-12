@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "../boutique/_components/Footer";
 
 export const metadata: Metadata = {
@@ -49,8 +50,8 @@ export default function AboutPage() {
     <div style={{ background: "#fff", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <header style={{ borderBottom: "1px solid #f0f0f0", padding: "16px 24px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ fontWeight: 800, fontSize: 18, color: "#111", textDecoration: "none" }}>
-            Vyrlo
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Image src="/logo-dark.png" alt="Vyrlo" width={100} height={40} style={{ objectFit: "contain" }} />
           </Link>
           <Link href="/" style={{ fontSize: 14, color: "#888", textDecoration: "none" }}>← Accueil</Link>
         </div>
