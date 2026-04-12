@@ -96,9 +96,6 @@ export default function Footer() {
         @media (max-width: 768px) {
           .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
         }
-        @media (max-width: 480px) {
-          .footer-grid { grid-template-columns: 1fr !important; }
-        }
       `}</style>
     </footer>
   );
