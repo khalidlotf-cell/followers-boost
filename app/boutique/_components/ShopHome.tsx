@@ -436,6 +436,9 @@ export default function ShopHome() {
         </div>
       </section>
 
+      {/* ══ COMPARATIF ══ */}
+      <ComparatifSection />
+
       {/* ══ GUARANTEES — editorial list ══ */}
       <section style={{ padding: "88px 0", background: "#fff", borderTop: "1px solid #f1f5f9" }}>
         <div className="container">
@@ -525,9 +528,6 @@ export default function ShopHome() {
           </div>
         </div>
       </section>
-
-      {/* ══ COMPARATIF ══ */}
-      <ComparatifSection />
 
       {/* ══ FAQ ══ */}
       <section id="faq" style={{ padding: "88px 0", background: "#fafbff" }}>
