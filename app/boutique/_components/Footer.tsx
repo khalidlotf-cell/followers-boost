@@ -26,9 +26,10 @@ const COLS = [
   {
     title: "Aide",
     links: [
-      { label: "FAQ",     href: "/#faq" },
-      { label: "Contact", href: "/contact" },
-      { label: "CGU",     href: "/cgu" },
+      { label: "FAQ",        href: "/faq" },
+      { label: "À propos",   href: "/a-propos" },
+      { label: "Contact",    href: "/contact" },
+      { label: "CGU",        href: "/cgu" },
     ],
   },
 ];

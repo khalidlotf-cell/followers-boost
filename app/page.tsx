@@ -54,7 +54,7 @@ const serviceSchema = {
   provider: {
     "@type": "Organization",
     name: "Vyrlo",
-    url: "https://vyrlo.com",
+    url: "https://vyrlo.fr",
   },
   description:
     "Vyrlo propose des services d'achat de followers, likes, vues et commentaires pour les réseaux sociaux : Instagram, TikTok, YouTube, Facebook, Spotify, X (Twitter) et Threads. Livraison automatique en 20 minutes, sans mot de passe, avec support 7j/7.",

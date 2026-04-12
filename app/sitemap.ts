@@ -31,28 +31,40 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...platformUrls,
     {
+      url: `${BASE}/faq`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE}/a-propos`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+    {
+      url: `${BASE}/contact`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+    {
       url: `${BASE}/connexion`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.4,
+      priority: 0.3,
     },
     {
       url: `${BASE}/inscription`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.4,
+      priority: 0.3,
     },
     {
       url: `${BASE}/cgu`,
       lastModified: now,
       changeFrequency: "yearly",
       priority: 0.2,
-    },
-    {
-      url: `${BASE}/contact`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
     },
   ];
 }
