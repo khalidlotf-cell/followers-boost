@@ -13,11 +13,11 @@ const BASE = "https://vyrlo.fr";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
   title: {
-    default: "Vyrlo — Acheter des followers, likes et vues | Services SMM",
+    default: "Vyrlo — Acheter des followers, likes et vues",
     template: "%s | Vyrlo",
   },
   description:
-    "Vyrlo est le service SMM premium pour booster votre présence sur Instagram, TikTok, YouTube, Facebook et Spotify. Achetez des followers, likes et vues — livraison en 20 min, sans mot de passe.",
+    "Vyrlo vous aide à développer votre audience sur Instagram, TikTok, YouTube, Facebook et Spotify. Achetez des followers, likes et vues — livraison rapide, sans mot de passe.",
   keywords: [
     "acheter followers instagram",
     "acheter abonnés tiktok",
@@ -28,22 +28,21 @@ export const metadata: Metadata = {
     "acheter followers threads",
     "acheter followers twitter",
     "acheter abonnés facebook",
-    "services SMM france",
     "boost réseaux sociaux",
-    "panel SMM",
-    "panel SMM français",
-    "acheter engagement instagram",
     "augmenter abonnés instagram",
+    "gagner des abonnés instagram",
     "booster tiktok",
+    "booster youtube",
+    "augmenter audience instagram",
     "vyrlo",
   ],
   alternates: {
     canonical: BASE,
   },
   openGraph: {
-    title: "Vyrlo — Services SMM Premium | Followers, Likes, Vues",
+    title: "Vyrlo — Followers, Likes, Vues pour vos réseaux",
     description:
-      "Boostez votre présence sur les réseaux sociaux avec Vyrlo. Followers, likes, vues pour Instagram, TikTok, YouTube — livraison en 20 min, à partir de 8,90 €.",
+      "Développez votre audience sur les réseaux sociaux avec Vyrlo. Followers, likes, vues pour Instagram, TikTok, YouTube — livraison en 20 min, à partir de 8,90 €.",
     url: BASE,
     siteName: "Vyrlo",
     images: [
@@ -59,9 +58,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vyrlo — Services SMM Premium",
+    title: "Vyrlo — Followers, Likes, Vues",
     description:
-      "Followers, likes, vues pour Instagram, TikTok, YouTube — livraison en 20 min.",
+      "Développez votre audience sur Instagram, TikTok, YouTube — livraison en 20 min.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -85,7 +84,7 @@ const organizationSchema = {
   url: BASE,
   logo: `${BASE}/logo-dark.png`,
   description:
-    "Vyrlo est une plateforme française de services SMM (Social Media Marketing) permettant d'acheter des followers, likes et vues pour Instagram, TikTok, YouTube, Facebook, Spotify et Threads. Livraison automatique, sans mot de passe, à partir de 8,90 €.",
+    "Vyrlo est une plateforme française permettant de développer son audience sur Instagram, TikTok, YouTube, Facebook, Spotify et Threads. Followers, likes et vues — livraison automatique, sans mot de passe, à partir de 8,90 €.",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
@@ -99,14 +98,14 @@ const organizationSchema = {
   ],
 };
 
-/** WholesaleStore — renforce l'entité commerciale (inspiré agence-boostfr.co) */
+/** WholesaleStore — renforce l'entité commerciale */
 const wholesaleSchema = {
   "@context": "https://schema.org",
   "@type": "Store",
-  name: "Vyrlo — Panel SMM",
+  name: "Vyrlo",
   url: BASE,
   description:
-    "Vyrlo est le panel SMM français pour acheter des followers, likes et vues sur Instagram, TikTok, YouTube, Facebook, Spotify, X et Threads. Livraison automatique, à partir de 8,90 €, support 7j/7.",
+    "Vyrlo est la plateforme française pour développer son audience sur Instagram, TikTok, YouTube, Facebook, Spotify, X et Threads. Livraison automatique, à partir de 8,90 €, support 7j/7.",
   openingHours: "Mo-Su 00:00-23:59",
   priceRange: "€€",
   areaServed: "FR",
@@ -120,7 +119,7 @@ const websiteSchema = {
   name: "Vyrlo",
   url: BASE,
   description:
-    "Service SMM premium — achetez des followers, likes et vues pour les réseaux sociaux.",
+    "Développez votre audience — achetez des followers, likes et vues pour vos réseaux sociaux.",
   potentialAction: {
     "@type": "SearchAction",
     target: {

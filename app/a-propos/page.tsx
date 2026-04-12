@@ -3,14 +3,14 @@ import Link from "next/link";
 import Footer from "../boutique/_components/Footer";
 
 export const metadata: Metadata = {
-  title: "À propos de Vyrlo — Services SMM Français depuis 2024",
+  title: "À propos de Vyrlo — Développez votre audience en France",
   description:
-    "Vyrlo est une plateforme française de services SMM. Découvrez notre mission : aider les créateurs, artistes et entreprises à développer leur présence sur les réseaux sociaux en toute sécurité.",
+    "Vyrlo est une plateforme française qui aide les créateurs, artistes et entreprises à développer leur audience sur les réseaux sociaux. Followers et likes 100% sécurisés, livraison rapide.",
   alternates: { canonical: "https://vyrlo.fr/a-propos" },
   openGraph: {
     title: "À propos de Vyrlo — Services SMM Français",
     description:
-      "Vyrlo aide les créateurs et entreprises à booster leur présence sur Instagram, TikTok, YouTube, Spotify et plus. Plateforme française, support 7j/7.",
+      "Vyrlo aide les créateurs et entreprises à développer leur audience sur Instagram, TikTok, YouTube, Spotify et plus. Plateforme française, support 7j/7.",
     url: "https://vyrlo.fr/a-propos",
     siteName: "Vyrlo",
     locale: "fr_FR",
@@ -63,7 +63,7 @@ export default function AboutPage() {
             À propos
           </p>
           <h1 style={{ fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: "#0a0a0a", letterSpacing: "-0.03em", lineHeight: 1.15, marginBottom: 20 }}>
-            Vyrlo, le panel SMM<br />made in France
+            Vyrlo, la plateforme française<br />pour booster vos réseaux
           </h1>
           <p style={{ fontSize: 17, color: "#64748b", lineHeight: 1.8, maxWidth: 620, margin: "0 auto" }}>
             Vyrlo est une plateforme française dédiée aux créateurs de contenu, artistes et entreprises qui veulent développer leur présence sur les réseaux sociaux rapidement, en toute sécurité et sans risque.
@@ -91,7 +91,7 @@ export default function AboutPage() {
             Les réseaux sociaux sont devenus incontournables pour les créateurs, les artistes et les marques. Mais développer une audience prend du temps — souvent des années. Vyrlo permet d&apos;accélérer cette croissance en apportant la crédibilité sociale nécessaire pour déclencher les algorithmes.
           </p>
           <p style={{ fontSize: 16, color: "#475569", lineHeight: 1.85 }}>
-            Notre plateforme propose des services pour Instagram, TikTok, YouTube, Facebook, Spotify, X (Twitter) et Threads. Chaque commande est traitée avec soin, livrée progressivement, et garantie par notre support disponible 7 jours sur 7.
+            Vyrlo propose des followers, likes et vues pour Instagram, TikTok, YouTube, Facebook, Spotify, X (Twitter) et Threads. Chaque commande est traitée avec soin, livrée progressivement et garantie par notre support disponible 7 jours sur 7.
           </p>
         </section>
 

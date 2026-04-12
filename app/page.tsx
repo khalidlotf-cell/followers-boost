@@ -50,14 +50,14 @@ const faqSchema = {
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  name: "Services SMM Vyrlo",
+  name: "Services Vyrlo — Followers, Likes, Vues",
   provider: {
     "@type": "Organization",
     name: "Vyrlo",
     url: "https://vyrlo.fr",
   },
   description:
-    "Vyrlo propose des services d'achat de followers, likes, vues et commentaires pour les réseaux sociaux : Instagram, TikTok, YouTube, Facebook, Spotify, X (Twitter) et Threads. Livraison automatique en 20 minutes, sans mot de passe, avec support 7j/7.",
+    "Vyrlo vous permet de développer votre audience sur les réseaux sociaux : Instagram, TikTok, YouTube, Facebook, Spotify, X (Twitter) et Threads. Followers, likes, vues — livraison en 20 minutes, sans mot de passe, support 7j/7.",
   areaServed: "FR",
   availableLanguage: "French",
   offers: {
