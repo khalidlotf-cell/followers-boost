@@ -3,6 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/lib/useCart";
+import dynamic from "next/dynamic";
+const CartDrawer = dynamic(() => import("./CartDrawer"), { ssr: false });
 
 interface Platform { slug: string; label: string; emoji: string; count: number }
 
@@ -64,7 +67,9 @@ export default function Navbar() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const router = useRouter();
+  const { count: cartCount } = useCart();
 
   useEffect(() => {
     fetch("/api/auth/me").then(r => r.json()).then(d => setUser(d.user));
@@ -114,6 +119,16 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
+
+          {/* Cart button */}
+          <button onClick={() => setCartOpen(true)} style={{ position: "relative", width: 38, height: 38, borderRadius: 10, border: "1.5px solid #e8e8e8", background: "#f8f8f8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+            🛒
+            {cartCount > 0 && (
+              <span style={{ position: "absolute", top: -6, right: -6, background: "#7c3aed", color: "#fff", fontSize: 10, fontWeight: 800, borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #fff" }}>
+                {cartCount > 9 ? "9+" : cartCount}
+              </span>
+            )}
+          </button>
 
           {/* Desktop auth */}
           <div className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
@@ -208,6 +223,8 @@ export default function Navbar() {
           </div>
         )}
       </nav>
+
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
 
       <style>{`
         .nav-desktop { display: flex !important; }

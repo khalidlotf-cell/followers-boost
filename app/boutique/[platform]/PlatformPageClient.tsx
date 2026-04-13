@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../_components/Navbar"), { ssr: false });
 import Footer from "../_components/Footer";
+import { addToCart } from "@/lib/useCart";
 
 interface Service {
   id: number; name: string; ourRate: number;
@@ -192,8 +193,8 @@ const SEO: Record<string, SeoData> = {
       { q: "Et si je ne suis pas satisfait ?", a: "Contactez le support avec votre numéro de commande. On vérifie et on arrange ça : refill ou remboursement selon la situation." },
       { q: "C'est quoi la différence entre Monde et France ?", a: "Le ciblage Monde envoie des profils internationaux. Le ciblage France envoie des profils francophones qui comprennent et interagissent avec votre contenu local." },
     ],
-    linkLabel: "Nom d'utilisateur ou lien du profil",
-    linkPlaceholder: "@votrenom ou https://...",
+    linkLabel: "Lien du profil",
+    linkPlaceholder: "https://www.instagram.com/votrenom/",
   },
   likes: {
     desc: "Dans les 30 premières minutes après une publication, l'algorithme mesure l'engagement. Plus vous avez de likes vite, plus votre post est distribué. C'est mécanique, et on s'en occupe.",
@@ -272,7 +273,7 @@ const DEFAULT_SEO: SeoData = {
     { q: "Mon compte est-il en sécurité ?", a: "Oui. On ne demande jamais votre mot de passe. On ne peut pas accéder à votre compte." },
   ],
   linkLabel: "Lien du profil ou de la publication",
-  linkPlaceholder: "https://...",
+  linkPlaceholder: "https://www.example.com/votrenom/",
 };
 
 export default function PlatformPage({ params }: { params: Promise<{ platform: string }> }) {
@@ -287,6 +288,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   const [link, setLink] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [addedToCart, setAddedToCart] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
 
@@ -363,6 +365,22 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
       window.location.href = d.url;
     } catch { setError("Erreur réseau, réessayez."); }
     finally { setSubmitting(false); }
+  }
+
+  function handleAddToCart() {
+    if (!canOrder) return;
+    addToCart({
+      serviceId: matchedService!.id,
+      serviceName: matchedService!.name ?? "",
+      platform,
+      platformLabel: data!.platform.label,
+      groupLabel: activeGroup?.label ?? "",
+      link: link.trim(),
+      quantity: selectedQty,
+      price: currentPrice,
+    });
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   }
 
   if (loading) return (
@@ -599,22 +617,35 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
             )}
 
             {/* CTA */}
-            <button onClick={handleOrder} disabled={submitting || !canOrder}
-              style={{
-                width: "100%", padding: "18px", borderRadius: 16,
-                background: canOrder && !submitting
-                  ? `linear-gradient(135deg, ${accent} 0%, #4f46e5 100%)`
-                  : "#e2e8f0",
-                color: canOrder && !submitting ? "#fff" : "#94a3b8",
-                fontWeight: 800, fontSize: 16, border: "none",
-                cursor: canOrder && !submitting ? "pointer" : "not-allowed",
-                fontFamily: "inherit",
-                boxShadow: canOrder && !submitting ? `0 6px 24px ${accent}50` : "none",
-                transition: "all 0.2s",
-                letterSpacing: "0.01em",
-              }}>
-              {submitting ? "Redirection en cours…" : currentPrice > 0 ? `Commander · ${formatPrice(currentPrice)} →` : "Commander →"}
-            </button>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <button onClick={handleAddToCart} disabled={!canOrder || addedToCart}
+                style={{
+                  width: "100%", padding: "16px", borderRadius: 14,
+                  background: addedToCart ? "#16a34a" : canOrder ? "#f8fafc" : "#f1f5f9",
+                  color: addedToCart ? "#fff" : canOrder ? accent : "#94a3b8",
+                  fontWeight: 700, fontSize: 15, border: `2px solid ${addedToCart ? "#16a34a" : canOrder ? accent : "#e2e8f0"}`,
+                  cursor: canOrder && !addedToCart ? "pointer" : "not-allowed",
+                  fontFamily: "inherit", transition: "all 0.2s", letterSpacing: "0.01em",
+                }}>
+                {addedToCart ? "✓ Ajouté au panier !" : "🛒 Ajouter au panier"}
+              </button>
+
+              <button onClick={handleOrder} disabled={submitting || !canOrder}
+                style={{
+                  width: "100%", padding: "16px", borderRadius: 14,
+                  background: canOrder && !submitting
+                    ? `linear-gradient(135deg, ${accent} 0%, #4f46e5 100%)`
+                    : "#e2e8f0",
+                  color: canOrder && !submitting ? "#fff" : "#94a3b8",
+                  fontWeight: 800, fontSize: 15, border: "none",
+                  cursor: canOrder && !submitting ? "pointer" : "not-allowed",
+                  fontFamily: "inherit",
+                  boxShadow: canOrder && !submitting ? `0 4px 16px ${accent}50` : "none",
+                  transition: "all 0.2s", letterSpacing: "0.01em",
+                }}>
+                {submitting ? "Redirection…" : currentPrice > 0 ? `Commander · ${formatPrice(currentPrice)} →` : "Commander →"}
+              </button>
+            </div>
 
             {/* Trust strip */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>

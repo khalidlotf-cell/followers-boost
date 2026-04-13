@@ -20,42 +20,38 @@ export async function POST(req: NextRequest) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const orderId = session.metadata?.orderId;
 
-    if (!orderId) return NextResponse.json({ error: "No orderId" }, { status: 400 });
+    // Supporte commande simple (orderId) et panier (orderIds)
+    const raw = session.metadata?.orderIds ?? session.metadata?.orderId ?? "";
+    const orderIds = raw.split(",").map(s => s.trim()).filter(Boolean);
 
-    const order = await prisma.order.findUnique({ where: { id: orderId } });
-    if (!order || order.status !== "PENDING_PAYMENT") {
-      return NextResponse.json({ ok: true }); // déjà traité
-    }
+    if (orderIds.length === 0) return NextResponse.json({ error: "No orderId" }, { status: 400 });
 
-    try {
-      // Envoyer la commande au panel SMM
-      const japRes = await japAddOrder(order.serviceId, order.link, order.quantity);
+    for (const orderId of orderIds) {
+      const order = await prisma.order.findUnique({ where: { id: orderId } });
+      if (!order || order.status !== "PENDING_PAYMENT") continue; // déjà traité
 
-      if (!japRes.order) {
-        console.error("JAP error:", japRes.error);
+      try {
+        const japRes = await japAddOrder(order.serviceId, order.link, order.quantity);
+
+        if (!japRes.order) {
+          console.error("JAP error:", japRes.error);
+          await prisma.order.update({ where: { id: orderId }, data: { status: "FAILED" } });
+          continue;
+        }
+
         await prisma.order.update({
           where: { id: orderId },
-          data: { status: "FAILED" },
+          data: {
+            japOrderId: japRes.order,
+            status: "PENDING",
+            customerEmail: session.customer_email || order.customerEmail,
+          },
         });
-        return NextResponse.json({ error: "JAP error" }, { status: 502 });
+      } catch (e) {
+        console.error("Order processing error:", e);
+        await prisma.order.update({ where: { id: orderId }, data: { status: "FAILED" } });
       }
-
-      await prisma.order.update({
-        where: { id: orderId },
-        data: {
-          japOrderId: japRes.order,
-          status: "PENDING",
-          customerEmail: session.customer_email || order.customerEmail,
-        },
-      });
-    } catch (e) {
-      console.error("Order processing error:", e);
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { status: "FAILED" },
-      });
     }
   }
 
