@@ -13,7 +13,6 @@ function formatQty(n: number) {
 
 export default function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, total, clear } = useCart();
-  const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,7 +25,6 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map(i => ({ serviceId: i.serviceId, link: i.link, quantity: i.quantity })),
-          email: email.trim() || undefined,
         }),
       });
       const d = await res.json();
@@ -121,18 +119,6 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
         {/* Footer checkout */}
         {items.length > 0 && (
           <div style={{ padding: "20px 24px", borderTop: "1.5px solid #f1f5f9", background: "#fff" }}>
-            <div style={{ marginBottom: 14 }}>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="Email (pour la confirmation)"
-                style={{ width: "100%", padding: "12px 14px", border: "1.5px solid #e2e8f0", borderRadius: 12, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box", color: "#0f172a", background: "#f8fafc" }}
-                onFocus={e => (e.currentTarget.style.borderColor = "#7c3aed")}
-                onBlur={e => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              />
-            </div>
-
             {error && (
               <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#dc2626", marginBottom: 12 }}>
                 ⚠️ {error}
