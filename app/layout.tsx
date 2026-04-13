@@ -63,6 +63,9 @@ export const metadata: Metadata = {
       "Développez votre audience sur Instagram, TikTok, YouTube — livraison en 20 min.",
     images: ["/og-image.jpg"],
   },
+  verification: {
+    google: "_2dUE7YzvdwhpPxvsNbjAoLpJLiqG76M1NakGLCK1wA",
+  },
   robots: {
     index: true,
     follow: true,
