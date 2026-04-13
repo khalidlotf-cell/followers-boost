@@ -15,18 +15,53 @@ interface Group { slug: string; label: string; icon: string; items: Service[] }
 interface PlatformInfo { slug: string; label: string; emoji: string; color: string }
 interface PlatformData { platform: PlatformInfo; groups: Group[] }
 
-// ── Quantités par type ────────────────────────────────────────────────────────
+// ── Quantités par plateforme + type (source : myboost.fr) ────────────────────
 const QUANTITIES: Record<string, number[]> = {
-  abonnes:        [100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000],
-  likes:          [100, 250, 500, 1000, 2500, 5000, 10000, 20000, 50000, 100000],
-  vues:           [500, 1000, 2500, 5000, 10000, 25000, 50000, 100000],
-  commentaires:   [5, 10, 25, 50, 100],
-  partages:       [100, 250, 500, 1000, 2500, 5000],
-  enregistrements:[100, 250, 500, 1000, 2500, 5000],
-  retweets:       [100, 250, 500, 1000, 2500, 5000],
-  auditeurs:      [500, 1000, 2500, 5000, 10000, 25000],
+  // Instagram
+  instagram_abonnes:        [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 50000, 75000, 100000, 500000, 1000000],
+  instagram_likes:          [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  instagram_vues:           [1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000, 50000, 100000, 500000, 1000000],
+  instagram_commentaires:   [5, 10, 25, 50, 100, 250, 500],
+  // TikTok
+  tiktok_abonnes:           [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 50000, 75000, 100000],
+  tiktok_likes:             [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  tiktok_vues:              [1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000, 50000, 100000, 500000, 1000000],
+  tiktok_enregistrements:   [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  tiktok_partages:          [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  tiktok_commentaires:      [5, 10, 25, 50, 100, 250, 500],
+  // YouTube
+  youtube_abonnes:          [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  youtube_likes:            [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  youtube_vues:             [1000, 2500, 5000, 10000, 20000, 30000, 50000, 100000, 250000, 500000, 1000000],
+  youtube_commentaires:     [5, 10, 25, 50, 100, 250, 500],
+  // Facebook
+  facebook_abonnes:         [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  facebook_likes:           [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  facebook_vues:            [1000, 2500, 5000, 10000, 20000, 50000, 100000],
+  // Spotify
+  spotify_auditeurs:        [500, 1000, 2500, 5000, 10000, 25000, 50000],
+  spotify_vues:             [1000, 2500, 5000, 10000, 25000, 50000, 100000, 150000, 300000, 500000, 1000000],
+  spotify_abonnes:          [500, 1000, 2500, 5000, 10000, 25000, 50000],
+  // Twitter/X
+  twitter_abonnes:          [100, 250, 500, 1000, 2000, 5000, 10000],
+  twitter_likes:            [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  twitter_retweets:         [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  // Threads
+  threads_likes:            [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  threads_abonnes:          [100, 250, 500, 1000, 2000, 5000, 10000],
+  // Fallbacks génériques
+  abonnes:        [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  likes:          [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  vues:           [1000, 2500, 5000, 10000, 25000, 50000, 100000, 500000, 1000000],
+  commentaires:   [5, 10, 25, 50, 100, 250, 500],
+  partages:       [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  enregistrements:[1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  retweets:       [100, 250, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
+  auditeurs:      [500, 1000, 2500, 5000, 10000, 25000, 50000],
 };
-function getQuantities(slug: string) { return QUANTITIES[slug] ?? [100, 250, 500, 1000, 2500, 5000]; }
+function getQuantities(platform: string, slug: string) {
+  return QUANTITIES[`${platform}_${slug}`] ?? QUANTITIES[slug] ?? [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000];
+}
 
 function formatQty(n: number) {
   if (n >= 1_000_000) return `${n / 1_000_000}M`;
@@ -289,6 +324,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [showAllQty, setShowAllQty] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
 
@@ -311,10 +347,11 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
   // Reset qty when group changes
   useEffect(() => {
     if (!activeGroupSlug) return;
-    setSelectedQty((QUANTITIES[activeGroupSlug] ?? [100])[0]);
+    setSelectedQty(getQuantities(platform, activeGroupSlug)[0] ?? 1000);
     setTargeting("world");
     setError("");
-  }, [activeGroupSlug]);
+    setShowAllQty(false);
+  }, [activeGroupSlug, platform]);
 
   // Update browser title
   const activeGroup = data?.groups.find(g => g.slug === activeGroupSlug);
@@ -335,9 +372,11 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
     targeting === "europe" && europeService ? europeService :
     worldService ?? franceService ?? europeService;
 
-  const quantities = getQuantities(activeGroupSlug).filter(q =>
+  const allQuantities = getQuantities(platform, activeGroupSlug).filter(q =>
     matchedService ? (q >= matchedService.min && q <= matchedService.max) : true
   );
+  const VISIBLE_QTY = 4;
+  const quantities = showAllQty ? allQuantities : allQuantities.slice(0, VISIBLE_QTY);
 
   function price(qty: number) {
     if (!matchedService || qty <= 0) return 0;
@@ -549,7 +588,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
                   const labels: Record<string, string> = { world: "🌍 Monde", france: "🇫🇷 Francophone", europe: "🇪🇺 Europe" };
                   const active = targeting === t;
                   return (
-                    <button key={t} onClick={() => { setTargeting(t); setSelectedQty((QUANTITIES[activeGroupSlug] ?? [100])[0]); }}
+                    <button key={t} onClick={() => { setTargeting(t); setSelectedQty(getQuantities(platform, activeGroupSlug)[0] ?? 1000); }}
                       style={{
                         padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: active ? 700 : 500,
                         border: `1.5px solid ${active ? accent : "#e2e8f0"}`,
@@ -592,6 +631,27 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
                   );
                 })}
               </div>
+
+              {/* Voir plus */}
+              {allQuantities.length > VISIBLE_QTY && (
+                <button
+                  onClick={() => setShowAllQty(v => !v)}
+                  style={{
+                    marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 12,
+                    background: showAllQty ? "#f1f5f9" : "#0f172a",
+                    color: showAllQty ? "#64748b" : "#fff",
+                    border: "none", cursor: "pointer", fontFamily: "inherit",
+                    fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center",
+                    justifyContent: "center", gap: 10, transition: "all 0.15s",
+                  }}>
+                  <span>{showAllQty ? "▲ Voir moins" : "⊕ Voir plus"}</span>
+                  {!showAllQty && (
+                    <span style={{ background: "#fff", color: "#0f172a", borderRadius: 100, padding: "2px 10px", fontSize: 12, fontWeight: 800 }}>
+                      +{allQuantities.length - VISIBLE_QTY}
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Lien */}
