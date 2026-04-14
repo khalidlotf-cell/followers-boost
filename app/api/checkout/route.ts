@@ -16,13 +16,16 @@ export async function POST(req: NextRequest) {
   try {
     const dbUrl = process.env.DATABASE_URL;
     console.log("DEBUG DB prefix:", dbUrl ? dbUrl.substring(0, 20) + "..." : "UNDEFINED");
+    console.log("D1: parsing body");
     const { serviceId, link, quantity, email } = await req.json();
+    console.log("D2: body parsed", { serviceId, link: link?.substring(0, 30), quantity });
 
     if (!serviceId || !link || !quantity) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
 
     // Validation URL
+    console.log("D3: validating URL");
     try {
       const parsed = new URL(link);
       if (!["http:", "https:"].includes(parsed.protocol)) {
@@ -32,12 +35,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "URL invalide" }, { status: 400 });
     }
 
+    console.log("D4: URL valid");
     const qty = Math.floor(Number(quantity));
     if (!Number.isFinite(qty) || qty <= 0) {
       return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
     }
 
-    const service = await prisma.service.findUnique({ where: { id: serviceId, active: true } });
+    console.log("D5: looking up service", serviceId);
+    const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
+    console.log("D6: service found:", !!service);
     if (!service) {
       return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
     }
