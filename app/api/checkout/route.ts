@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
 
     const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    console.log("DEBUG siteUrl:", JSON.stringify(siteUrl));
     if (!siteUrl) {
       console.error("NEXT_PUBLIC_SITE_URL is not set");
       return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
