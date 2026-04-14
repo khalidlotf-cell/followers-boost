@@ -68,6 +68,8 @@ export async function POST(req: NextRequest) {
     });
 
     // Créer la session Stripe Checkout
+    console.log("DEBUG success_url:", JSON.stringify(`${siteUrl}/commande/confirmation?id=${order.id}`));
+    console.log("DEBUG cancel_url:", JSON.stringify(`${siteUrl}/commande/annulation`));
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email || undefined,
