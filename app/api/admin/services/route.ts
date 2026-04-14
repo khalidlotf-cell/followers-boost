@@ -13,7 +13,7 @@ export async function GET() {
     return NextResponse.json(services);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Erreur";
-    return NextResponse.json({ error: msg }, { status: 403 });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

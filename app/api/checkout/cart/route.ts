@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Maximum 10 articles par commande" }, { status: 400 });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim();
     if (!siteUrl) return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
 
     const validated: Array<{ service: { id: number; name: string; ourRate: number }, link: string, qty: number, charge: number }> = [];
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
       }
 
-      const service = await prisma.service.findUnique({ where: { id: serviceId, active: true } });
+      const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
       if (!service) return NextResponse.json({ error: `Service ${serviceId} introuvable` }, { status: 404 });
 
       if (qty < service.min || qty > service.max) {
