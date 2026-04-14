@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
     }
 
-    const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
+    const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } }).catch((e: unknown) => { throw new Error(`DB_findService: ${e instanceof Error ? e.message : String(e)}`); });
     if (!service) {
       return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
     }
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     }
 
     const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim();
     if (!siteUrl) {
       return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
     }
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         status: "PENDING_PAYMENT",
         customerEmail: email || null,
       },
-    });
+    }).catch((e: unknown) => { throw new Error(`DB_createOrder: ${e instanceof Error ? e.message : String(e)}`); });
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -89,13 +89,13 @@ export async function POST(req: NextRequest) {
       },
       success_url: `${siteUrl}/commande/confirmation?id=${order.id}`,
       cancel_url: `${siteUrl}/commande/annulation`,
-    });
+    }).catch((e: unknown) => { throw new Error(`STRIPE_createSession: ${e instanceof Error ? e.message : String(e)}`); });
 
     // Sauvegarder le stripeSessionId
     await prisma.order.update({
       where: { id: order.id },
       data: { stripeSessionId: session.id },
-    });
+    }).catch((e: unknown) => { throw new Error(`DB_updateOrder: ${e instanceof Error ? e.message : String(e)}`); });
 
     return NextResponse.json({ url: session.url });
   } catch (e: unknown) {
