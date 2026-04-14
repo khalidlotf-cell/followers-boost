@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { getPlatform } from "@/lib/catalog";
+
+function displayLabel(service: { platformSlug: string | null; groupSlug: string | null }): string {
+  if (!service.platformSlug || !service.groupSlug) return "";
+  const platform = getPlatform(service.platformSlug);
+  if (!platform) return "";
+  const group = platform.services.find(s => s.slug === service.groupSlug);
+  if (!group) return "";
+  return `${group.label} ${platform.label}`;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,7 +61,7 @@ export async function POST(req: NextRequest) {
         },
         description:
           orders.length === 1
-            ? orders[0].service.name
+            ? displayLabel(orders[0].service) || "Commande Vyrlo"
             : `${orders.length} articles Vyrlo`,
       });
       clientSecret = pi.client_secret;
@@ -69,7 +79,7 @@ export async function POST(req: NextRequest) {
       orderIds: orders.map(o => o.id),
       items: orders.map(o => ({
         id: o.id,
-        name: o.service.name,
+        name: displayLabel(o.service),
         quantity: o.quantity,
         link: o.link,
         charge: o.charge,

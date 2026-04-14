@@ -107,11 +107,13 @@ export default function PaymentClient() {
       style={{
         minHeight: "100vh",
         background: "linear-gradient(180deg, #faf5ff 0%, #f8fafc 100%)",
-        padding: "40px 20px 80px",
+        padding: "40px 16px 80px",
         fontFamily: "system-ui, -apple-system, sans-serif",
+        boxSizing: "border-box",
+        overflowX: "hidden",
       }}
     >
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {/* Header brandé */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div
@@ -160,10 +162,12 @@ export default function PaymentClient() {
             style={{
               background: "#fff",
               borderRadius: 20,
-              padding: 28,
+              padding: 24,
               border: "1px solid #e2e8f0",
               boxShadow: "0 4px 24px rgba(15,23,42,0.04)",
               alignSelf: "start",
+              minWidth: 0,
+              boxSizing: "border-box",
             }}
           >
             <div
@@ -197,6 +201,7 @@ export default function PaymentClient() {
                       background: "#f8fafc",
                       borderRadius: 14,
                       border: "1px solid #e2e8f0",
+                      minWidth: 0,
                     }}
                   >
                     <div
@@ -208,18 +213,22 @@ export default function PaymentClient() {
                         marginBottom: 8,
                       }}
                     >
-                      <div
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 700,
-                          color: "#0f172a",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {it.name}
-                      </div>
+                      {it.name ? (
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "#0f172a",
+                            minWidth: 0,
+                            flex: 1,
+                            overflowWrap: "anywhere",
+                          }}
+                        >
+                          {it.name}
+                        </div>
+                      ) : (
+                        <div style={{ flex: 1 }} />
+                      )}
                       <span
                         style={{
                           fontSize: 14,
@@ -249,9 +258,8 @@ export default function PaymentClient() {
                       style={{
                         fontSize: 11,
                         color: "#94a3b8",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        overflowWrap: "anywhere",
+                        wordBreak: "break-all",
                       }}
                     >
                       🔗 {it.link}
@@ -300,10 +308,12 @@ export default function PaymentClient() {
             style={{
               background: "#fff",
               borderRadius: 20,
-              padding: 28,
+              padding: 24,
               border: "1px solid #e2e8f0",
               boxShadow: "0 4px 24px rgba(15,23,42,0.04)",
               minHeight: 420,
+              minWidth: 0,
+              boxSizing: "border-box",
             }}
           >
             <div
