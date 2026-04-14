@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const dbUrl = process.env.DATABASE_URL;
+    console.log("DEBUG DB prefix:", dbUrl ? dbUrl.substring(0, 20) + "..." : "UNDEFINED");
     const { serviceId, link, quantity, email } = await req.json();
 
     if (!serviceId || !link || !quantity) {
