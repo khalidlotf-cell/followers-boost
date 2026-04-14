@@ -228,7 +228,7 @@ const SEO: Record<string, SeoData> = {
       { q: "Combien de temps durent les abonnés ?", a: "La plupart restent indéfiniment. Quelques drops sont normaux sur n'importe quel compte, c'est pour ça qu'on propose le Refill sur certains services." },
       { q: "Mon profil doit-il être public ?", a: "Oui, pendant toute la durée de la livraison. Une fois terminée, vous pouvez repasser en privé si vous le souhaitez." },
       { q: "Et si je ne suis pas satisfait ?", a: "Contactez le support avec votre numéro de commande. On vérifie et on arrange ça : refill ou remboursement selon la situation." },
-      { q: "C'est quoi la différence entre Monde et France ?", a: "Le ciblage Monde envoie des profils internationaux. Le ciblage France envoie des profils francophones qui comprennent et interagissent avec votre contenu local." },
+      { q: "C'est quoi la différence entre Monde et Français ?", a: "Le ciblage Monde envoie des profils internationaux. Le ciblage Français envoie des profils Français qui comprennent et interagissent avec votre contenu local." },
     ],
     linkLabel: "Lien du profil",
     linkPlaceholder: "https://www.instagram.com/votrenom/",
@@ -587,7 +587,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {(["world" as const, ...(franceService ? ["france" as const] : []), ...(europeService ? ["europe" as const] : [])]).map(t => {
-                  const labels: Record<string, string> = { world: "🌍 Monde", france: "🇫🇷 Francophone", europe: "🇪🇺 Europe" };
+                  const labels: Record<string, string> = { world: "🌍 Monde", france: "🇫🇷 Français", europe: "🇪🇺 Europe" };
                   const active = targeting === t;
                   return (
                     <button key={t} onClick={() => { setTargeting(t); setSelectedQty(getQuantities(platform, activeGroupSlug)[0] ?? 1000); }}

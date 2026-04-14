@@ -44,7 +44,7 @@ const PLATFORM_META: Record<
       },
       {
         q: "Puis-je acheter des followers Instagram français ?",
-        a: "Oui, Vyrlo propose un ciblage France pour vous fournir des abonnés Instagram francophones. Sélectionnez l'option ciblage France lors de votre commande.",
+        a: "Oui, Vyrlo propose un ciblage Français pour vous fournir des abonnés Instagram Français. Sélectionnez l'option ciblage Français lors de votre commande.",
       },
     ],
   },
