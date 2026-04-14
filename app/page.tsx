@@ -81,16 +81,18 @@ async function getPlatforms() {
   try {
     const services = await prisma.service.findMany({
       where: { active: true },
-      select: { category: true, name: true },
+      select: { category: true, name: true, ourRate: true },
     });
     return CATALOG.map(platform => {
-      const count = services.filter(s => {
+      const matching = services.filter(s => {
         const haystack = (s.category + " " + s.name).toLowerCase();
         return haystack.includes(platform.slug) ||
           haystack.includes(platform.label.toLowerCase().split("/")[0].trim());
-      }).length;
-      return { ...platform, count, services: undefined };
-    }).filter(p => p.count > 0);
+      });
+      if (matching.length === 0) return null;
+      const minPrice = Math.min(...matching.map(s => s.ourRate));
+      return { ...platform, minPrice };
+    }).filter(Boolean) as Array<typeof CATALOG[number] & { minPrice: number }>;
   } catch {
     return [];
   }

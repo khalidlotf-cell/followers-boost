@@ -10,7 +10,7 @@ interface Platform {
   slug: string;
   emoji: string;
   color: string;
-  count: number;
+  minPrice: number;
 }
 
 function PlatformLogo({ slug, size = 48 }: { slug: string; size?: number }) {
@@ -380,7 +380,7 @@ export default function ShopHome({ initialPlatforms = [] }: { initialPlatforms?:
                         <PlatformLogo slug={p.slug} size={isBig ? 32 : 26} />
                       </div>
                       <span style={{ fontSize: 12, fontWeight: 600, color: "#94a3b8", background: "#f1f5f9", borderRadius: 100, padding: "4px 12px" }}>
-                        {p.count} services
+                        à partir de {p.minPrice.toLocaleString("fr-FR", { style: "currency", currency: "EUR", minimumFractionDigits: 2 })}
                       </span>
                     </div>
 

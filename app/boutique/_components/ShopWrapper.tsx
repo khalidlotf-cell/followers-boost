@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-interface Platform { label: string; slug: string; emoji: string; color: string; count: number }
+interface Platform { label: string; slug: string; emoji: string; color: string; minPrice: number }
 
 const ShopHome = dynamic(() => import("./ShopHome"), { ssr: false });
 
