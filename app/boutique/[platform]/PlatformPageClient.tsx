@@ -20,7 +20,7 @@ interface PlatformData { platform: PlatformInfo; groups: Group[] }
 // Visible = 1K, 2K, 5K, 10K (comme myboost.fr) ; Masqués = intermédiaires + grands
 const QUANTITIES: Record<string, number[]> = {
   // Instagram
-  instagram_abonnes:        [1000, 2000, 5000, 10000,  3000, 4000, 6000, 7000, 8000, 9000, 50000, 75000, 100000, 500000, 1000000],
+  instagram_abonnes:        [25, 1000, 2000, 5000,  10000, 3000, 4000, 6000, 7000, 8000, 9000, 50000, 75000, 100000, 500000, 1000000],
   instagram_likes:          [1000, 2000, 5000, 10000,  3000, 4000, 6000, 7000, 8000, 9000],
   instagram_vues:           [1000, 2500, 5000, 10000,  7500, 15000, 20000, 25000, 50000, 100000, 500000, 1000000],
   instagram_commentaires:   [5, 10, 25, 50,  100, 250, 500],
