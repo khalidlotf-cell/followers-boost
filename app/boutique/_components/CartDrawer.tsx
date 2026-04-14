@@ -30,7 +30,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
       const d = await res.json();
       if (!res.ok) { setError(d.error ?? "Erreur lors du paiement."); return; }
       clear();
-      window.location.href = d.url;
+      window.location.href = `/paiement?ids=${d.orderIds.join(",")}`;
     } catch { setError("Erreur réseau, réessayez."); }
     finally { setSubmitting(false); }
   }

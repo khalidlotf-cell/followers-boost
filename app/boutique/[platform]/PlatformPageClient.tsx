@@ -403,7 +403,7 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
       });
       const d = await res.json();
       if (!res.ok) { setError(d.error ?? "Erreur lors de la commande."); return; }
-      window.location.href = d.url;
+      window.location.href = `/paiement?ids=${d.orderIds.join(",")}`;
     } catch { setError("Erreur réseau, réessayez."); }
     finally { setSubmitting(false); }
   }

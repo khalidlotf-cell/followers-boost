@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
@@ -48,12 +47,7 @@ export async function POST(req: NextRequest) {
     }
 
     const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim();
-    if (!siteUrl) {
-      return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
-    }
 
-    // Créer la commande en attente de paiement
     const order = await prisma.order.create({
       data: {
         serviceId,
@@ -65,39 +59,7 @@ export async function POST(req: NextRequest) {
       },
     }).catch((e: unknown) => { throw new Error(`DB_createOrder: ${e instanceof Error ? e.message : String(e)}`); });
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      customer_email: email || undefined,
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: service.name,
-              description: `${quantity.toLocaleString("fr-FR")} unités · ${link}`,
-            },
-            unit_amount: Math.round(charge * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        orderId: order.id,
-        serviceId: String(serviceId),
-        link,
-        quantity: String(quantity),
-      },
-      success_url: `${siteUrl}/commande/confirmation?id=${order.id}`,
-      cancel_url: `${siteUrl}/commande/annulation`,
-    }).catch((e: unknown) => { throw new Error(`STRIPE_createSession: ${e instanceof Error ? e.message : String(e)}`); });
-
-    // Sauvegarder le stripeSessionId
-    await prisma.order.update({
-      where: { id: order.id },
-      data: { stripeSessionId: session.id },
-    }).catch((e: unknown) => { throw new Error(`DB_updateOrder: ${e instanceof Error ? e.message : String(e)}`); });
-
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ orderIds: [order.id] });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     const stack = e instanceof Error ? (e.stack ?? "no stack") : "no stack";

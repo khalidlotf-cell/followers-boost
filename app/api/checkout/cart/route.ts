@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
@@ -20,9 +19,6 @@ export async function POST(req: NextRequest) {
     if (items.length > 10) {
       return NextResponse.json({ error: "Maximum 10 articles par commande" }, { status: 400 });
     }
-
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").trim();
-    if (!siteUrl) return NextResponse.json({ error: "Configuration manquante" }, { status: 500 });
 
     const validated: Array<{ service: { id: number; name: string; ourRate: number }, link: string, qty: number, charge: number }> = [];
 
@@ -70,36 +66,7 @@ export async function POST(req: NextRequest) {
       )
     );
 
-    // Une session Stripe avec tous les articles
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      customer_email: email || undefined,
-      line_items: validated.map(v => ({
-        price_data: {
-          currency: "eur",
-          product_data: {
-            name: v.service.name,
-            description: `${v.qty.toLocaleString("fr-FR")} unités · ${v.link}`,
-          },
-          unit_amount: Math.round(v.charge * 100),
-        },
-        quantity: 1,
-      })),
-      metadata: {
-        orderIds: orders.map(o => o.id).join(","),
-      },
-      success_url: `${siteUrl}/commande/confirmation?id=${orders[0].id}`,
-      cancel_url: `${siteUrl}/commande/annulation`,
-    });
-
-    // Associer la session Stripe à toutes les commandes
-    await Promise.all(
-      orders.map(o =>
-        prisma.order.update({ where: { id: o.id }, data: { stripeSessionId: session.id } })
-      )
-    );
-
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ orderIds: orders.map(o => o.id) });
   } catch (e) {
     console.error("Cart checkout error:", e);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
