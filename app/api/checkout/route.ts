@@ -113,8 +113,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("ERR_MSG:" + msg);
-    console.error("ERR_FULL:" + JSON.stringify(e, Object.getOwnPropertyNames(e as object)));
+    const stack = e instanceof Error ? (e.stack ?? "no stack") : "no stack";
+    const full = JSON.stringify(e, Object.getOwnPropertyNames(e as object));
+    console.error(`CHECKOUT_ERROR | msg=${msg} | stack=${stack} | full=${full}`);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
