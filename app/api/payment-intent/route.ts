@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { getPlatform } from "@/lib/catalog";
+import { MAX_CHARGE_EUR } from "@/lib/pricing";
 
 function displayLabel(service: { platformSlug: string | null; groupSlug: string | null }): string {
   if (!service.platformSlug || !service.groupSlug) return "";
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     const amount = Math.round(orders.reduce((s, o) => s + o.charge, 0) * 100);
-    if (amount <= 0) {
+    if (amount <= 0 || amount > MAX_CHARGE_EUR * 100) {
       return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
     }
 

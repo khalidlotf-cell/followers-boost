@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { assertChargeWithinLimit, computeCharge } from "@/lib/pricing";
 
 export async function POST(req: NextRequest) {
   // Rate limiting : 10 tentatives de checkout / 10 minutes par IP
@@ -46,7 +47,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
+    const charge = computeCharge(qty, service.ourRate);
+    assertChargeWithinLimit(charge);
 
     const order = await prisma.order.create({
       data: {

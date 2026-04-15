@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { assertChargeWithinLimit, computeCharge } from "@/lib/pricing";
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,7 +39,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
+    const charge = computeCharge(qty, service.ourRate);
+    assertChargeWithinLimit(charge);
 
     const order = await prisma.order.create({
       data: {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { MAX_CHARGE_EUR, computeCharge } from "@/lib/pricing";
 
 interface CartItem { serviceId: number; link: string; quantity: number }
 
@@ -46,8 +47,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: `Quantité invalide pour ${service.name}` }, { status: 400 });
       }
 
-      const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(2));
+      const charge = computeCharge(qty, service.ourRate);
       validated.push({ service, link, qty, charge });
+    }
+
+    const totalCharge = validated.reduce((s, v) => s + v.charge, 0);
+    if (totalCharge <= 0 || totalCharge > MAX_CHARGE_EUR) {
+      return NextResponse.json({ error: `Montant total hors limites (max ${MAX_CHARGE_EUR}€)` }, { status: 400 });
     }
 
     // Créer toutes les commandes en DB
