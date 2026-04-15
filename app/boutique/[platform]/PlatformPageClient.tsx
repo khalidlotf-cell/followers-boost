@@ -524,15 +524,16 @@ export default function PlatformPage({ params }: { params: Promise<{ platform: s
         </div>
 
         {/* Tabs sticky below hero */}
-        <div style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+        <div style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(14px)", borderTop: "1px solid rgba(255,255,255,0.18)" }}>
           <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 16px", display: "flex", gap: 2, overflowX: "auto", scrollbarWidth: "none" }}>
             {data.groups.map(g => (
               <button key={g.slug} onClick={() => setActiveGroupSlug(g.slug)}
                 style={{
-                  flexShrink: 0, padding: "15px 22px", fontSize: 14, fontWeight: 600,
+                  flexShrink: 0, padding: "16px 24px", fontSize: 15, fontWeight: 700,
                   cursor: "pointer", fontFamily: "inherit", border: "none", background: "none",
-                  color: activeGroupSlug === g.slug ? "#fff" : "rgba(255,255,255,0.5)",
-                  borderBottom: activeGroupSlug === g.slug ? "2px solid #fff" : "2px solid transparent",
+                  color: activeGroupSlug === g.slug ? "#fff" : "rgba(255,255,255,0.85)",
+                  borderBottom: activeGroupSlug === g.slug ? "3px solid #fff" : "3px solid transparent",
+                  textShadow: "0 1px 8px rgba(0,0,0,0.4)",
                   transition: "all 0.15s", whiteSpace: "nowrap", letterSpacing: "0.01em",
                 }}>
                 {g.icon} {g.label}
