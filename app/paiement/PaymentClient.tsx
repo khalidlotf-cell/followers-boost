@@ -567,63 +567,33 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
   return (
     <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       {/* Paiement rapide — Apple Pay / Google Pay / Link */}
-      <div
-        style={{
-          background: "#0a0a0a",
-          borderRadius: 16,
-          padding: expressReady ? "18px 18px 20px" : 0,
-          border: expressReady ? "1px solid #1f1f1f" : "none",
-          boxShadow: expressReady ? "0 8px 24px rgba(0,0,0,0.18)" : "none",
-          transition: "padding 0.2s",
-        }}
-      >
-        {expressReady && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 12,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: "0.1em",
-                color: "#fff",
-                textTransform: "uppercase",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <span style={{ fontSize: 14 }}>⚡</span> Paiement rapide
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: "#a3a3a3",
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
-              1-clic
-            </span>
-          </div>
-        )}
-        <ExpressCheckoutElement
-          onConfirm={onExpressConfirm}
-          onReady={onExpressReady}
-          options={{
-            buttonHeight: 55,
-            buttonTheme: { applePay: "black", googlePay: "black", paypal: "gold" },
-            buttonType: { applePay: "buy", googlePay: "buy", paypal: "buynow" },
-            paymentMethods: { applePay: "always", googlePay: "always", link: "auto", paypal: "auto" },
+      {expressReady && (
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 800,
+            letterSpacing: "0.1em",
+            color: "#111",
+            textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: -6,
           }}
-        />
-      </div>
+        >
+          <span style={{ fontSize: 14 }}>⚡</span> Paiement rapide
+        </div>
+      )}
+      <ExpressCheckoutElement
+        onConfirm={onExpressConfirm}
+        onReady={onExpressReady}
+        options={{
+          buttonHeight: 55,
+          buttonTheme: { applePay: "black", googlePay: "black", paypal: "gold" },
+          buttonType: { applePay: "buy", googlePay: "buy", paypal: "buynow" },
+          paymentMethods: { applePay: "always", googlePay: "always", link: "auto", paypal: "auto" },
+        }}
+      />
 
       {expressReady && (
         <div
@@ -631,7 +601,7 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
             display: "flex",
             alignItems: "center",
             gap: 12,
-            margin: "2px 0",
+            margin: "8px 0 2px",
           }}
         >
           <div style={{ flex: 1, height: 1, background: "#ececec" }} />
@@ -644,64 +614,112 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
               letterSpacing: "0.08em",
             }}
           >
-            ou payer par carte
+            ou
           </span>
           <div style={{ flex: 1, height: 1, background: "#ececec" }} />
         </div>
       )}
 
-      <div>
-        <label
-          htmlFor="email"
+      {/* Carte bancaire — bloc bien visible */}
+      <div
+        style={{
+          border: "2px solid #111",
+          borderRadius: 16,
+          padding: "18px 18px 20px",
+          background: "#fff",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div
           style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#4b5563",
-            marginBottom: 6,
-            display: "block",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 16,
           }}
         >
-          E-mail
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="vous@exemple.com"
-          required
-          style={{
-            width: "100%",
-            padding: "13px 14px",
-            borderRadius: 12,
-            border: "1.5px solid #e8e8e8",
-            fontSize: 15,
-            fontFamily: "inherit",
-            outline: "none",
-            background: "#fff",
-            color: "#111",
-            transition: "border 0.15s, box-shadow 0.15s",
-            boxSizing: "border-box",
-          }}
-          onFocus={e => {
-            e.currentTarget.style.border = "1.5px solid #111";
-            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.06)";
-          }}
-          onBlur={e => {
-            e.currentTarget.style.border = "1.5px solid #e8e8e8";
-            e.currentTarget.style.boxShadow = "none";
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 800,
+              color: "#111",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+            Payer par carte bancaire
+          </div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <svg width="28" height="18" viewBox="0 0 48 32" aria-label="Visa">
+              <rect width="48" height="32" rx="4" fill="#1a1f71" />
+              <text x="24" y="21" fill="#fff" fontSize="12" fontWeight="800" textAnchor="middle" fontFamily="Arial,sans-serif" fontStyle="italic">VISA</text>
+            </svg>
+            <svg width="28" height="18" viewBox="0 0 48 32" aria-label="Mastercard">
+              <rect width="48" height="32" rx="4" fill="#fff" stroke="#e5e7eb" />
+              <circle cx="20" cy="16" r="8" fill="#eb001b" />
+              <circle cx="28" cy="16" r="8" fill="#f79e1b" fillOpacity="0.9" />
+            </svg>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 14 }}>
+          <label
+            htmlFor="email"
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#4b5563",
+              marginBottom: 6,
+              display: "block",
+            }}
+          >
+            E-mail
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="vous@exemple.com"
+            required
+            style={{
+              width: "100%",
+              padding: "13px 14px",
+              borderRadius: 12,
+              border: "1.5px solid #e8e8e8",
+              fontSize: 15,
+              fontFamily: "inherit",
+              outline: "none",
+              background: "#fff",
+              color: "#111",
+              transition: "border 0.15s, box-shadow 0.15s",
+              boxSizing: "border-box",
+            }}
+            onFocus={e => {
+              e.currentTarget.style.border = "1.5px solid #111";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.06)";
+            }}
+            onBlur={e => {
+              e.currentTarget.style.border = "1.5px solid #e8e8e8";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+          <div style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 6 }}>
+            Reçu et suivi de commande envoyés à cette adresse.
+          </div>
+        </div>
+
+        <PaymentElement
+          options={{
+            layout: { type: "accordion", defaultCollapsed: false, spacedAccordionItems: true },
           }}
         />
-        <div style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 6 }}>
-          Reçu et suivi de commande envoyés à cette adresse.
-        </div>
       </div>
-
-      <PaymentElement
-        options={{
-          layout: { type: "accordion", defaultCollapsed: false, spacedAccordionItems: true },
-        }}
-      />
 
       {error && (
         <div
