@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import type { StripeExpressCheckoutElementConfirmEvent, StripeExpressCheckoutElementReadyEvent } from "@stripe/stripe-js";
 import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { getStripeClient } from "@/lib/stripe-client";
 
@@ -517,6 +518,12 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expressReady, setExpressReady] = useState(false);
+
+  function returnUrl() {
+    const siteUrl = (typeof window !== "undefined" ? window.location.origin : "").replace(/\/$/, "");
+    return `${siteUrl}/commande/confirmation?id=${orderIds[0]}`;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -524,13 +531,10 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
     setSubmitting(true);
     setError(null);
 
-    const siteUrl = (typeof window !== "undefined" ? window.location.origin : "").replace(/\/$/, "");
-    const returnUrl = `${siteUrl}/commande/confirmation?id=${orderIds[0]}`;
-
     const { error: err } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: returnUrl,
+        return_url: returnUrl(),
         receipt_email: email || undefined,
       },
     });
@@ -541,8 +545,111 @@ function CheckoutForm({ orderIds, amount }: { orderIds: string[]; amount: number
     }
   }
 
+  async function onExpressConfirm(_e: StripeExpressCheckoutElementConfirmEvent) {
+    if (!stripe || !elements) return;
+    setError(null);
+    const { error: submitErr } = await elements.submit();
+    if (submitErr) {
+      setError(submitErr.message ?? "Paiement refusé.");
+      return;
+    }
+    const { error: err } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: returnUrl() },
+    });
+    if (err) setError(err.message ?? "Paiement refusé.");
+  }
+
+  function onExpressReady(e: StripeExpressCheckoutElementReadyEvent) {
+    setExpressReady(!!e.availablePaymentMethods);
+  }
+
   return (
     <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {/* Paiement rapide — Apple Pay / Google Pay / Link */}
+      <div
+        style={{
+          background: "#0a0a0a",
+          borderRadius: 16,
+          padding: expressReady ? "18px 18px 20px" : 0,
+          border: expressReady ? "1px solid #1f1f1f" : "none",
+          boxShadow: expressReady ? "0 8px 24px rgba(0,0,0,0.18)" : "none",
+          transition: "padding 0.2s",
+        }}
+      >
+        {expressReady && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 800,
+                letterSpacing: "0.1em",
+                color: "#fff",
+                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span style={{ fontSize: 14 }}>⚡</span> Paiement rapide
+            </div>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: "#a3a3a3",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
+              1-clic
+            </span>
+          </div>
+        )}
+        <ExpressCheckoutElement
+          onConfirm={onExpressConfirm}
+          onReady={onExpressReady}
+          options={{
+            buttonHeight: 55,
+            buttonTheme: { applePay: "black", googlePay: "black", paypal: "gold" },
+            buttonType: { applePay: "buy", googlePay: "buy", paypal: "buynow" },
+            paymentMethods: { applePay: "always", googlePay: "always", link: "auto", paypal: "auto" },
+          }}
+        />
+      </div>
+
+      {expressReady && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            margin: "2px 0",
+          }}
+        >
+          <div style={{ flex: 1, height: 1, background: "#ececec" }} />
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "#9ca3af",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            ou payer par carte
+          </span>
+          <div style={{ flex: 1, height: 1, background: "#ececec" }} />
+        </div>
+      )}
+
       <div>
         <label
           htmlFor="email"
