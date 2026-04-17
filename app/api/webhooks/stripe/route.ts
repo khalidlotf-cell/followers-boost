@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-import { japAddOrder } from "@/lib/jap";
+import { mtpAddOrder } from "@/lib/mtp";
 import { env } from "@/lib/env";
 import type Stripe from "stripe";
 
@@ -75,10 +75,10 @@ export async function POST(req: NextRequest) {
     if (!order) continue;
 
     try {
-      const japRes = await japAddOrder(order.serviceId, order.link, order.quantity);
+      const mtpRes = await mtpAddOrder(order.serviceId, order.link, order.quantity);
 
-      if (!japRes.order) {
-        console.error(`STRIPE_WEBHOOK | jap_failed order=${orderId}`);
+      if (!mtpRes.order) {
+        console.error(`STRIPE_WEBHOOK | mtp_failed order=${orderId}`);
         await prisma.order.update({
           where: { id: orderId },
           data: { status: "FAILED" },
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       await prisma.order.update({
         where: { id: orderId },
         data: {
-          japOrderId: japRes.order,
+          japOrderId: mtpRes.order,
           status: "PENDING",
           customerEmail: email || order.customerEmail,
           ...(stripePaymentId && !order.stripeSessionId

@@ -1,4 +1,4 @@
-// Détecte la plateforme depuis le nom de la catégorie JAP
+// Détecte la plateforme depuis le nom de la catégorie MTP
 // Ex: "Instagram Followers" → "Instagram"
 
 const PLATFORMS = [

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { requireAdminAuth } from "@/lib/adminAuth";
-import { japGetBalance } from "@/lib/jap";
+import { mtpGetBalance } from "@/lib/mtp";
 
 export async function GET() {
   const authError = await requireAdminAuth();
   if (authError) return authError;
 
   try {
-    const data = await japGetBalance();
+    const data = await mtpGetBalance();
     return NextResponse.json({ balance: data.balance, currency: data.currency });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Erreur";

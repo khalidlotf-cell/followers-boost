@@ -14,7 +14,7 @@ export const httpUrl = z
     }
   }, "URL invalide");
 
-/** ID service JAP : entier positif. */
+/** ID service MTP : entier positif. */
 export const serviceId = z.number().int().positive();
 
 /** Quantité positive (int). Accepte string aussi pour compat JSON lax. */

@@ -1,11 +1,11 @@
 // Catalogue fixe calqué sur myboost.fr
-// Chaque service correspond à un type de service JAP détecté par mots-clés
+// Chaque service correspond à un type de service MTP détecté par mots-clés
 
 export interface CatalogService {
   slug: string;
   label: string;
   icon: string;
-  keywords: string[];       // mots-clés pour matcher les services JAP
+  keywords: string[];       // mots-clés pour matcher les services MTP
   excludeKeywords: string[]; // si le nom/catégorie contient un de ces mots → exclu
 }
 

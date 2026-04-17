@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { japGetMultipleStatus } from "@/lib/jap";
+import { mtpGetMultipleStatus } from "@/lib/mtp";
 
 export async function POST() {
   try {
@@ -18,7 +18,7 @@ export async function POST() {
     if (pendingOrders.length === 0) return NextResponse.json({ updated: 0 });
 
     const ids = pendingOrders.map((o) => o.japOrderId!);
-    const statuses = await japGetMultipleStatus(ids);
+    const statuses = await mtpGetMultipleStatus(ids);
 
     let updated = 0;
     for (const order of pendingOrders) {

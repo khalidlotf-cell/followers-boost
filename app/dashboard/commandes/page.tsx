@@ -78,7 +78,7 @@ export default function CommandesPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b" style={{ borderColor: "#2e2e3e" }}>
-                  {["ID JAP", "Service", "Lien", "Quantité", "Coût", "Statut", "Date"].map(h => (
+                  {["ID MTP", "Service", "Lien", "Quantité", "Coût", "Statut", "Date"].map(h => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wide" style={{ color: "#6b7280" }}>{h}</th>
                   ))}
                 </tr>

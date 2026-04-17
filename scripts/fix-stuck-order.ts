@@ -2,12 +2,12 @@ import "dotenv/config";
 import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const JAP_URL = "https://morethanpanel.com/api/v2";
-const JAP_KEY = process.env.MTP_API_KEY!;
+const MTP_URL = "https://morethanpanel.com/api/v2";
+const MTP_KEY = process.env.MTP_API_KEY!;
 
-async function japPost(params: Record<string, string>) {
-  const body = new URLSearchParams({ key: JAP_KEY, ...params });
-  const res = await fetch(JAP_URL, {
+async function mtpPost(params: Record<string, string>) {
+  const body = new URLSearchParams({ key: MTP_KEY, ...params });
+  const res = await fetch(MTP_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
@@ -46,26 +46,26 @@ async function main() {
   });
 
   if (order.quantity < order.service.min) {
-    console.error(`⚠️  Quantité ${order.quantity} < min service ${order.service.min}. JAP rejettera.`);
+    console.error(`⚠️  Quantité ${order.quantity} < min service ${order.service.min}. MTP rejettera.`);
   }
 
-  const japRes: { order?: number; error?: string } = await japPost({
+  const mtpRes: { order?: number; error?: string } = await mtpPost({
     action: "add",
     service: String(order.serviceId),
     link: order.link,
     quantity: String(order.quantity),
   });
-  console.log("Réponse JAP :", japRes);
+  console.log("Réponse MTP :", mtpRes);
 
-  if (!japRes.order) {
+  if (!mtpRes.order) {
     await prisma.order.update({ where: { id: orderId }, data: { status: "FAILED" } });
     console.log("→ Commande marquée FAILED");
   } else {
     await prisma.order.update({
       where: { id: orderId },
-      data: { japOrderId: japRes.order, status: "PENDING" },
+      data: { japOrderId: mtpRes.order, status: "PENDING" },
     });
-    console.log("→ Commande envoyée au fournisseur, ID JAP :", japRes.order);
+    console.log("→ Commande envoyée au fournisseur, ID MTP :", mtpRes.order);
   }
 
   await prisma.$disconnect();

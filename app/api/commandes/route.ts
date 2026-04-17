@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { japAddOrder } from "@/lib/jap";
+import { mtpAddOrder } from "@/lib/mtp";
 import { computeCharge, assertChargeWithinLimit } from "@/lib/pricing";
 import { singleOrderSchema } from "@/lib/validation";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
@@ -79,26 +79,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Solde insuffisant" }, { status: 402 });
   }
 
-  // Appel JAP
-  let japRes: { order?: number; error?: string };
+  // Appel MTP
+  let mtpRes: { order?: number; error?: string };
   try {
-    japRes = await japAddOrder(serviceId, link, quantity);
+    mtpRes = await mtpAddOrder(serviceId, link, quantity);
   } catch (e) {
-    await refund(session.id, charge, "JAP indisponible");
-    console.error(`WALLET_ORDER_JAP_FETCH | ${e instanceof Error ? e.message : String(e)}`);
+    await refund(session.id, charge, "Fournisseur indisponible");
+    console.error(`WALLET_ORDER_MTP_FETCH | ${e instanceof Error ? e.message : String(e)}`);
     return NextResponse.json({ error: "Fournisseur indisponible" }, { status: 502 });
   }
 
-  if (!japRes.order) {
-    await refund(session.id, charge, `JAP: ${japRes.error ?? "erreur inconnue"}`);
-    return NextResponse.json({ error: japRes.error ?? "Erreur fournisseur" }, { status: 502 });
+  if (!mtpRes.order) {
+    await refund(session.id, charge, `MTP: ${mtpRes.error ?? "erreur inconnue"}`);
+    return NextResponse.json({ error: mtpRes.error ?? "Erreur fournisseur" }, { status: 502 });
   }
 
   try {
     await prisma.$transaction([
       prisma.order.create({
         data: {
-          japOrderId: japRes.order,
+          japOrderId: mtpRes.order,
           userId: session.id,
           serviceId,
           link,
@@ -113,14 +113,14 @@ export async function POST(req: NextRequest) {
           amount: -charge,
           type: "ORDER_PAYMENT",
           status: "COMPLETED",
-          note: `Commande JAP #${japRes.order}`,
+          note: `Commande MTP #${mtpRes.order}`,
         },
       }),
     ]);
   } catch (e) {
-    // Commande déjà envoyée chez JAP mais pas enregistrée en DB : log critique
+    // Commande déjà envoyée chez MTP mais pas enregistrée en DB : log critique
     console.error(
-      `WALLET_ORDER_DB_DESYNC | user=${session.id} japOrder=${japRes.order} charge=${charge} err=${e instanceof Error ? e.message : String(e)}`
+      `WALLET_ORDER_DB_DESYNC | user=${session.id} mtpOrder=${mtpRes.order} charge=${charge} err=${e instanceof Error ? e.message : String(e)}`
     );
     return NextResponse.json(
       { error: "Commande envoyée mais non enregistrée — contactez le support" },
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true, japOrderId: japRes.order });
+  return NextResponse.json({ success: true, japOrderId: mtpRes.order });
 }
 
 async function refund(userId: string, amount: number, reason: string) {

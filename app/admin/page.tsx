@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function AdminPage() {
   const [stats, setStats] = useState({ orders: 0, services: 0, revenue: 0 });
-  const [japBalance, setJapBalance] = useState<string | null>(null);
+  const [mtpBalance, setMtpBalance] = useState<string | null>(null);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [recalculating, setRecalculating] = useState(false);
@@ -32,11 +32,11 @@ export default function AdminPage() {
     setBalanceLoading(true);
     const res = await fetch("/api/admin/balance");
     const data = await res.json();
-    setJapBalance(data.error ? `Erreur: ${data.error}` : `${data.balance} ${data.currency ?? "USD"}`);
+    setMtpBalance(data.error ? `Erreur: ${data.error}` : `${data.balance} ${data.currency ?? "USD"}`);
     setBalanceLoading(false);
   }
 
-  async function syncJAP() {
+  async function syncMTP() {
     setSyncing(true);
     setSyncResult(null);
     const res = await fetch("/api/admin/sync", {
@@ -109,8 +109,8 @@ export default function AdminPage() {
           <div style={{ fontSize: 13, color: "#6b7280", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
             Solde du panel SMM
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: japBalance ? "#10b981" : "#374151", marginBottom: 20 }}>
-            {japBalance ?? "—"}
+          <div style={{ fontSize: 28, fontWeight: 800, color: mtpBalance ? "#10b981" : "#374151", marginBottom: 20 }}>
+            {mtpBalance ?? "—"}
           </div>
           <button onClick={checkBalance} disabled={balanceLoading}
             style={{ padding: "10px 20px", borderRadius: 10, background: "#22222f", border: "1px solid #2e2e3e", color: "#d1d5db", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: balanceLoading ? 0.5 : 1, fontFamily: "inherit" }}>
@@ -124,7 +124,7 @@ export default function AdminPage() {
             Synchronisation des services
           </div>
           <div style={{ fontSize: 13, color: "#9ca3af", marginBottom: 16, lineHeight: 1.6 }}>
-            Multiplicateur ×{markup} — JAP à 1,00 €/1K → vous vendez à {(1 * parseFloat(markup || "2")).toFixed(2)} €/1K
+            Multiplicateur ×{markup} — MTP à 1,00 €/1K → vous vendez à {(1 * parseFloat(markup || "2")).toFixed(2)} €/1K
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
@@ -134,7 +134,7 @@ export default function AdminPage() {
           </div>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button onClick={syncJAP} disabled={syncing || recalculating}
+            <button onClick={syncMTP} disabled={syncing || recalculating}
               style={{ padding: "10px 16px", borderRadius: 10, background: "#7c3aed", color: "#fff", fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", opacity: syncing || recalculating ? 0.5 : 1, fontFamily: "inherit" }}>
               {syncing ? "Sync…" : "Sync nouveaux"}
             </button>

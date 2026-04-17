@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { japGetServices } from "@/lib/jap";
+import { mtpGetServices } from "@/lib/mtp";
 import { requireAdminAuth } from "@/lib/adminAuth";
 
 function getTargeting(name: string, category: string) {
@@ -37,16 +37,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch services from provider
-    const japServices = await japGetServices();
-    if (!Array.isArray(japServices)) {
+    const mtpServices = await mtpGetServices();
+    if (!Array.isArray(mtpServices)) {
       return NextResponse.json(
-        { error: "Réponse inattendue du fournisseur: " + JSON.stringify(japServices).slice(0, 200) },
+        { error: "Réponse inattendue du fournisseur: " + JSON.stringify(mtpServices).slice(0, 200) },
         { status: 502 }
       );
     }
 
     // Filter valid services (skip separators with aberrant rates)
-    const valid = japServices.filter(s => {
+    const valid = mtpServices.filter(s => {
       const rate = parseFloat(s.rate);
       return !isNaN(rate) && rate > 0 && rate <= 500;
     });
