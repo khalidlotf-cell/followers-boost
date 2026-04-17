@@ -49,6 +49,7 @@ model Order {
   startCount      Int?
   remains         Int?
   stripeSessionId String?  @unique
+  shopifyOrderId  String?  @unique
   customerEmail   String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -57,6 +58,7 @@ model Order {
 
   @@index([userId])
   @@index([status])
+  @@index([shopifyOrderId])
 }
 
 model Transaction {
@@ -76,5 +78,11 @@ model Transaction {
 model ProcessedStripeEvent {
   id        String   @id
   type      String
+  createdAt DateTime @default(now())
+}
+
+model ProcessedShopifyEvent {
+  id        String   @id
+  topic     String
   createdAt DateTime @default(now())
 }

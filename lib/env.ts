@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const schema = z.object({
+const coreSchema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL requis").transform(v => v.trim()),
   JWT_SECRET: z.string().min(32, "JWT_SECRET doit faire au moins 32 caractères"),
   ADMIN_PASSWORD: z.string().min(12, "ADMIN_PASSWORD doit faire au moins 12 caractères"),
@@ -15,22 +15,48 @@ const schema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 
-type Env = z.infer<typeof schema>;
+const shopifySchema = z.object({
+  SHOPIFY_STORE_DOMAIN: z
+    .string()
+    .trim()
+    .regex(/\.myshopify\.com$/, 'SHOPIFY_STORE_DOMAIN doit se terminer par ".myshopify.com"'),
+  SHOPIFY_ADMIN_TOKEN: z.string().startsWith("shpat_", "SHOPIFY_ADMIN_TOKEN invalide"),
+  SHOPIFY_WEBHOOK_SECRET: z.string().min(16, "SHOPIFY_WEBHOOK_SECRET requis"),
+  CRON_SECRET: z.string().min(16, "CRON_SECRET requis (token d'auth pour Vercel Cron)"),
+});
 
-let cached: Env | null = null;
+type CoreEnv = z.infer<typeof coreSchema>;
+type ShopifyEnv = z.infer<typeof shopifySchema>;
+
+let cachedCore: CoreEnv | null = null;
+let cachedShopify: ShopifyEnv | null = null;
 
 /**
- * Renvoie les env vars validées. Crash au premier appel si invalides.
- * Les valeurs sont nettoyées (trim) pour éviter les pièges du type "espace
- * parasite dans Vercel" qui cassait Stripe "Not a valid URL".
+ * Env vars cœur — validées au 1er appel. Les valeurs sont trim()-ées pour éviter
+ * les espaces parasites (piège Vercel qui a cassé Stripe "Not a valid URL").
  */
-export function env(): Env {
-  if (cached) return cached;
-  const parsed = schema.safeParse(process.env);
+export function env(): CoreEnv {
+  if (cachedCore) return cachedCore;
+  const parsed = coreSchema.safeParse(process.env);
   if (!parsed.success) {
     const issues = parsed.error.issues.map(i => `  - ${i.path.join(".")}: ${i.message}`).join("\n");
     throw new Error(`Configuration d'environnement invalide :\n${issues}`);
   }
-  cached = parsed.data;
-  return cached;
+  cachedCore = parsed.data;
+  return cachedCore;
+}
+
+/**
+ * Env Shopify — appelée uniquement depuis les routes liées à Shopify.
+ * Non-requise pour faire tourner le reste de l'app pendant la phase de migration.
+ */
+export function shopifyEnv(): ShopifyEnv {
+  if (cachedShopify) return cachedShopify;
+  const parsed = shopifySchema.safeParse(process.env);
+  if (!parsed.success) {
+    const issues = parsed.error.issues.map(i => `  - ${i.path.join(".")}: ${i.message}`).join("\n");
+    throw new Error(`Configuration Shopify invalide :\n${issues}`);
+  }
+  cachedShopify = parsed.data;
+  return cachedShopify;
 }
