@@ -1,8 +1,9 @@
+import { env } from "./env";
+
 const JAP_URL = "https://morethanpanel.com/api/v2";
-const JAP_KEY = process.env.MTP_API_KEY!;
 
 async function japPost(params: Record<string, string>) {
-  const body = new URLSearchParams({ key: JAP_KEY, ...params });
+  const body = new URLSearchParams({ key: env().MTP_API_KEY, ...params });
   const res = await fetch(JAP_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },

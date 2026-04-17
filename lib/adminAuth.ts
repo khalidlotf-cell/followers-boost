@@ -1,35 +1,57 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import { env } from "./env";
 
-/**
- * Token de session dérivé du mot de passe admin — change automatiquement si le
- * mot de passe change, jamais hardcodé dans le code source.
- */
-export function getAdminSessionToken(): string {
-  const password = process.env.ADMIN_PASSWORD;
-  if (!password) throw new Error("ADMIN_PASSWORD environment variable is required");
-  return crypto.createHash("sha256").update(`vyrlo_admin:${password}`).digest("hex");
+const ADMIN_COOKIE = "admin_token";
+const ADMIN_TTL_SECONDS = 60 * 60 * 8; // 8h
+
+interface AdminSession {
+  sub: "admin";
+}
+
+/** Signe un JWT admin à courte durée. */
+export function signAdminToken(): string {
+  const payload: AdminSession = { sub: "admin" };
+  return jwt.sign(payload, env().JWT_SECRET, { expiresIn: ADMIN_TTL_SECONDS });
+}
+
+/** Retourne la config cookie à utiliser avec res.cookies.set(...). */
+export function adminCookieOptions() {
+  return {
+    name: ADMIN_COOKIE,
+    value: signAdminToken(),
+    httpOnly: true,
+    secure: env().NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge: ADMIN_TTL_SECONDS,
+    path: "/",
+  };
+}
+
+export function clearAdminCookie() {
+  return { name: ADMIN_COOKIE, value: "", maxAge: 0, path: "/" };
+}
+
+/** Renvoie true si le JWT admin est valide, non expiré. */
+export function verifyAdminToken(token: string | undefined): boolean {
+  if (!token) return false;
+  try {
+    const decoded = jwt.verify(token, env().JWT_SECRET) as AdminSession;
+    return decoded?.sub === "admin";
+  } catch {
+    return false;
+  }
 }
 
 /**
- * Vérifie le cookie admin_token. Renvoie une NextResponse 401 si invalide,
- * ou null si l'authentification est OK.
+ * Pour les routes API : renvoie une 401 si l'auth admin échoue, sinon null.
  */
 export async function requireAdminAuth(): Promise<NextResponse | null> {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("admin_token")?.value ?? "";
-    const expected = getAdminSessionToken();
-
-    const valid = token.length === expected.length &&
-      crypto.timingSafeEqual(Buffer.from(token), Buffer.from(expected));
-
-    if (!valid) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-    }
-    return null;
-  } catch {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ADMIN_COOKIE)?.value;
+  if (!verifyAdminToken(token)) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
+  return null;
 }

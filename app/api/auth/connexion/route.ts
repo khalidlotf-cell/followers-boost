@@ -3,9 +3,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signToken, setAuthCookie } from "@/lib/auth";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { loginSchema } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
-  // Rate limiting : 5 tentatives de connexion / 15 minutes par IP (anti brute force)
   const ip = getClientIp(req);
   if (!checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000)) {
     return NextResponse.json(
@@ -15,19 +15,18 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { email, password } = await req.json();
-
-    if (!email || !password) {
-      return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
-    }
-
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
+    const parsed = loginSchema.safeParse(await req.json());
+    if (!parsed.success) {
       return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });
     }
+    const { email, password } = parsed.data;
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    // Hash factice pour éviter le timing oracle qui révèle si l'email existe
+    const hash = user?.password ?? "$2a$12$C6UzMDM.H6dfI/f/IKcEeO2eKVJtKvKmjQUJd3vLLqR0VYxY6Cd62";
+    const valid = await bcrypt.compare(password, hash);
+
+    if (!user || !valid) {
       return NextResponse.json({ error: "Email ou mot de passe incorrect" }, { status: 401 });
     }
 
@@ -35,7 +34,8 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json({ success: true, role: user.role });
     res.cookies.set(setAuthCookie(token));
     return res;
-  } catch {
+  } catch (e) {
+    console.error(`LOGIN_ERROR | ${e instanceof Error ? e.message : String(e)}`);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }

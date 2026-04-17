@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { japAddOrder } from "@/lib/jap";
+import { computeCharge, assertChargeWithinLimit } from "@/lib/pricing";
+import { singleOrderSchema } from "@/lib/validation";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export async function GET() {
   try {
@@ -18,67 +21,80 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  let session;
   try {
-    const session = await requireAuth();
-    const { serviceId, link, quantity } = await req.json();
+    session = await requireAuth();
+  } catch {
+    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+  }
 
-    if (!serviceId || !link || !quantity) {
-      return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
-    }
+  // Limite par utilisateur : 20 commandes wallet / 10 min (anti abus du solde)
+  if (!checkRateLimit(`wallet_order:${session.id}`, 20, 10 * 60 * 1000)) {
+    return NextResponse.json(
+      { error: "Trop de commandes en peu de temps. Réessayez dans quelques minutes." },
+      { status: 429 }
+    );
+  }
+  // Et en plus une limite IP pour éviter un compte compromis spammé depuis une IP
+  if (!checkRateLimit(`wallet_order_ip:${getClientIp(req)}`, 60, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Trop de requêtes" }, { status: 429 });
+  }
 
-    // Validation URL — protection XSS/injection
-    try {
-      const parsed = new URL(link);
-      if (!["http:", "https:"].includes(parsed.protocol)) {
-        return NextResponse.json({ error: "URL invalide" }, { status: 400 });
-      }
-    } catch {
-      return NextResponse.json({ error: "URL invalide" }, { status: 400 });
-    }
+  const parsed = singleOrderSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Requête invalide" },
+      { status: 400 }
+    );
+  }
+  const { serviceId, link, quantity } = parsed.data;
 
-    const qty = Math.floor(Number(quantity));
-    if (!Number.isFinite(qty) || qty <= 0) {
-      return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
-    }
+  // Prisma v7 : findUnique n'accepte que les clés uniques → findFirst pour filtrer active
+  const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
+  if (!service) {
+    return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
+  }
 
-    const service = await prisma.service.findUnique({ where: { id: serviceId, active: true } });
-    if (!service) {
-      return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
-    }
+  if (quantity < service.min || quantity > service.max) {
+    return NextResponse.json(
+      { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
+      { status: 400 }
+    );
+  }
 
-    if (qty < service.min || qty > service.max) {
-      return NextResponse.json(
-        { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
-        { status: 400 }
-      );
-    }
+  const charge = computeCharge(quantity, service.ourRate);
+  try {
+    assertChargeWithinLimit(charge);
+  } catch {
+    return NextResponse.json({ error: "Montant hors limites" }, { status: 400 });
+  }
 
-    const charge = parseFloat(((qty / 1000) * service.ourRate).toFixed(4));
+  // Débit atomique : refusé si solde insuffisant
+  try {
+    await prisma.user.update({
+      where: { id: session.id, balance: { gte: charge } },
+      data: { balance: { decrement: charge } },
+    });
+  } catch {
+    return NextResponse.json({ error: "Solde insuffisant" }, { status: 402 });
+  }
 
-    // Vérification et débit atomiques — évite la race condition sur le solde
-    let updatedUser;
-    try {
-      updatedUser = await prisma.user.update({
-        where: { id: session.id, balance: { gte: charge } },
-        data: { balance: { decrement: charge } },
-      });
-    } catch {
-      return NextResponse.json({ error: "Solde insuffisant" }, { status: 402 });
-    }
-    void updatedUser;
+  // Appel JAP
+  let japRes: { order?: number; error?: string };
+  try {
+    japRes = await japAddOrder(serviceId, link, quantity);
+  } catch (e) {
+    await refund(session.id, charge, "JAP indisponible");
+    console.error(`WALLET_ORDER_JAP_FETCH | ${e instanceof Error ? e.message : String(e)}`);
+    return NextResponse.json({ error: "Fournisseur indisponible" }, { status: 502 });
+  }
 
-    // Envoyer la commande à JAP
-    const japRes = await japAddOrder(serviceId, link, qty);
-    if (!japRes.order) {
-      // Rembourser si JAP échoue
-      await prisma.user.update({
-        where: { id: session.id },
-        data: { balance: { increment: charge } },
-      });
-      return NextResponse.json({ error: japRes.error || "Erreur JAP" }, { status: 502 });
-    }
+  if (!japRes.order) {
+    await refund(session.id, charge, `JAP: ${japRes.error ?? "erreur inconnue"}`);
+    return NextResponse.json({ error: japRes.error ?? "Erreur fournisseur" }, { status: 502 });
+  }
 
-    // Créer la commande et la transaction
+  try {
     await prisma.$transaction([
       prisma.order.create({
         data: {
@@ -86,7 +102,7 @@ export async function POST(req: NextRequest) {
           userId: session.id,
           serviceId,
           link,
-          quantity: qty,
+          quantity,
           charge,
           status: "PENDING",
         },
@@ -97,15 +113,44 @@ export async function POST(req: NextRequest) {
           amount: -charge,
           type: "ORDER_PAYMENT",
           status: "COMPLETED",
-          note: `Commande #${japRes.order}`,
+          note: `Commande JAP #${japRes.order}`,
         },
       }),
     ]);
+  } catch (e) {
+    // Commande déjà envoyée chez JAP mais pas enregistrée en DB : log critique
+    console.error(
+      `WALLET_ORDER_DB_DESYNC | user=${session.id} japOrder=${japRes.order} charge=${charge} err=${e instanceof Error ? e.message : String(e)}`
+    );
+    return NextResponse.json(
+      { error: "Commande envoyée mais non enregistrée — contactez le support" },
+      { status: 500 }
+    );
+  }
 
-    return NextResponse.json({ success: true, japOrderId: japRes.order });
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Erreur serveur";
-    const status = msg === "Non authentifié" ? 401 : 500;
-    return NextResponse.json({ error: msg }, { status });
+  return NextResponse.json({ success: true, japOrderId: japRes.order });
+}
+
+async function refund(userId: string, amount: number, reason: string) {
+  try {
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { balance: { increment: amount } },
+      }),
+      prisma.transaction.create({
+        data: {
+          userId,
+          amount,
+          type: "REFUND",
+          status: "COMPLETED",
+          note: `Remboursement automatique : ${reason}`,
+        },
+      }),
+    ]);
+  } catch (e) {
+    console.error(
+      `WALLET_REFUND_FAILED | user=${userId} amount=${amount} reason=${reason} err=${e instanceof Error ? e.message : String(e)}`
+    );
   }
 }

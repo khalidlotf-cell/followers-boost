@@ -1,9 +1,8 @@
 import jwt from "jsonwebtoken";
+import { env } from "./env";
 
 function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error("JWT_SECRET environment variable is required");
-  return secret;
+  return env().JWT_SECRET;
 }
 
 export interface Session {

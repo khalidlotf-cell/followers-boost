@@ -1,8 +1,11 @@
 /**
- * Rate limiter in-memory simple.
- * Suffisant pour bloquer les bots basiques sur Vercel.
- * (Chaque instance serverless a sa propre mémoire — protège contre les attaques
- *  concentrées sur une même instance. Pour une protection distribuée, utiliser Upstash Redis.)
+ * Rate limiter in-memory (premier rempart contre bots/bruteforce).
+ *
+ * Limitations assumées :
+ * - Sur Vercel multi-instance, chaque instance a sa propre mémoire : un
+ *   attaquant distribué peut contourner. Pour une protection durable, migrer
+ *   vers Upstash Redis (TODO quand volume croît).
+ * - Purge périodique des entrées expirées pour éviter les fuites mémoire.
  */
 
 interface RateLimitEntry {
@@ -12,7 +15,6 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
-// Nettoyage périodique pour éviter les fuites mémoire
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of store) {
@@ -21,17 +23,14 @@ setInterval(() => {
 }, 60_000);
 
 /**
- * @param ip        Identifiant du client (IP ou autre)
- * @param limit     Nombre max de requêtes dans la fenêtre
- * @param windowMs  Durée de la fenêtre en ms
- * @returns true si la requête est autorisée, false si rate-limitée
+ * @returns true si la requête est autorisée, false si rate-limitée.
  */
-export function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
+export function checkRateLimit(key: string, limit: number, windowMs: number): boolean {
   const now = Date.now();
-  const entry = store.get(ip);
+  const entry = store.get(key);
 
   if (!entry || entry.resetAt < now) {
-    store.set(ip, { count: 1, resetAt: now + windowMs });
+    store.set(key, { count: 1, resetAt: now + windowMs });
     return true;
   }
 
@@ -41,9 +40,17 @@ export function checkRateLimit(ip: string, limit: number, windowMs: number): boo
   return true;
 }
 
-/** Extrait l'IP réelle depuis les headers Vercel/proxy */
+/**
+ * Extrait l'IP réelle depuis les headers Vercel/Cloudflare/proxy.
+ * Priorise les headers les plus fiables.
+ */
 export function getClientIp(req: Request): string {
-  const forwarded = (req as unknown as { headers: Headers }).headers.get("x-forwarded-for");
+  const h = req.headers;
+  const cfIp = h.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+  const realIp = h.get("x-real-ip");
+  if (realIp) return realIp.trim();
+  const forwarded = h.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return "unknown";
 }

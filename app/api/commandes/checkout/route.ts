@@ -2,62 +2,54 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { assertChargeWithinLimit, computeCharge } from "@/lib/pricing";
+import { singleOrderSchema } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
+  let session;
   try {
-    const session = await requireAuth();
-    const { serviceId, link, quantity } = await req.json();
-
-    if (!serviceId || !link || !quantity) {
-      return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
-    }
-
-    // Validation URL
-    try {
-      const parsed = new URL(link);
-      if (!["http:", "https:"].includes(parsed.protocol)) {
-        return NextResponse.json({ error: "URL invalide" }, { status: 400 });
-      }
-    } catch {
-      return NextResponse.json({ error: "URL invalide" }, { status: 400 });
-    }
-
-    const qty = Math.floor(Number(quantity));
-    if (!Number.isFinite(qty) || qty <= 0) {
-      return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
-    }
-
-    const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
-    if (!service) {
-      return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
-    }
-
-    if (qty < service.min || qty > service.max) {
-      return NextResponse.json(
-        { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
-        { status: 400 }
-      );
-    }
-
-    const charge = computeCharge(qty, service.ourRate);
-    assertChargeWithinLimit(charge);
-
-    const order = await prisma.order.create({
-      data: {
-        userId: session.id,
-        serviceId,
-        link,
-        quantity: qty,
-        charge,
-        status: "PENDING_PAYMENT",
-        customerEmail: session.email,
-      },
-    });
-
-    return NextResponse.json({ orderIds: [order.id] });
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Erreur serveur";
-    const status = msg === "Non authentifié" ? 401 : 500;
-    return NextResponse.json({ error: msg }, { status });
+    session = await requireAuth();
+  } catch {
+    return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
+
+  const parsed = singleOrderSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Requête invalide" },
+      { status: 400 }
+    );
+  }
+  const { serviceId, link, quantity } = parsed.data;
+
+  const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
+  if (!service) {
+    return NextResponse.json({ error: "Service introuvable" }, { status: 404 });
+  }
+  if (quantity < service.min || quantity > service.max) {
+    return NextResponse.json(
+      { error: `Quantité invalide (min: ${service.min}, max: ${service.max})` },
+      { status: 400 }
+    );
+  }
+
+  const charge = computeCharge(quantity, service.ourRate);
+  try {
+    assertChargeWithinLimit(charge);
+  } catch {
+    return NextResponse.json({ error: "Montant hors limites" }, { status: 400 });
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      userId: session.id,
+      serviceId,
+      link,
+      quantity,
+      charge,
+      status: "PENDING_PAYMENT",
+      customerEmail: session.email,
+    },
+  });
+
+  return NextResponse.json({ orderIds: [order.id] });
 }

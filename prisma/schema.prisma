@@ -72,3 +72,9 @@ model Transaction {
 
   @@index([userId])
 }
+
+model ProcessedStripeEvent {
+  id        String   @id
+  type      String
+  createdAt DateTime @default(now())
+}

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 import { MAX_CHARGE_EUR, computeCharge } from "@/lib/pricing";
-
-interface CartItem { serviceId: number; link: string; quantity: number }
+import { cartCheckoutSchema } from "@/lib/validation";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -12,43 +11,37 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { items, email }: { items: CartItem[]; email?: string } = await req.json();
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json({ error: "Panier vide" }, { status: 400 });
+    const parsed = cartCheckoutSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Requête invalide" },
+        { status: 400 }
+      );
     }
-    if (items.length > 10) {
-      return NextResponse.json({ error: "Maximum 10 articles par commande" }, { status: 400 });
-    }
+    const { items, email } = parsed.data;
 
-    const validated: Array<{ service: { id: number; name: string; ourRate: number }, link: string, qty: number, charge: number }> = [];
+    const serviceIds = [...new Set(items.map(i => i.serviceId))];
+    const services = await prisma.service.findMany({
+      where: { id: { in: serviceIds }, active: true },
+    });
+    const serviceMap = new Map(services.map(s => [s.id, s]));
 
+    const validated: Array<{ serviceId: number; link: string; qty: number; charge: number; name: string }> = [];
     for (const item of items) {
-      const { serviceId, link, quantity } = item;
-
-      try {
-        const parsed = new URL(link);
-        if (!["http:", "https:"].includes(parsed.protocol)) {
-          return NextResponse.json({ error: `URL invalide : ${link}` }, { status: 400 });
-        }
-      } catch {
-        return NextResponse.json({ error: `URL invalide : ${link}` }, { status: 400 });
+      const service = serviceMap.get(item.serviceId);
+      if (!service) {
+        return NextResponse.json({ error: `Service ${item.serviceId} introuvable` }, { status: 404 });
       }
-
-      const qty = Math.floor(Number(quantity));
-      if (!Number.isFinite(qty) || qty <= 0) {
-        return NextResponse.json({ error: "Quantité invalide" }, { status: 400 });
-      }
-
-      const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
-      if (!service) return NextResponse.json({ error: `Service ${serviceId} introuvable` }, { status: 404 });
-
-      if (qty < service.min || qty > service.max) {
+      if (item.quantity < service.min || item.quantity > service.max) {
         return NextResponse.json({ error: `Quantité invalide pour ${service.name}` }, { status: 400 });
       }
-
-      const charge = computeCharge(qty, service.ourRate);
-      validated.push({ service, link, qty, charge });
+      validated.push({
+        serviceId: service.id,
+        link: item.link,
+        qty: item.quantity,
+        charge: computeCharge(item.quantity, service.ourRate),
+        name: service.name,
+      });
     }
 
     const totalCharge = validated.reduce((s, v) => s + v.charge, 0);
@@ -56,17 +49,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Montant total hors limites (max ${MAX_CHARGE_EUR}€)` }, { status: 400 });
     }
 
-    // Créer toutes les commandes en DB
-    const orders = await Promise.all(
+    const orders = await prisma.$transaction(
       validated.map(v =>
         prisma.order.create({
           data: {
-            serviceId: v.service.id,
+            serviceId: v.serviceId,
             link: v.link,
             quantity: v.qty,
             charge: v.charge,
             status: "PENDING_PAYMENT",
-            customerEmail: email || null,
+            customerEmail: email ?? null,
           },
         })
       )
@@ -74,7 +66,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ orderIds: orders.map(o => o.id) });
   } catch (e) {
-    console.error("Cart checkout error:", e);
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error(`CART_CHECKOUT_ERROR | ${msg}`);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
