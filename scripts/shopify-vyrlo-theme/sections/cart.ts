@@ -74,7 +74,7 @@ export const SECTION = String.raw`{% comment %}
   <div class="ct-container">
     <div class="ct-head">
       <h1 class="ct-title">Votre panier</h1>
-      <p class="ct-sub">{% if cart.item_count > 0 %}{{ cart.item_count }} article{% if cart.item_count > 1 %}s{% endif %} — livraison progressive, sans mot de passe{% else %}Ajoutez des services à votre panier pour continuer{% endif %}</p>
+      <p class="ct-sub">{% if cart.item_count > 0 %}{{ cart.item_count }} article{% if cart.item_count > 1 %}s{% endif %} · livraison progressive, sans mot de passe{% else %}Ajoutez des services à votre panier pour continuer{% endif %}</p>
     </div>
 
     {% if cart.item_count == 0 %}

@@ -122,9 +122,9 @@ export const SECTION = String.raw`{% comment %}
         { "type": "text", "id": "title", "label": "Titre palier", "default": "1 000 abonnés" },
         { "type": "text", "id": "organic_duree", "label": "Org · Durée", "default": "2 à 5 mois" },
         { "type": "text", "id": "service_duree", "label": "Srv · Durée", "default": "24 à 72h" },
-        { "type": "text", "id": "organic_effort", "label": "Org · Effort", "default": "2–3h par jour" },
+        { "type": "text", "id": "organic_effort", "label": "Org · Effort", "default": "2 à 3h par jour" },
         { "type": "text", "id": "service_effort", "label": "Srv · Effort", "default": "2 minutes" },
-        { "type": "text", "id": "organic_cout", "label": "Org · Coût", "default": "300 – 500 €" },
+        { "type": "text", "id": "organic_cout", "label": "Org · Coût", "default": "300 à 500 €" },
         { "type": "text", "id": "service_cout", "label": "Srv · Coût", "default": "À partir de 8,90 €" }
       ]
     }

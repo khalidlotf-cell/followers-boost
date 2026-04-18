@@ -29,9 +29,9 @@ export const STEPS_BLOCKS = blocks([
 ]);
 
 export const COMPARATIF_BLOCKS = blocks([
-  ["t1k", "tier", { tab_label: "1K", title: "1 000 abonnés", organic_duree: "2 à 5 mois", service_duree: "24 à 72h", organic_effort: "2–3h par jour", service_effort: "2 minutes", organic_cout: "300 – 500 €", service_cout: "À partir de 8,90 €" }],
-  ["t5k", "tier", { tab_label: "5K", title: "5 000 abonnés", organic_duree: "8 à 18 mois", service_duree: "3 à 5 jours", organic_effort: "3–4h par jour", service_effort: "2 minutes", organic_cout: "500 – 1 500 €", service_cout: "À partir de 29,90 €" }],
-  ["t10k", "tier", { tab_label: "10K", title: "10 000 abonnés", organic_duree: "1 à 3 ans", service_duree: "5 à 8 jours", organic_effort: "4–5h par jour", service_effort: "2 minutes", organic_cout: "2 000 – 3 000 €", service_cout: "À partir de 74,90 €" }],
+  ["t1k", "tier", { tab_label: "1K", title: "1 000 abonnés", organic_duree: "2 à 5 mois", service_duree: "24 à 72h", organic_effort: "2 à 3h par jour", service_effort: "2 minutes", organic_cout: "300 à 500 €", service_cout: "À partir de 8,90 €" }],
+  ["t5k", "tier", { tab_label: "5K", title: "5 000 abonnés", organic_duree: "8 à 18 mois", service_duree: "3 à 5 jours", organic_effort: "3 à 4h par jour", service_effort: "2 minutes", organic_cout: "500 à 1 500 €", service_cout: "À partir de 29,90 €" }],
+  ["t10k", "tier", { tab_label: "10K", title: "10 000 abonnés", organic_duree: "1 à 3 ans", service_duree: "5 à 8 jours", organic_effort: "4 à 5h par jour", service_effort: "2 minutes", organic_cout: "2 000 à 3 000 €", service_cout: "À partir de 74,90 €" }],
 ]);
 
 export const GUARANTEES_BLOCKS = blocks([
@@ -62,11 +62,11 @@ export const REVIEWS_BLOCKS = blocks([
 export const SEO_BLOCKS = blocks([
   ["seo1", "seo_block", {
     title: "Pourquoi acheter des followers sur les réseaux sociaux ?",
-    content: "<p>Le nombre d'abonnés d'un profil est la première chose qu'un visiteur regarde avant de décider de s'abonner ou d'acheter. Un compte avec 500 followers et un compte avec 20 000 followers proposant le même contenu n'obtiendront pas le même taux de conversion — c'est la preuve sociale. Les algorithmes de toutes les plateformes (Instagram, TikTok, YouTube) fonctionnent pareil : ils poussent les comptes qui grossissent vite vers de nouvelles audiences. Acheter des followers ou des likes, c'est enclencher ce mécanisme et donner à votre compte la visibilité initiale qu'il mérite.</p><p>Combiné à du contenu de qualité, un boost initial peut multiplier votre portée organique par 5 à 20 dans les semaines qui suivent. Des créateurs et des marques utilisent ces services régulièrement avant des lancements, des collaborations ou des campagnes pour maximiser leur impact dès le départ.</p>",
+    content: "<p>Le nombre d'abonnés d'un profil est la première chose qu'un visiteur regarde avant de décider de s'abonner ou d'acheter. Un compte avec 500 followers et un compte avec 20 000 followers proposant le même contenu n'obtiendront pas le même taux de conversion, c'est la preuve sociale. Les algorithmes de toutes les plateformes (Instagram, TikTok, YouTube) fonctionnent pareil : ils poussent les comptes qui grossissent vite vers de nouvelles audiences. Acheter des followers ou des likes, c'est enclencher ce mécanisme et donner à votre compte la visibilité initiale qu'il mérite.</p><p>Combiné à du contenu de qualité, un boost initial peut multiplier votre portée organique par 5 à 20 dans les semaines qui suivent. Des créateurs et des marques utilisent ces services régulièrement avant des lancements, des collaborations ou des campagnes pour maximiser leur impact dès le départ.</p>",
   }],
   ["seo2", "seo_block", {
     title: "Comment fonctionne Vyrlo ?",
-    content: "<p>Vyrlo connecte votre commande à des services de croissance adaptés à chaque plateforme. Contrairement aux offres bas de gamme qui livrent en masse du jour au lendemain — ce qui alerterait immédiatement les algorithmes — Vyrlo livre de manière progressive sur plusieurs heures pour une croissance naturelle.</p><p>Aucun mot de passe ne vous est demandé. Le service fonctionne uniquement à partir du lien public de votre profil ou de votre publication. Le paiement est sécurisé par Shopify (CB, Visa, Mastercard, Apple Pay) et la commande démarre automatiquement après validation. Le support est disponible 7j/7 en français pour tout suivi de commande.</p>",
+    content: "<p>Vyrlo connecte votre commande à des services de croissance adaptés à chaque plateforme. Contrairement aux offres bas de gamme qui livrent en masse du jour au lendemain, ce qui alerterait immédiatement les algorithmes, Vyrlo livre de manière progressive sur plusieurs heures pour une croissance naturelle.</p><p>Aucun mot de passe ne vous est demandé. Le service fonctionne uniquement à partir du lien public de votre profil ou de votre publication. Le paiement est sécurisé par Shopify (CB, Visa, Mastercard, Apple Pay) et la commande démarre automatiquement après validation. Le support est disponible 7j/7 en français pour tout suivi de commande.</p>",
   }],
   ["seo3", "seo_block", {
     title: "Acheter des abonnés Instagram, TikTok ou YouTube : ce qu'il faut savoir",

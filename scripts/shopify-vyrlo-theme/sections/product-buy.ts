@@ -351,7 +351,7 @@ export const SECTION = String.raw`{% comment %}
         var v = findVariant();
         if (!v) {
           addBtn.disabled = true; buyBtn.disabled = true;
-          priceEl.textContent = '—';
+          priceEl.textContent = '';
           qtyLabelEl.textContent = 'Indisponible';
           priceOldEl.textContent = '';
           discountEl.style.display = 'none';
