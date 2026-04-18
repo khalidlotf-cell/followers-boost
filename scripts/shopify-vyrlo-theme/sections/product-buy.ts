@@ -86,19 +86,21 @@ export const SECTION = String.raw`{% comment %}
   }
 
   /* ── Voir plus ── */
-  .vyrlo-buy-{{ section.id }} .vbuy-extra { display: none; margin-top: 10px; }
-  .vyrlo-buy-{{ section.id }}.vbuy-expanded .vbuy-extra { display: flex; }
+  .vyrlo-buy-{{ section.id }} .vbuy-extra { display: none; margin-top: 12px; }
+  .vyrlo-buy-{{ section.id }}.vbuy-expanded .vbuy-extra { display: flex; flex-wrap: wrap; gap: 10px; }
   .vyrlo-buy-{{ section.id }} .vbuy-more-btn {
-    width: 100%; margin-top: 14px; padding: 16px;
-    background: #0f172a; color: #fff; border: none; border-radius: 100px;
-    font-weight: 700; font-size: 14.5px; cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: background 0.15s;
+    width: 100%; margin-top: 16px; padding: 20px 24px;
+    background: #0a0f1e; color: #fff; border: none; border-radius: 18px;
+    font-weight: 800; font-size: 16px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    transition: background 0.15s, transform 0.15s;
   }
-  .vyrlo-buy-{{ section.id }} .vbuy-more-btn:hover { background: #1e293b; }
+  .vyrlo-buy-{{ section.id }} .vbuy-more-btn:hover { background: #141a2e; transform: translateY(-1px); }
+  .vyrlo-buy-{{ section.id }} .vbuy-more-icon { font-size: 18px; }
   .vyrlo-buy-{{ section.id }} .vbuy-more-count {
-    background: #fff; color: #0f172a; font-weight: 800;
-    padding: 3px 10px; border-radius: 100px; font-size: 12px;
+    background: #fff; color: #0a0f1e; font-weight: 800;
+    padding: 5px 14px; border-radius: 100px; font-size: 14px;
+    letter-spacing: -0.01em;
   }
   .vyrlo-buy-{{ section.id }}.vbuy-expanded .vbuy-more-btn { display: none; }
 
@@ -220,7 +222,8 @@ export const SECTION = String.raw`{% comment %}
         </div>
         {%- assign extra_count = quantities.size | minus: visible -%}
         <button type="button" class="vbuy-more-btn" data-buy-more>
-          <span>⊕ Voir plus</span>
+          <span class="vbuy-more-icon">⊕</span>
+          <span>Voir plus</span>
           <span class="vbuy-more-count">+{{ extra_count }}</span>
         </button>
       {% endif %}
