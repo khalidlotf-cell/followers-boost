@@ -17,7 +17,7 @@ export const SECTION = String.raw`{% comment %}
 -%}
 
 {% style %}
-  .vyrlo-cp-{{ section.id }} { background: {{ section.settings.bg | default: '#ffffff' }}; padding: 56px 0 72px; border-radius: {{ section.settings.radius | default: 32 }}px {{ section.settings.radius | default: 32 }}px 0 0; margin-top: -32px; position: relative; z-index: 2; font-family: Inter, system-ui, sans-serif; }
+  .vyrlo-cp-{{ section.id }} { background: {{ section.settings.bg | default: '#ffffff' }}; padding: 72px 0; font-family: Inter, system-ui, sans-serif; }
   .vyrlo-cp-{{ section.id }} .cp-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
   .vyrlo-cp-{{ section.id }} .cp-head { margin-bottom: 32px; text-align: center; }
   .vyrlo-cp-{{ section.id }} .cp-eyebrow { font-size: 12px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
