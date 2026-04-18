@@ -1,4 +1,6 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 /**
  * Enregistre (ou met à jour) les webhooks Shopify nécessaires.
