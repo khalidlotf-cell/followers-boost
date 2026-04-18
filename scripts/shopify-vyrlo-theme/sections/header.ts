@@ -101,8 +101,22 @@ export const SECTION = String.raw`{% comment %}
     </a>
 
     <nav class="vh-nav">
+      {%- assign nav_priority = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
       {%- for slug in platform_slugs -%}
-        <a href="/collections/{{ slug }}" class="vh-link">
+        {%- assign nav_col = collections[slug] -%}
+        {%- assign nav_url = '/collections/' | append: slug -%}
+        {%- assign nav_match = '' -%}
+        {%- for ord in nav_priority -%}
+          {%- if nav_match == '' -%}
+            {%- for pp in nav_col.products -%}
+              {%- if nav_match == '' and pp.handle contains ord -%}
+                {%- assign nav_match = pp.url -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if nav_match != '' -%}{%- assign nav_url = nav_match -%}{%- endif -%}
+        <a href="{{ nav_url }}" class="vh-link">
           {% render 'vyrlo-logo', slug: slug, size: 18 %}
           <span>{{ platform_labels[forloop.index0] }}</span>
         </a>
@@ -131,7 +145,20 @@ export const SECTION = String.raw`{% comment %}
       <div class="vh-mobile-label">Plateformes</div>
       <div class="vh-mobile-grid">
         {%- for slug in platform_slugs -%}
-          <a href="/collections/{{ slug }}" class="vh-mobile-link">
+          {%- assign mob_col = collections[slug] -%}
+          {%- assign mob_url = '/collections/' | append: slug -%}
+          {%- assign mob_match = '' -%}
+          {%- for ord in nav_priority -%}
+            {%- if mob_match == '' -%}
+              {%- for pp in mob_col.products -%}
+                {%- if mob_match == '' and pp.handle contains ord -%}
+                  {%- assign mob_match = pp.url -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if mob_match != '' -%}{%- assign mob_url = mob_match -%}{%- endif -%}
+          <a href="{{ mob_url }}" class="vh-mobile-link">
             {% render 'vyrlo-logo', slug: slug, size: 20 %}
             <span>{{ platform_labels[forloop.index0] }}</span>
           </a>

@@ -73,12 +73,25 @@ export const SECTION = String.raw`{% comment %}
 
       <div>
         <div class="vf-col-title">{{ section.settings.col1_title | default: 'Services' }}</div>
-        <a href="/collections/instagram" class="vf-col-link">Instagram</a>
-        <a href="/collections/tiktok" class="vf-col-link">TikTok</a>
-        <a href="/collections/youtube" class="vf-col-link">YouTube</a>
-        <a href="/collections/facebook" class="vf-col-link">Facebook</a>
-        <a href="/collections/spotify" class="vf-col-link">Spotify</a>
-        <a href="/collections/twitter" class="vf-col-link">X / Twitter</a>
+        {%- assign vf_priority = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
+        {%- assign vf_slugs = 'instagram,tiktok,youtube,facebook,spotify,twitter' | split: ',' -%}
+        {%- assign vf_labels = 'Instagram,TikTok,YouTube,Facebook,Spotify,X / Twitter' | split: ',' -%}
+        {%- for vf_slug in vf_slugs -%}
+          {%- assign vf_col = collections[vf_slug] -%}
+          {%- assign vf_url = '/collections/' | append: vf_slug -%}
+          {%- assign vf_match = '' -%}
+          {%- for ord in vf_priority -%}
+            {%- if vf_match == '' -%}
+              {%- for pp in vf_col.products -%}
+                {%- if vf_match == '' and pp.handle contains ord -%}
+                  {%- assign vf_match = pp.url -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if vf_match != '' -%}{%- assign vf_url = vf_match -%}{%- endif -%}
+          <a href="{{ vf_url }}" class="vf-col-link">{{ vf_labels[forloop.index0] }}</a>
+        {%- endfor -%}
       </div>
 
       <div>
