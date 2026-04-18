@@ -16,6 +16,8 @@ import { SECTION as CTA_BANNER } from "./shopify-vyrlo-theme/sections/cta-banner
 import { SECTION as COLLECTION_HERO } from "./shopify-vyrlo-theme/sections/collection-hero";
 import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/collection-products";
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
+import { SECTION as HEADER } from "./shopify-vyrlo-theme/sections/header";
+import { SECTION as FOOTER } from "./shopify-vyrlo-theme/sections/footer";
 import {
   PLATFORMS_BLOCKS, STEPS_BLOCKS, COMPARATIF_BLOCKS,
   GUARANTEES_BLOCKS, REVIEWS_BLOCKS, FAQ_BLOCKS,
@@ -65,7 +67,24 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   { key: "sections/vyrlo-collection-products.liquid", content: COLLECTION_PRODUCTS },
   // product
   { key: "sections/vyrlo-product-hero.liquid", content: PRODUCT_HERO },
+  // header & footer
+  { key: "sections/vyrlo-header.liquid", content: HEADER },
+  { key: "sections/vyrlo-footer.liquid", content: FOOTER },
 ];
+
+const HEADER_GROUP = {
+  type: "header",
+  name: "Header",
+  sections: { vyrlo_header: { type: "vyrlo-header", settings: {} } },
+  order: ["vyrlo_header"],
+};
+
+const FOOTER_GROUP = {
+  type: "footer",
+  name: "Footer",
+  sections: { vyrlo_footer: { type: "vyrlo-footer", settings: {} } },
+  order: ["vyrlo_footer"],
+};
 
 // ── Templates qui composent les sections ────────────────────────────────────
 
@@ -106,6 +125,10 @@ async function main() {
 
   console.log("\n━━━ Sections Liquid ━━━");
   for (const s of SECTIONS_TO_PUSH) await putAsset(main.id, s.key, s.content);
+
+  console.log("\n━━━ Section groups (header/footer) ━━━");
+  await putAsset(main.id, "sections/header-group.json", JSON.stringify(HEADER_GROUP, null, 2));
+  await putAsset(main.id, "sections/footer-group.json", JSON.stringify(FOOTER_GROUP, null, 2));
 
   console.log("\n━━━ Templates ━━━");
   await putAsset(main.id, "templates/index.json", JSON.stringify(INDEX_TEMPLATE, null, 2));
