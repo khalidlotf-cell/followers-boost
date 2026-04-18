@@ -21,6 +21,7 @@ import { SECTION as PRODUCT_ABOUT } from "./shopify-vyrlo-theme/sections/product
 import { SECTION as PRODUCT_WHY } from "./shopify-vyrlo-theme/sections/product-why";
 import { SECTION as PRODUCT_TRUST } from "./shopify-vyrlo-theme/sections/product-trust";
 import { SECTION as PRODUCT_FAQ } from "./shopify-vyrlo-theme/sections/product-faq";
+import { SECTION as PRODUCT_PLATFORM_SEO } from "./shopify-vyrlo-theme/sections/product-platform-seo";
 import { SECTION as HEADER } from "./shopify-vyrlo-theme/sections/header";
 import { SECTION as FOOTER } from "./shopify-vyrlo-theme/sections/footer";
 import { SECTION as PAGE_SEC } from "./shopify-vyrlo-theme/sections/page";
@@ -79,6 +80,7 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   { key: "sections/vyrlo-product-why.liquid", content: PRODUCT_WHY },
   { key: "sections/vyrlo-product-trust.liquid", content: PRODUCT_TRUST },
   { key: "sections/vyrlo-product-faq.liquid", content: PRODUCT_FAQ },
+  { key: "sections/vyrlo-product-platform-seo.liquid", content: PRODUCT_PLATFORM_SEO },
   // header & footer
   { key: "sections/vyrlo-header.liquid", content: HEADER },
   { key: "sections/vyrlo-footer.liquid", content: FOOTER },
@@ -183,12 +185,13 @@ async function main() {
       hero:       { type: "vyrlo-product-hero" },
       buy:        { type: "vyrlo-product-buy" },
       why:        { type: "vyrlo-product-why" },
+      pseo:       { type: "vyrlo-product-platform-seo" },
       reviews:    { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
       trust:      { type: "vyrlo-product-trust" },
       faq:        { type: "vyrlo-product-faq" },
       cta:        { type: "vyrlo-cta-banner" },
     },
-    order: ["announce", "hero", "buy", "why", "reviews", "trust", "faq", "cta"],
+    order: ["announce", "hero", "buy", "why", "pseo", "reviews", "trust", "faq", "cta"],
   };
   await putAsset(main.id, "templates/product.json", JSON.stringify(PRODUCT_TEMPLATE, null, 2));
 
