@@ -5,12 +5,27 @@ export const SECTION = String.raw`{% comment %}
 {%- assign platform_slugs = 'instagram,tiktok,youtube,facebook,twitter,spotify' | split: ',' -%}
 {%- assign platform_labels = 'Instagram,TikTok,YouTube,Facebook,Twitter,Spotify' | split: ',' -%}
 
+{%- comment -%}
+  Charge la police Outfit (Google Fonts) utilisée globalement sur vyrlo.fr.
+  Le preconnect puis le link stylesheet sont injectés une seule fois ici (header).
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap">
+
 {% style %}
+  /* Applique Outfit globalement au store, comme sur vyrlo.fr */
+  html, body, button, input, textarea, select,
+  [class*="vyrlo-"], [class*="vhero-"], [class*="vbuy-"],
+  [class*="vyr-"], .section-vyrlo-header, .section-vyrlo-footer {
+    font-family: 'Outfit', Inter, system-ui, -apple-system, sans-serif !important;
+  }
+
   .vyrlo-header-{{ section.id }} {
     position: sticky; top: 0; z-index: 200;
     background: #fff;
     border-bottom: 1.5px solid #ebebeb;
-    font-family: Inter, system-ui, sans-serif;
+    font-family: 'Outfit', Inter, system-ui, sans-serif;
   }
   .vyrlo-header-{{ section.id }} .vh-inner {
     max-width: 1180px; margin: 0 auto; padding: 0 20px;
