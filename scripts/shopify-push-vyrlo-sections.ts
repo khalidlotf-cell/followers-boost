@@ -16,6 +16,10 @@ import { SECTION as CTA_BANNER } from "./shopify-vyrlo-theme/sections/cta-banner
 import { SECTION as COLLECTION_HERO } from "./shopify-vyrlo-theme/sections/collection-hero";
 import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/collection-products";
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
+import {
+  PLATFORMS_BLOCKS, STEPS_BLOCKS, COMPARATIF_BLOCKS,
+  GUARANTEES_BLOCKS, REVIEWS_BLOCKS, FAQ_BLOCKS,
+} from "./shopify-vyrlo-theme/template-blocks";
 
 const API_VERSION = "2025-10";
 const SHOP = process.env.SHOPIFY_STORE_DOMAIN!;
@@ -69,12 +73,12 @@ const INDEX_TEMPLATE = {
   sections: {
     announce:    { type: "vyrlo-announce" },
     hero:        { type: "vyrlo-hero" },
-    platforms:   { type: "vyrlo-platforms" },
-    steps:       { type: "vyrlo-steps" },
-    comparatif:  { type: "vyrlo-comparatif" },
-    guarantees:  { type: "vyrlo-guarantees" },
-    reviews:     { type: "vyrlo-reviews" },
-    faq:         { type: "vyrlo-faq" },
+    platforms:   { type: "vyrlo-platforms",  ...PLATFORMS_BLOCKS },
+    steps:       { type: "vyrlo-steps",      ...STEPS_BLOCKS },
+    comparatif:  { type: "vyrlo-comparatif", ...COMPARATIF_BLOCKS },
+    guarantees:  { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
+    reviews:     { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
+    faq:         { type: "vyrlo-faq",        ...FAQ_BLOCKS },
     seo:         { type: "vyrlo-seo" },
     cta:         { type: "vyrlo-cta-banner" },
   },
@@ -86,9 +90,9 @@ const COLLECTION_TEMPLATE = {
     announce:    { type: "vyrlo-announce" },
     hero:        { type: "vyrlo-collection-hero" },
     products:    { type: "vyrlo-collection-products" },
-    guarantees:  { type: "vyrlo-guarantees" },
-    reviews:     { type: "vyrlo-reviews" },
-    faq:         { type: "vyrlo-faq" },
+    guarantees:  { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
+    reviews:     { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
+    faq:         { type: "vyrlo-faq",        ...FAQ_BLOCKS },
     cta:         { type: "vyrlo-cta-banner" },
   },
   order: ["announce", "hero", "products", "guarantees", "reviews", "faq", "cta"],
@@ -145,9 +149,15 @@ async function main() {
     if (sections[k]) delete sections[k];
   }
 
-  // Injecter les sections Vyrlo
+  // Injecter les sections Vyrlo (avec leurs blocks par défaut pour que ça s'affiche directement)
+  const EXTRAS_BLOCKS: Record<string, object> = {
+    vyrlo_p_guarantees: GUARANTEES_BLOCKS,
+    vyrlo_p_reviews:    REVIEWS_BLOCKS,
+    vyrlo_p_faq:        FAQ_BLOCKS,
+  };
   for (const [key, type] of Object.entries(EXTRAS)) {
-    sections[key] = { type };
+    const extra = EXTRAS_BLOCKS[key];
+    sections[key] = extra ? { type, ...extra } : { type };
   }
 
   // Reconstruire l'ordre : announce, hero, [natives en place], guarantees, reviews, faq, cta
