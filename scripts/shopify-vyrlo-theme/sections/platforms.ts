@@ -29,6 +29,31 @@ export const SECTION = String.raw`{% comment %}
   .vyrlo-pf-{{ section.id }} .pf-cell.pf-big .pf-name { font-size: 26px; }
   .vyrlo-pf-{{ section.id }} .pf-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .vyrlo-pf-{{ section.id }} .pf-tag { font-size: 11px; font-weight: 600; border-radius: 100px; padding: 3px 10px; white-space: nowrap; }
+
+  /* Reveal "Commander →" qui slide up au hover (desktop) */
+  .vyrlo-pf-{{ section.id }} .pf-reveal {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 13px 20px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    color: #fff; font-weight: 800; font-size: 12px;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 0 0 18px 18px;
+  }
+  .vyrlo-pf-{{ section.id }} .pf-cell:hover .pf-reveal { transform: translateY(0); }
+
+  /* Mobile : tags cachés, reveal toujours visible en bas de la carte */
+  @media (max-width: 768px) {
+    .vyrlo-pf-{{ section.id }} .pf-tags { display: none !important; }
+    .vyrlo-pf-{{ section.id }} .pf-reveal {
+      position: static !important;
+      transform: none !important;
+      border-radius: 10px !important;
+      margin-top: 14px;
+      padding: 11px 16px;
+    }
+  }
 {% endstyle %}
 
 <section class="vyrlo-pf-{{ section.id }}">
@@ -54,6 +79,10 @@ export const SECTION = String.raw`{% comment %}
                 <span class="pf-tag" style="color: {{ b.color }}; background: {{ b.color }}14;">{{ t | strip }}</span>
               {%- endfor -%}
             </div>
+          </div>
+          <div class="pf-reveal" style="background: linear-gradient(135deg, {{ b.color }} 0%, {{ b.color }}cc 100%);">
+            <span>Commander</span>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </a>
       {%- endfor -%}
