@@ -1,7 +1,8 @@
 export const SECTION = String.raw`{% comment %}
-  Vyrlo Product Hero — gradient plateforme, logo glass grand, H1 "Achetez des X",
-  3 badges glass, tabs vers les autres services de la même plateforme.
-  Reproduit /app/boutique/[platform] de vyrlo.fr.
+  Vyrlo Product Hero — clone exact /app/boutique/[platform] :
+  breadcrumb fin, logo 96×96 glass avec halo, H1 "Achetez des X\n<platform>"
+  sur 2 lignes, 3 pills trust (★4.9/5, ✓ commandes, ● actif), tabs icon+texte
+  sur fond noir translucide.
 {% endcomment %}
 
 {%- liquid
@@ -29,6 +30,7 @@ export const SECTION = String.raw`{% comment %}
                           assign platform_label = 'Spotify'
   endcase
   assign platform_collection = collections[platform]
+  assign short_title = product.title | remove: platform_label | strip
 -%}
 
 {% style %}
@@ -46,77 +48,76 @@ export const SECTION = String.raw`{% comment %}
   }
   .vyrlo-phero-{{ section.id }} .phero-inner {
     position: relative; z-index: 1;
-    max-width: 880px; margin: 0 auto; padding: 56px 24px 0;
+    max-width: 680px; margin: 0 auto; padding: 44px 20px 0;
   }
   .vyrlo-phero-{{ section.id }} .phero-crumb {
-    display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
-    font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 36px;
+    display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+    font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 28px;
   }
-  .vyrlo-phero-{{ section.id }} .phero-crumb a { color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.15s; }
-  .vyrlo-phero-{{ section.id }} .phero-crumb a:hover { color: #fff; }
-  .vyrlo-phero-{{ section.id }} .phero-crumb .phero-sep { opacity: 0.5; }
-  .vyrlo-phero-{{ section.id }} .phero-crumb .phero-cur { color: #fff; font-weight: 700; }
+  .vyrlo-phero-{{ section.id }} .phero-crumb a { color: rgba(255,255,255,0.6); text-decoration: none; }
+  .vyrlo-phero-{{ section.id }} .phero-crumb .phero-sep { opacity: 0.4; }
+  .vyrlo-phero-{{ section.id }} .phero-crumb .phero-cur { color: #fff; font-weight: 600; }
 
   .vyrlo-phero-{{ section.id }} .phero-logo-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
-  .vyrlo-phero-{{ section.id }} .phero-logo-bg {
-    position: relative; width: 120px; height: 120px; border-radius: 28px;
-    background: rgba(255,255,255,0.22); backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(255,255,255,0.4);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  .vyrlo-phero-{{ section.id }} .phero-logo-holder { position: relative; }
+  .vyrlo-phero-{{ section.id }} .phero-logo-halo {
+    position: absolute; inset: -12px; border-radius: 32px;
+    background: rgba(255,255,255,0.2); filter: blur(16px); pointer-events: none;
   }
-  .vyrlo-phero-{{ section.id }} .phero-logo-bg::before {
-    content: ""; position: absolute; inset: -16px; border-radius: 36px;
-    background: rgba(255,255,255,0.15); filter: blur(20px);
-    pointer-events: none; z-index: -1;
+  .vyrlo-phero-{{ section.id }} .phero-logo-bg {
+    position: relative; width: 96px; height: 96px; border-radius: 24px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
   }
 
   .vyrlo-phero-{{ section.id }} .phero-h1 {
-    font-size: clamp(36px, 5.5vw, 64px); font-weight: 800;
-    letter-spacing: -0.03em; line-height: 1.05; margin: 0 auto 36px;
-    max-width: 760px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.22);
-    color: #fff;
+    font-size: clamp(30px, 6vw, 48px); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.08; margin: 0 auto 18px;
+    color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,0.2);
   }
 
   .vyrlo-phero-{{ section.id }} .phero-badges {
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-    margin-bottom: 52px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; flex-wrap: wrap; margin-bottom: 36px;
   }
   .vyrlo-phero-{{ section.id }} .phero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 20px; border-radius: 100px;
-    background: rgba(255,255,255,0.2); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.25);
-    font-size: 14px; font-weight: 600; color: #fff;
-    white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 100px;
+    padding: 7px 14px;
+    font-size: 13px; font-weight: 600; color: #fff;
   }
-  .vyrlo-phero-{{ section.id }} .phero-badge-stars { color: #fde047; font-size: 13px; letter-spacing: 1px; }
-  .vyrlo-phero-{{ section.id }} .phero-badge-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.8);
+  .vyrlo-phero-{{ section.id }} .phero-badge.phero-badge-green {
+    background: rgba(74,222,128,0.2); border-color: rgba(74,222,128,0.4);
+  }
+  .vyrlo-phero-{{ section.id }} .phero-stars { display: inline-flex; gap: 1px; color: #fbbf24; font-size: 12px; }
+  .vyrlo-phero-{{ section.id }} .phero-star-rate { margin-left: 4px; font-weight: 700; }
+  .vyrlo-phero-{{ section.id }} .phero-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #4ade80; box-shadow: 0 0 6px #4ade80;
   }
 
   .vyrlo-phero-{{ section.id }} .phero-tabs-wrap {
     position: relative; z-index: 1;
-    background: rgba(0,0,0,0.18); backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,0.18);
   }
   .vyrlo-phero-{{ section.id }} .phero-tabs {
-    max-width: 1080px; margin: 0 auto; padding: 0 24px;
-    display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+    max-width: 680px; margin: 0 auto; padding: 0 16px;
+    display: flex; gap: 2px; overflow-x: auto;
+    scrollbar-width: none;
   }
+  .vyrlo-phero-{{ section.id }} .phero-tabs::-webkit-scrollbar { display: none; }
   .vyrlo-phero-{{ section.id }} .phero-tab {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 18px 24px; text-decoration: none;
-    font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.7);
+    flex-shrink: 0; padding: 16px 24px; text-decoration: none;
+    font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85);
     border-bottom: 3px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-    white-space: nowrap;
+    transition: all 0.15s; white-space: nowrap; letter-spacing: 0.01em;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.4);
   }
-  .vyrlo-phero-{{ section.id }} .phero-tab:hover { color: #fff; }
   .vyrlo-phero-{{ section.id }} .phero-tab.phero-active {
     color: #fff; border-bottom-color: #fff;
   }
@@ -130,33 +131,47 @@ export const SECTION = String.raw`{% comment %}
       <a href="/">Accueil</a>
       <span class="phero-sep">/</span>
       {% if platform != blank %}<a href="/collections/{{ platform }}">{{ platform_label }}</a><span class="phero-sep">/</span>{% endif %}
-      <span class="phero-cur">{{ product.title | remove: platform_label | strip }}</span>
+      <span class="phero-cur">{{ short_title }}</span>
     </div>
 
     {% if platform != blank %}
       <div class="phero-logo-wrap">
-        <div class="phero-logo-bg">{% render 'vyrlo-logo', slug: platform, size: 68 %}</div>
+        <div class="phero-logo-holder">
+          <span class="phero-logo-halo"></span>
+          <div class="phero-logo-bg">{% render 'vyrlo-logo', slug: platform, size: 60 %}</div>
+        </div>
       </div>
     {% endif %}
 
-    <h1 class="phero-h1">{{ section.settings.title_prefix | default: 'Achetez des' }} {{ product.title }}</h1>
+    <h1 class="phero-h1">{{ section.settings.title_prefix | default: 'Achetez des' }} {{ short_title }}<br>{{ platform_label }}</h1>
 
     <div class="phero-badges">
-      <div class="phero-badge"><span class="phero-badge-stars">★★★★★</span> <span>{{ section.settings.badge_rating | default: '4.9/5' }}</span></div>
-      <div class="phero-badge"><span>✓</span> <span>{{ section.settings.badge_orders | default: '2 500+ commandes' }}</span></div>
-      <div class="phero-badge"><span class="phero-badge-dot"></span> <span>{{ section.settings.badge_status | default: 'Service actif' }}</span></div>
+      <div class="phero-badge">
+        <span class="phero-stars">★★★★★</span>
+        <span class="phero-star-rate">{{ section.settings.badge_rating | default: '4.9/5' }}</span>
+      </div>
+      <div class="phero-badge">
+        <span>✓</span>
+        <span>{{ section.settings.badge_orders | default: '600+ commandes' }}</span>
+      </div>
+      <div class="phero-badge phero-badge-green">
+        <span class="phero-dot"></span>
+        <span>{{ section.settings.badge_status | default: 'Service actif' }}</span>
+      </div>
     </div>
   </div>
 
   {% if platform_collection.products.size > 1 %}
     {%- assign ptab_order = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
+    {%- assign ptab_icons = '👤,❤️,▶️,💬,🔁,🔖,🔁,🎵' | split: ',' -%}
     <div class="phero-tabs-wrap">
       <div class="phero-tabs">
         {%- for ord in ptab_order -%}
           {%- for p in platform_collection.products -%}
             {%- if p.handle contains ord -%}
+              {%- assign icon = ptab_icons[forloop.parentloop.index0] -%}
               <a href="{{ p.url }}" class="phero-tab {% if p.id == product.id %}phero-active{% endif %}">
-                <span>{{ p.title | remove: platform_label | strip }}</span>
+                {{ icon }} {{ p.title | remove: platform_label | strip }}
               </a>
             {%- endif -%}
           {%- endfor -%}
