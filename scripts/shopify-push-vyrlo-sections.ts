@@ -18,6 +18,9 @@ import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/c
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
 import { SECTION as PRODUCT_BUY } from "./shopify-vyrlo-theme/sections/product-buy";
 import { SECTION as PRODUCT_ABOUT } from "./shopify-vyrlo-theme/sections/product-about";
+import { SECTION as PRODUCT_WHY } from "./shopify-vyrlo-theme/sections/product-why";
+import { SECTION as PRODUCT_TRUST } from "./shopify-vyrlo-theme/sections/product-trust";
+import { SECTION as PRODUCT_FAQ } from "./shopify-vyrlo-theme/sections/product-faq";
 import { SECTION as HEADER } from "./shopify-vyrlo-theme/sections/header";
 import { SECTION as FOOTER } from "./shopify-vyrlo-theme/sections/footer";
 import { SECTION as PAGE_SEC } from "./shopify-vyrlo-theme/sections/page";
@@ -73,6 +76,9 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   { key: "sections/vyrlo-product-hero.liquid", content: PRODUCT_HERO },
   { key: "sections/vyrlo-product-buy.liquid", content: PRODUCT_BUY },
   { key: "sections/vyrlo-product-about.liquid", content: PRODUCT_ABOUT },
+  { key: "sections/vyrlo-product-why.liquid", content: PRODUCT_WHY },
+  { key: "sections/vyrlo-product-trust.liquid", content: PRODUCT_TRUST },
+  { key: "sections/vyrlo-product-faq.liquid", content: PRODUCT_FAQ },
   // header & footer
   { key: "sections/vyrlo-header.liquid", content: HEADER },
   { key: "sections/vyrlo-footer.liquid", content: FOOTER },
@@ -176,13 +182,13 @@ async function main() {
       announce:   { type: "vyrlo-announce" },
       hero:       { type: "vyrlo-product-hero" },
       buy:        { type: "vyrlo-product-buy" },
-      about:      { type: "vyrlo-product-about", ...ABOUT_BLOCKS },
-      guarantees: { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
+      why:        { type: "vyrlo-product-why" },
       reviews:    { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
-      faq:        { type: "vyrlo-faq",        ...FAQ_BLOCKS },
+      trust:      { type: "vyrlo-product-trust" },
+      faq:        { type: "vyrlo-product-faq" },
       cta:        { type: "vyrlo-cta-banner" },
     },
-    order: ["announce", "hero", "buy", "about", "guarantees", "reviews", "faq", "cta"],
+    order: ["announce", "hero", "buy", "why", "reviews", "trust", "faq", "cta"],
   };
   await putAsset(main.id, "templates/product.json", JSON.stringify(PRODUCT_TEMPLATE, null, 2));
 
