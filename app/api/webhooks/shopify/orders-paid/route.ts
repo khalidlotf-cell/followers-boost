@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import {
   verifyShopifyHmac,
+  getVariantMtpInfo,
   getProductMtpServiceId,
   setOrderMtpMetafield,
   type ShopifyOrderWebhookPayload,
@@ -47,25 +48,41 @@ export async function POST(req: NextRequest) {
 
   const shopifyOrderId = String(order.id);
 
+  // Lien peut être posé au niveau commande (note) ou par line_item (property).
+  const orderLink = order.note?.trim() || null;
+
   for (const item of order.line_items) {
     const linkProp = item.properties?.find(p => p.name.toLowerCase() === "lien" || p.name.toLowerCase() === "link");
-    const link = linkProp?.value?.trim();
+    const link = linkProp?.value?.trim() || orderLink;
     if (!link) {
       console.error(`SHOPIFY_WEBHOOK | missing_link order=${shopifyOrderId} item=${item.id}`);
       continue;
     }
 
-    let serviceId: number | null;
+    // On lit en priorité le metafield variante (service_id + quantity MTP).
+    // Fallback au metafield produit si absent (anciens produits).
+    let serviceId: number | null = null;
+    let mtpQuantity: number | null = null;
     try {
-      serviceId = await getProductMtpServiceId(item.product_id);
+      const variantInfo = await getVariantMtpInfo(item.variant_id);
+      if (variantInfo) {
+        serviceId = variantInfo.serviceId;
+        mtpQuantity = variantInfo.quantity;
+      } else {
+        serviceId = await getProductMtpServiceId(item.product_id);
+      }
     } catch (e) {
-      console.error(`SHOPIFY_WEBHOOK | metafield_fetch_failed product=${item.product_id} err=${e instanceof Error ? e.message : String(e)}`);
+      console.error(`SHOPIFY_WEBHOOK | metafield_fetch_failed variant=${item.variant_id} err=${e instanceof Error ? e.message : String(e)}`);
       continue;
     }
     if (!serviceId) {
-      console.error(`SHOPIFY_WEBHOOK | missing_mtp_service_id product=${item.product_id}`);
+      console.error(`SHOPIFY_WEBHOOK | missing_mtp_service_id variant=${item.variant_id}`);
       continue;
     }
+
+    // Qté MTP = quantité variante (ex: 1000) × quantité achetée (ex: 1)
+    // Si pas de metafield (fallback produit), on prend item.quantity tel quel (ancien comportement)
+    const finalQuantity = mtpQuantity ? mtpQuantity * item.quantity : item.quantity;
 
     // On matérialise la commande en DB pour traçabilité et cron de sync
     const service = await prisma.service.findFirst({ where: { id: serviceId, active: true } });
@@ -73,8 +90,8 @@ export async function POST(req: NextRequest) {
       console.error(`SHOPIFY_WEBHOOK | service_inactive mtpId=${serviceId}`);
       continue;
     }
-    if (item.quantity < service.min || item.quantity > service.max) {
-      console.error(`SHOPIFY_WEBHOOK | qty_out_of_range service=${serviceId} qty=${item.quantity}`);
+    if (finalQuantity < service.min || finalQuantity > service.max) {
+      console.error(`SHOPIFY_WEBHOOK | qty_out_of_range service=${serviceId} qty=${finalQuantity} [min=${service.min} max=${service.max}]`);
       continue;
     }
 
@@ -82,8 +99,8 @@ export async function POST(req: NextRequest) {
       data: {
         serviceId,
         link,
-        quantity: item.quantity,
-        charge: 0, // paiement géré par Shopify, non reflété ici
+        quantity: finalQuantity,
+        charge: 0,
         status: "PROCESSING",
         customerEmail: order.email ?? null,
         shopifyOrderId: `${shopifyOrderId}:${item.id}`,
@@ -91,7 +108,7 @@ export async function POST(req: NextRequest) {
     });
 
     try {
-      const mtpRes = await mtpAddOrder(serviceId, link, item.quantity);
+      const mtpRes = await mtpAddOrder(serviceId, link, finalQuantity);
       if (!mtpRes.order) {
         console.error(`SHOPIFY_WEBHOOK | mtp_failed order=${shopifyOrderId} mtpError=${mtpRes.error ?? "?"}`);
         await prisma.order.update({ where: { id: dbOrder.id }, data: { status: "FAILED" } });

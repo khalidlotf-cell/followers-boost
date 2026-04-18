@@ -45,8 +45,7 @@ export async function shopifyAdmin<T = unknown>(
 }
 
 /**
- * Récupère le `mtp_service_id` depuis les metafields produit.
- * Namespace : "custom", key : "mtp_service_id", type : "number_integer".
+ * Récupère le `mtp_service_id` depuis les metafields produit (fallback pour anciens produits).
  */
 export async function getProductMtpServiceId(productId: number | string): Promise<number | null> {
   const res = await shopifyAdmin<{ metafields: Array<{ namespace: string; key: string; value: string }> }>(
@@ -57,6 +56,24 @@ export async function getProductMtpServiceId(productId: number | string): Promis
   if (!m) return null;
   const n = parseInt(m.value, 10);
   return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Récupère `mtp_service_id` + `mtp_quantity` depuis les metafields variante.
+ * C'est le mapping principal : chaque variante (ex: "1K × France") pointe vers un service MTP + une quantité.
+ */
+export async function getVariantMtpInfo(variantId: number | string): Promise<{ serviceId: number; quantity: number } | null> {
+  const res = await shopifyAdmin<{ metafields: Array<{ namespace: string; key: string; value: string }> }>(
+    "GET",
+    `/variants/${variantId}/metafields.json`
+  );
+  const svc = res.metafields.find(x => x.namespace === "custom" && x.key === "mtp_service_id");
+  const qty = res.metafields.find(x => x.namespace === "custom" && x.key === "mtp_quantity");
+  if (!svc || !qty) return null;
+  const s = parseInt(svc.value, 10);
+  const q = parseInt(qty.value, 10);
+  if (!Number.isFinite(s) || !Number.isFinite(q)) return null;
+  return { serviceId: s, quantity: q };
 }
 
 /** Stocke le `mtp_order_id` en metafield sur la commande Shopify. */
@@ -105,4 +122,5 @@ export interface ShopifyOrderWebhookPayload {
   line_items: ShopifyOrderLineItem[];
   financial_status: string;
   created_at: string;
+  note: string | null;
 }
