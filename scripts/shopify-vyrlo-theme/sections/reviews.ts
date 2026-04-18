@@ -33,9 +33,11 @@ export const SECTION = String.raw`{% comment %}
     </div>
   </div>
 
-  {%- assign row1_blocks = section.blocks | where: 'settings.row', 1 -%}
-  {%- assign row2_blocks = section.blocks | where: 'settings.row', 2 -%}
-  {%- if row1_blocks.size == 0 -%}{%- assign row1_blocks = section.blocks -%}{%- endif -%}
+  {%- assign row1_blocks = section.blocks | where: 'settings.row', '1' -%}
+  {%- assign row2_blocks = section.blocks | where: 'settings.row', '2' -%}
+  {%- if row1_blocks.size == 0 and row2_blocks.size == 0 -%}
+    {%- assign row1_blocks = section.blocks -%}
+  {%- endif -%}
 
   <div class="marquee">
     <div class="track">

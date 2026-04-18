@@ -12,6 +12,7 @@ import { SECTION as GUARANTEES } from "./shopify-vyrlo-theme/sections/guarantees
 import { SECTION as REVIEWS } from "./shopify-vyrlo-theme/sections/reviews";
 import { SECTION as FAQ } from "./shopify-vyrlo-theme/sections/faq";
 import { SECTION as SEO } from "./shopify-vyrlo-theme/sections/seo";
+import { SECTION as CTA_BANNER } from "./shopify-vyrlo-theme/sections/cta-banner";
 import { SECTION as COLLECTION_HERO } from "./shopify-vyrlo-theme/sections/collection-hero";
 import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/collection-products";
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
@@ -50,6 +51,7 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   { key: "sections/vyrlo-reviews.liquid",        content: REVIEWS },
   { key: "sections/vyrlo-faq.liquid",            content: FAQ },
   { key: "sections/vyrlo-seo.liquid",            content: SEO },
+  { key: "sections/vyrlo-cta-banner.liquid",     content: CTA_BANNER },
   // homepage specific
   { key: "sections/vyrlo-hero.liquid",           content: HERO },
   { key: "sections/vyrlo-platforms.liquid",      content: PLATFORMS },
@@ -74,8 +76,9 @@ const INDEX_TEMPLATE = {
     reviews:     { type: "vyrlo-reviews" },
     faq:         { type: "vyrlo-faq" },
     seo:         { type: "vyrlo-seo" },
+    cta:         { type: "vyrlo-cta-banner" },
   },
-  order: ["announce", "hero", "platforms", "steps", "comparatif", "guarantees", "reviews", "faq", "seo"],
+  order: ["announce", "hero", "platforms", "steps", "comparatif", "guarantees", "reviews", "faq", "seo", "cta"],
 };
 
 const COLLECTION_TEMPLATE = {
@@ -84,9 +87,11 @@ const COLLECTION_TEMPLATE = {
     hero:        { type: "vyrlo-collection-hero" },
     products:    { type: "vyrlo-collection-products" },
     guarantees:  { type: "vyrlo-guarantees" },
+    reviews:     { type: "vyrlo-reviews" },
     faq:         { type: "vyrlo-faq" },
+    cta:         { type: "vyrlo-cta-banner" },
   },
-  order: ["announce", "hero", "products", "guarantees", "faq"],
+  order: ["announce", "hero", "products", "guarantees", "reviews", "faq", "cta"],
 };
 
 async function main() {
@@ -102,7 +107,10 @@ async function main() {
   await putAsset(main.id, "templates/index.json", JSON.stringify(INDEX_TEMPLATE, null, 2));
   await putAsset(main.id, "templates/collection.json", JSON.stringify(COLLECTION_TEMPLATE, null, 2));
 
-  // templates/product.json : on garde le layout Horizon et on insère juste le hero en tête
+  // templates/product.json : on garde le layout Horizon (product-information avec variant picker +
+  // champ Lien + add-to-cart) et on ajoute des sections Vyrlo autour.
+  // Ordre final souhaité : announce → product-hero → product-information (native) → guarantees →
+  // reviews → faq → cta
   const prodAsset = await shopify<{ asset: { value: string } }>(
     "GET",
     `/themes/${main.id}/assets.json?asset[key]=${encodeURIComponent("templates/product.json")}`
@@ -110,15 +118,17 @@ async function main() {
   const tpl = JSON.parse(prodAsset.asset.value) as Record<string, unknown>;
   const sections = tpl.sections as Record<string, unknown>;
   const order = tpl.order as string[];
-  const HERO_KEY = "vyrlo_product_hero";
-  if (!sections[HERO_KEY]) {
-    sections[HERO_KEY] = { type: "vyrlo-product-hero" };
-    order.unshift(HERO_KEY);
-  } else {
-    // Re-type pour pointer vers notre nouvelle section
-    (sections[HERO_KEY] as Record<string, unknown>).type = "vyrlo-product-hero";
-  }
-  // Supprimer les vieilles sections mono-bloc s'il y en a (anciennes versions)
+
+  const EXTRAS = {
+    vyrlo_p_announce:   "vyrlo-announce",
+    vyrlo_p_hero:       "vyrlo-product-hero",
+    vyrlo_p_guarantees: "vyrlo-guarantees",
+    vyrlo_p_reviews:    "vyrlo-reviews",
+    vyrlo_p_faq:        "vyrlo-faq",
+    vyrlo_p_cta:        "vyrlo-cta-banner",
+  };
+
+  // Nettoyer : supprimer les anciennes sections mono-bloc Vyrlo
   for (const k of Object.keys(sections)) {
     const s = sections[k] as Record<string, unknown>;
     if (s.type === "vyrlo-home" || s.type === "vyrlo-collection") {
@@ -127,6 +137,31 @@ async function main() {
       if (idx >= 0) order.splice(idx, 1);
     }
   }
+
+  // Retirer les clés Vyrlo existantes de order (mais garder les sections natives)
+  const vyrloKeys = Object.keys(EXTRAS);
+  const orderClean = order.filter(k => !vyrloKeys.includes(k) && !k.startsWith("vyrlo_product_hero"));
+  for (const k of [...vyrloKeys, "vyrlo_product_hero"]) {
+    if (sections[k]) delete sections[k];
+  }
+
+  // Injecter les sections Vyrlo
+  for (const [key, type] of Object.entries(EXTRAS)) {
+    sections[key] = { type };
+  }
+
+  // Reconstruire l'ordre : announce, hero, [natives en place], guarantees, reviews, faq, cta
+  const finalOrder = [
+    "vyrlo_p_announce",
+    "vyrlo_p_hero",
+    ...orderClean,
+    "vyrlo_p_guarantees",
+    "vyrlo_p_reviews",
+    "vyrlo_p_faq",
+    "vyrlo_p_cta",
+  ];
+  tpl.order = finalOrder;
+
   await putAsset(main.id, "templates/product.json", JSON.stringify(tpl, null, 2));
 
   // Purger les anciens fichiers mono-bloc
