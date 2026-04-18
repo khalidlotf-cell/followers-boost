@@ -9,7 +9,7 @@ export const SECTION = String.raw`{% comment %}
 {% style %}
   .vhero-{{ section.id }} {
     position: relative; padding-top: 136px; padding-bottom: 88px;
-    background: {{ section.settings.bg_color }};
+    background: {{ section.settings.bg_color | default: '#0a0a14' }};
     overflow: hidden; color: #fff; text-align: center;
     font-family: Inter, system-ui, -apple-system, sans-serif;
   }
@@ -147,29 +147,29 @@ export const SECTION = String.raw`{% comment %}
   <div class="blob blob-3"></div>
 
   <div class="container">
-    <div class="live-badge"><span class="dot"></span><span>{{ section.settings.badge_text }}</span></div>
-    <h1>{{ section.settings.title_1 }}<br><span class="grad">{{ section.settings.title_2 }}</span></h1>
+    <div class="live-badge"><span class="dot"></span><span>{{ section.settings.badge_text | default: 'Service actif · Livraison en 20 min' }}</span></div>
+    <h1>{{ section.settings.title_1 | default: 'Boostez votre présence' }}<br><span class="grad">{{ section.settings.title_2 | default: 'sur les réseaux sociaux' }}</span></h1>
     <p class="sub">
-      {{ section.settings.subtitle }}<br>
-      <span style="font-size:13px;opacity:0.7;">À partir de <b>{{ section.settings.price }}</b> · {{ section.settings.subtitle_2 }}</span>
+      {{ section.settings.subtitle | default: 'Followers, likes, vues : des services premium pour Instagram, TikTok, YouTube et bien plus.' }}<br>
+      <span style="font-size:13px;opacity:0.7;">À partir de <b>{{ section.settings.price | default: '8,90 €' }}</b> · {{ section.settings.subtitle_2 | default: 'Livraison en 24h · Sans mot de passe' }}</span>
     </p>
     <div class="ctas">
-      <a href="{{ section.settings.cta1_url }}" class="btn-p">{{ section.settings.cta1_text }} →</a>
-      <a href="{{ section.settings.cta2_url }}" class="btn-g">{{ section.settings.cta2_text }}</a>
+      <a href="{{ section.settings.cta1_url | default: '#platforms' }}" class="btn-p">{{ section.settings.cta1_text | default: 'Découvrir les services' }} →</a>
+      <a href="{{ section.settings.cta2_url | default: '#comparatif' }}" class="btn-g">{{ section.settings.cta2_text | default: 'Voir le comparatif' }}</a>
     </div>
 
     <div class="strip">
-      <span class="strip-label">{{ section.settings.strip_label }}</span>
+      <span class="strip-label">{{ section.settings.strip_label | default: 'Disponible sur' }}</span>
       {%- for slug in platform_slugs -%}
         <a href="/collections/{{ slug }}" class="logo-btn" aria-label="{{ slug }}">{% render 'vyrlo-logo', slug: slug, size: 24 %}</a>
       {%- endfor -%}
     </div>
 
     <div class="stats-wrap">
-      <div class="stat"><div class="stat-v">{{ section.settings.stat1_v }}</div><div class="stat-l">{{ section.settings.stat1_l }}</div></div>
-      <div class="stat"><div class="stat-v">{{ section.settings.stat2_v }}</div><div class="stat-l">{{ section.settings.stat2_l }}</div></div>
-      <div class="stat"><div class="stat-v">{{ section.settings.stat3_v }}</div><div class="stat-l">{{ section.settings.stat3_l }}</div></div>
-      <div class="stat"><div class="stat-v">{{ section.settings.stat4_v }}</div><div class="stat-l">{{ section.settings.stat4_l }}</div></div>
+      <div class="stat"><div class="stat-v">{{ section.settings.stat1_v | default: '6 000+' }}</div><div class="stat-l">{{ section.settings.stat1_l | default: 'Commandes' }}</div></div>
+      <div class="stat"><div class="stat-v">{{ section.settings.stat2_v | default: '4.9/5' }}</div><div class="stat-l">{{ section.settings.stat2_l | default: 'Satisfaction' }}</div></div>
+      <div class="stat"><div class="stat-v">{{ section.settings.stat3_v | default: '20 min' }}</div><div class="stat-l">{{ section.settings.stat3_l | default: 'Délai' }}</div></div>
+      <div class="stat"><div class="stat-v">{{ section.settings.stat4_v | default: '7j/7' }}</div><div class="stat-l">{{ section.settings.stat4_l | default: 'Support' }}</div></div>
     </div>
   </div>
 </section>

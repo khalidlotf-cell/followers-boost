@@ -57,7 +57,7 @@ export const SECTION = String.raw`{% comment %}
       </div>
     {% endif %}
     <h1>{{ product.title }}</h1>
-    <p class="pitch">{{ section.settings.pitch }}</p>
+    <p class="pitch">{{ section.settings.pitch | default: 'Livraison progressive · Sans mot de passe · Remboursement garanti si non livré' }}</p>
     <div class="trust">
       <div class="trust-item">⚡ Démarrage 20 min</div>
       <div class="trust-item">🔒 Zéro password</div>
