@@ -1,0 +1,145 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
+
+// Sections réutilisables (homepage + collection + product)
+import { SECTION as ANNOUNCE } from "./shopify-vyrlo-theme/sections/announce";
+import { SECTION as HERO } from "./shopify-vyrlo-theme/sections/hero";
+import { SECTION as PLATFORMS } from "./shopify-vyrlo-theme/sections/platforms";
+import { SECTION as STEPS } from "./shopify-vyrlo-theme/sections/steps";
+import { SECTION as COMPARATIF } from "./shopify-vyrlo-theme/sections/comparatif";
+import { SECTION as GUARANTEES } from "./shopify-vyrlo-theme/sections/guarantees";
+import { SECTION as REVIEWS } from "./shopify-vyrlo-theme/sections/reviews";
+import { SECTION as FAQ } from "./shopify-vyrlo-theme/sections/faq";
+import { SECTION as SEO } from "./shopify-vyrlo-theme/sections/seo";
+import { SECTION as COLLECTION_HERO } from "./shopify-vyrlo-theme/sections/collection-hero";
+import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/collection-products";
+import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
+
+const API_VERSION = "2025-10";
+const SHOP = process.env.SHOPIFY_STORE_DOMAIN!;
+const TOKEN = process.env.SHOPIFY_ADMIN_TOKEN!;
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+async function shopify<T>(method: string, path: string, body?: unknown): Promise<T> {
+  await sleep(600);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const res = await fetch(`https://${SHOP}/admin/api/${API_VERSION}${path}`, {
+      method,
+      headers: { "X-Shopify-Access-Token": TOKEN, "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (res.status === 429) { await sleep(2000 * (attempt + 1)); continue; }
+    const text = await res.text();
+    if (!res.ok) throw new Error(`${method} ${path} ${res.status}: ${text.slice(0, 400)}`);
+    return text ? JSON.parse(text) : (null as T);
+  }
+  throw new Error("max retries");
+}
+
+async function putAsset(themeId: number, key: string, value: string) {
+  await shopify("PUT", `/themes/${themeId}/assets.json`, { asset: { key, value } });
+  console.log(`  ✓ ${key} (${(value.length / 1024).toFixed(1)}KB)`);
+}
+
+const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
+  // réutilisables
+  { key: "sections/vyrlo-announce.liquid",       content: ANNOUNCE },
+  { key: "sections/vyrlo-steps.liquid",          content: STEPS },
+  { key: "sections/vyrlo-guarantees.liquid",     content: GUARANTEES },
+  { key: "sections/vyrlo-reviews.liquid",        content: REVIEWS },
+  { key: "sections/vyrlo-faq.liquid",            content: FAQ },
+  { key: "sections/vyrlo-seo.liquid",            content: SEO },
+  // homepage specific
+  { key: "sections/vyrlo-hero.liquid",           content: HERO },
+  { key: "sections/vyrlo-platforms.liquid",      content: PLATFORMS },
+  { key: "sections/vyrlo-comparatif.liquid",     content: COMPARATIF },
+  // collection specific
+  { key: "sections/vyrlo-collection-hero.liquid",     content: COLLECTION_HERO },
+  { key: "sections/vyrlo-collection-products.liquid", content: COLLECTION_PRODUCTS },
+  // product
+  { key: "sections/vyrlo-product-hero.liquid", content: PRODUCT_HERO },
+];
+
+// ── Templates qui composent les sections ────────────────────────────────────
+
+const INDEX_TEMPLATE = {
+  sections: {
+    announce:    { type: "vyrlo-announce" },
+    hero:        { type: "vyrlo-hero" },
+    platforms:   { type: "vyrlo-platforms" },
+    steps:       { type: "vyrlo-steps" },
+    comparatif:  { type: "vyrlo-comparatif" },
+    guarantees:  { type: "vyrlo-guarantees" },
+    reviews:     { type: "vyrlo-reviews" },
+    faq:         { type: "vyrlo-faq" },
+    seo:         { type: "vyrlo-seo" },
+  },
+  order: ["announce", "hero", "platforms", "steps", "comparatif", "guarantees", "reviews", "faq", "seo"],
+};
+
+const COLLECTION_TEMPLATE = {
+  sections: {
+    announce:    { type: "vyrlo-announce" },
+    hero:        { type: "vyrlo-collection-hero" },
+    products:    { type: "vyrlo-collection-products" },
+    guarantees:  { type: "vyrlo-guarantees" },
+    faq:         { type: "vyrlo-faq" },
+  },
+  order: ["announce", "hero", "products", "guarantees", "faq"],
+};
+
+async function main() {
+  const themes = await shopify<{ themes: { id: number; role: string }[] }>("GET", "/themes.json");
+  const main = themes.themes.find(t => t.role === "main");
+  if (!main) throw new Error("No main theme");
+  console.log(`→ Thème : ${main.id}`);
+
+  console.log("\n━━━ Sections Liquid ━━━");
+  for (const s of SECTIONS_TO_PUSH) await putAsset(main.id, s.key, s.content);
+
+  console.log("\n━━━ Templates ━━━");
+  await putAsset(main.id, "templates/index.json", JSON.stringify(INDEX_TEMPLATE, null, 2));
+  await putAsset(main.id, "templates/collection.json", JSON.stringify(COLLECTION_TEMPLATE, null, 2));
+
+  // templates/product.json : on garde le layout Horizon et on insère juste le hero en tête
+  const prodAsset = await shopify<{ asset: { value: string } }>(
+    "GET",
+    `/themes/${main.id}/assets.json?asset[key]=${encodeURIComponent("templates/product.json")}`
+  );
+  const tpl = JSON.parse(prodAsset.asset.value) as Record<string, unknown>;
+  const sections = tpl.sections as Record<string, unknown>;
+  const order = tpl.order as string[];
+  const HERO_KEY = "vyrlo_product_hero";
+  if (!sections[HERO_KEY]) {
+    sections[HERO_KEY] = { type: "vyrlo-product-hero" };
+    order.unshift(HERO_KEY);
+  } else {
+    // Re-type pour pointer vers notre nouvelle section
+    (sections[HERO_KEY] as Record<string, unknown>).type = "vyrlo-product-hero";
+  }
+  // Supprimer les vieilles sections mono-bloc s'il y en a (anciennes versions)
+  for (const k of Object.keys(sections)) {
+    const s = sections[k] as Record<string, unknown>;
+    if (s.type === "vyrlo-home" || s.type === "vyrlo-collection") {
+      delete sections[k];
+      const idx = order.indexOf(k);
+      if (idx >= 0) order.splice(idx, 1);
+    }
+  }
+  await putAsset(main.id, "templates/product.json", JSON.stringify(tpl, null, 2));
+
+  // Purger les anciens fichiers mono-bloc
+  console.log("\n━━━ Purge anciennes sections mono-bloc ━━━");
+  for (const key of ["sections/vyrlo-home.liquid", "sections/vyrlo-collection.liquid"]) {
+    try {
+      await shopify("DELETE", `/themes/${main.id}/assets.json?asset[key]=${encodeURIComponent(key)}`);
+      console.log(`  ✓ ${key} supprimé`);
+    } catch (e) {
+      console.log(`  = ${key} (${e instanceof Error ? e.message : String(e)})`);
+    }
+  }
+
+  console.log("\nTerminé.");
+}
+main().catch(e => { console.error(e); process.exit(1); });
