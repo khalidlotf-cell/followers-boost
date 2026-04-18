@@ -7,6 +7,7 @@ export const SECTION = String.raw`{% comment %}
 -%}
 
 {% style %}
+  html { scroll-behavior: smooth; }
   .vhero-{{ section.id }} {
     position: relative; padding-top: 136px; padding-bottom: 88px;
     background: {{ section.settings.bg_color | default: '#0a0a14' }};

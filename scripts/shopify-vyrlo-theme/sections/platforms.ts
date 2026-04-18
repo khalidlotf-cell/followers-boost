@@ -3,7 +3,7 @@ export const SECTION = String.raw`{% comment %}
 {% endcomment %}
 
 {% style %}
-  .vyrlo-pf-{{ section.id }} { padding: 88px 0; background: {{ section.settings.bg | default: '#ffffff' }}; font-family: Inter, system-ui, sans-serif; }
+  .vyrlo-pf-{{ section.id }} { padding: 88px 0; background: {{ section.settings.bg | default: '#ffffff' }}; font-family: Inter, system-ui, sans-serif; scroll-margin-top: 80px; }
   .vyrlo-pf-{{ section.id }} .pf-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
   .vyrlo-pf-{{ section.id }} .pf-head { margin-bottom: 44px; }
   .vyrlo-pf-{{ section.id }} .pf-eyebrow { font-size: 12px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
@@ -56,7 +56,7 @@ export const SECTION = String.raw`{% comment %}
   }
 {% endstyle %}
 
-<section class="vyrlo-pf-{{ section.id }}">
+<section class="vyrlo-pf-{{ section.id }}" id="{{ section.settings.anchor | default: 'platforms' }}">
   <div class="pf-container">
     <div class="pf-head">
       <p class="pf-eyebrow">{{ section.settings.eyebrow | default: 'Catalogue' }}</p>
@@ -96,6 +96,7 @@ export const SECTION = String.raw`{% comment %}
   "tag": "section",
   "class": "section-vyrlo-platforms",
   "settings": [
+    { "type": "text", "id": "anchor", "label": "Ancre (id HTML)", "default": "platforms" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Catalogue" },
     { "type": "text", "id": "title", "label": "Titre", "default": "Choisissez votre plateforme" },
     { "type": "text", "id": "subtitle", "label": "Sous-titre", "default": "Services disponibles pour toutes les grandes plateformes" },
