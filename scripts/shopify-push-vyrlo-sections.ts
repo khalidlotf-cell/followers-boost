@@ -132,13 +132,12 @@ const COLLECTION_TEMPLATE = {
   sections: {
     announce:    { type: "vyrlo-announce" },
     hero:        { type: "vyrlo-collection-hero" },
-    products:    { type: "vyrlo-collection-products" },
     guarantees:  { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
     reviews:     { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
     faq:         { type: "vyrlo-faq",        ...FAQ_BLOCKS },
     cta:         { type: "vyrlo-cta-banner" },
   },
-  order: ["announce", "hero", "products", "guarantees", "reviews", "faq", "cta"],
+  order: ["announce", "hero", "guarantees", "reviews", "faq", "cta"],
 };
 
 async function main() {
