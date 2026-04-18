@@ -5,20 +5,12 @@ export const SECTION = String.raw`{% comment %}
 {% endcomment %}
 
 {%- liquid
-  assign targetings = '' | split: ','
-  assign quantities = '' | split: ','
-  for v in product.variants
-    if v.option2 != blank
-      unless targetings contains v.option2
-        assign targetings = targetings | push: v.option2
-      endunless
-    endif
-    unless quantities contains v.option1
-      assign quantities = quantities | push: v.option1
-    endunless
-  endfor
+  assign all_opt1 = product.variants | map: 'option1'
+  assign quantities = all_opt1 | uniq
+  assign all_opt2 = product.variants | map: 'option2'
+  assign targetings = all_opt2 | compact | uniq
   assign has_targeting = false
-  if targetings.size > 0
+  if targetings.size > 0 and targetings.first != blank
     assign has_targeting = true
   endif
 -%}
