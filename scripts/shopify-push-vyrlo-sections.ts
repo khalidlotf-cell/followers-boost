@@ -22,7 +22,7 @@ import { SECTION as PAGE_SEC } from "./shopify-vyrlo-theme/sections/page";
 import { SECTION as CART_SEC } from "./shopify-vyrlo-theme/sections/cart";
 import {
   PLATFORMS_BLOCKS, STEPS_BLOCKS, COMPARATIF_BLOCKS,
-  GUARANTEES_BLOCKS, REVIEWS_BLOCKS, FAQ_BLOCKS,
+  GUARANTEES_BLOCKS, REVIEWS_BLOCKS, FAQ_BLOCKS, SEO_BLOCKS,
 } from "./shopify-vyrlo-theme/template-blocks";
 
 const API_VERSION = "2025-10";
@@ -120,7 +120,7 @@ const INDEX_TEMPLATE = {
     guarantees:  { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
     reviews:     { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
     faq:         { type: "vyrlo-faq",        ...FAQ_BLOCKS },
-    seo:         { type: "vyrlo-seo" },
+    seo:         { type: "vyrlo-seo", ...SEO_BLOCKS },
     cta:         { type: "vyrlo-cta-banner" },
   },
   order: ["announce", "hero", "platforms", "steps", "comparatif", "guarantees", "reviews", "faq", "seo", "cta"],

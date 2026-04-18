@@ -59,6 +59,21 @@ export const REVIEWS_BLOCKS = blocks([
   ["r13", "review", { row: "2", name: "Marie-Lou P.",  handle: "@marielouperrin",     text: "Comparé 4 panels différents. C'est le seul où les abonnés étaient encore là 3 mois après." }],
 ]);
 
+export const SEO_BLOCKS = blocks([
+  ["seo1", "seo_block", {
+    title: "Pourquoi acheter des followers sur les réseaux sociaux ?",
+    content: "<p>Le nombre d'abonnés d'un profil est la première chose qu'un visiteur regarde avant de décider de s'abonner ou d'acheter. Un compte avec 500 followers et un compte avec 20 000 followers proposant le même contenu n'obtiendront pas le même taux de conversion — c'est la preuve sociale. Les algorithmes de toutes les plateformes (Instagram, TikTok, YouTube) fonctionnent pareil : ils poussent les comptes qui grossissent vite vers de nouvelles audiences. Acheter des followers ou des likes, c'est enclencher ce mécanisme et donner à votre compte la visibilité initiale qu'il mérite.</p><p>Combiné à du contenu de qualité, un boost initial peut multiplier votre portée organique par 5 à 20 dans les semaines qui suivent. Des créateurs et des marques utilisent ces services régulièrement avant des lancements, des collaborations ou des campagnes pour maximiser leur impact dès le départ.</p>",
+  }],
+  ["seo2", "seo_block", {
+    title: "Comment fonctionne Vyrlo ?",
+    content: "<p>Vyrlo connecte votre commande à des services de croissance adaptés à chaque plateforme. Contrairement aux offres bas de gamme qui livrent en masse du jour au lendemain — ce qui alerterait immédiatement les algorithmes — Vyrlo livre de manière progressive sur plusieurs heures pour une croissance naturelle.</p><p>Aucun mot de passe ne vous est demandé. Le service fonctionne uniquement à partir du lien public de votre profil ou de votre publication. Le paiement est sécurisé par Shopify (CB, Visa, Mastercard, Apple Pay) et la commande démarre automatiquement après validation. Le support est disponible 7j/7 en français pour tout suivi de commande.</p>",
+  }],
+  ["seo3", "seo_block", {
+    title: "Acheter des abonnés Instagram, TikTok ou YouTube : ce qu'il faut savoir",
+    content: "<p>Chaque plateforme a ses propres mécaniques. Sur <strong>Instagram</strong>, les abonnés renforcent la crédibilité du profil et améliorent le taux de distribution des Reels. Sur <strong>TikTok</strong>, les vues initiales sont le facteur le plus déterminant pour passer sur le FYP (For You Page). Sur <strong>YouTube</strong>, les abonnés et les vues permettent d'atteindre les seuils de monétisation plus rapidement et d'améliorer le référencement des vidéos dans les recommandations.</p><p>Sur <strong>Spotify</strong>, les streams et auditeurs mensuels déclenchent les playlists algorithmiques (Discover Weekly, Release Radar) qui sont le vrai moteur de croissance pour les artistes. Sur <strong>Facebook</strong>, la présence d'abonnés crédibilise les pages professionnelles auprès des prospects et partenaires. Vyrlo propose des services spécifiques à chaque plateforme, à partir de <strong>8,90 €</strong>.</p>",
+  }],
+]);
+
 export const FAQ_BLOCKS = blocks([
   ["f1", "faq_item", { q: "Est-ce que c'est sécurisé ?", a: "Oui, totalement. Nous n'avons jamais besoin de votre mot de passe. Nos méthodes respectent les conditions d'utilisation des plateformes." }],
   ["f2", "faq_item", { q: "Combien de temps prend la livraison ?", a: "La plupart des commandes démarrent en moins de 20 minutes. Le délai complet dépend de la quantité commandée." }],
