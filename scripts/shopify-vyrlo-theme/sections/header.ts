@@ -1,9 +1,9 @@
 export const SECTION = String.raw`{% comment %}
-  Vyrlo Header — navbar fixe avec logo + liens plateformes + cart.
+  Vyrlo Header — logo image + liens plateformes + cart.
 {% endcomment %}
 
-{%- assign platform_slugs = 'instagram,tiktok,youtube,facebook,twitter,spotify,threads' | split: ',' -%}
-{%- assign platform_labels = 'Instagram,TikTok,YouTube,Facebook,Twitter,Spotify,Threads' | split: ',' -%}
+{%- assign platform_slugs = 'instagram,tiktok,youtube,facebook,twitter,spotify' | split: ',' -%}
+{%- assign platform_labels = 'Instagram,TikTok,YouTube,Facebook,Twitter,Spotify' | split: ',' -%}
 
 {% style %}
   .vyrlo-header-{{ section.id }} {
@@ -18,15 +18,11 @@ export const SECTION = String.raw`{% comment %}
     height: 64px; gap: 16px;
   }
   .vyrlo-header-{{ section.id }} .vh-logo {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center;
     text-decoration: none; flex-shrink: 0;
-    font-weight: 900; font-size: 22px; color: #0a0a0a;
-    letter-spacing: -0.02em;
   }
-  .vyrlo-header-{{ section.id }} .vh-logo-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
-    display: inline-block;
+  .vyrlo-header-{{ section.id }} .vh-logo img {
+    height: 40px; width: auto; display: block; object-fit: contain;
   }
   .vyrlo-header-{{ section.id }} .vh-nav {
     display: flex; align-items: center; gap: 22px; flex: 1;
@@ -78,6 +74,7 @@ export const SECTION = String.raw`{% comment %}
   @media (max-width: 860px) {
     .vyrlo-header-{{ section.id }} .vh-nav { display: none; }
     .vyrlo-header-{{ section.id }} .vh-hamburger { display: flex; }
+    .vyrlo-header-{{ section.id }} .vh-logo img { height: 32px; }
   }
 
   .vyrlo-header-{{ section.id }} .vh-mobile-grid {
@@ -97,9 +94,8 @@ export const SECTION = String.raw`{% comment %}
 
 <header class="vyrlo-header-{{ section.id }}">
   <div class="vh-inner">
-    <a href="/" class="vh-logo">
-      <span class="vh-logo-dot"></span>
-      <span>{{ section.settings.brand | default: 'Vyrlo' }}</span>
+    <a href="/" class="vh-logo" aria-label="{{ section.settings.brand | default: 'Vyrlo' }}">
+      <img src="{{ 'vyrlo-logo-light.png' | asset_url }}" alt="{{ section.settings.brand | default: 'Vyrlo' }}" width="110" height="40" loading="eager">
     </a>
 
     <nav class="vh-nav">
@@ -149,7 +145,7 @@ export const SECTION = String.raw`{% comment %}
   "tag": "header",
   "class": "section-vyrlo-header",
   "settings": [
-    { "type": "text", "id": "brand", "label": "Nom marque", "default": "Vyrlo" }
+    { "type": "text", "id": "brand", "label": "Nom marque (alt)", "default": "Vyrlo" }
   ],
   "presets": [{ "name": "Vyrlo · Header", "category": "Vyrlo" }]
 }

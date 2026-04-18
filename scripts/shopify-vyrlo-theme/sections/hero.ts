@@ -3,7 +3,7 @@ export const SECTION = String.raw`{% comment %}
 {% endcomment %}
 
 {%- liquid
-  assign platform_slugs = 'instagram,tiktok,youtube,facebook,twitter,spotify,threads' | split: ','
+  assign platform_slugs = 'instagram,tiktok,youtube,facebook,twitter,spotify' | split: ','
 -%}
 
 {% style %}

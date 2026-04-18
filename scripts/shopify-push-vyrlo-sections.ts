@@ -18,6 +18,8 @@ import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/c
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
 import { SECTION as HEADER } from "./shopify-vyrlo-theme/sections/header";
 import { SECTION as FOOTER } from "./shopify-vyrlo-theme/sections/footer";
+import { SECTION as PAGE_SEC } from "./shopify-vyrlo-theme/sections/page";
+import { SECTION as CART_SEC } from "./shopify-vyrlo-theme/sections/cart";
 import {
   PLATFORMS_BLOCKS, STEPS_BLOCKS, COMPARATIF_BLOCKS,
   GUARANTEES_BLOCKS, REVIEWS_BLOCKS, FAQ_BLOCKS,
@@ -70,7 +72,27 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   // header & footer
   { key: "sections/vyrlo-header.liquid", content: HEADER },
   { key: "sections/vyrlo-footer.liquid", content: FOOTER },
+  // page + cart
+  { key: "sections/vyrlo-page.liquid", content: PAGE_SEC },
+  { key: "sections/vyrlo-cart.liquid", content: CART_SEC },
 ];
+
+const PAGE_TEMPLATE = {
+  sections: {
+    announce: { type: "vyrlo-announce" },
+    content:  { type: "vyrlo-page", settings: { eyebrow: "", show_updated: false } },
+    cta:      { type: "vyrlo-cta-banner" },
+  },
+  order: ["announce", "content", "cta"],
+};
+
+const CART_TEMPLATE = {
+  sections: {
+    announce: { type: "vyrlo-announce" },
+    cart:     { type: "vyrlo-cart" },
+  },
+  order: ["announce", "cart"],
+};
 
 const HEADER_GROUP = {
   type: "header",
@@ -133,6 +155,8 @@ async function main() {
   console.log("\n━━━ Templates ━━━");
   await putAsset(main.id, "templates/index.json", JSON.stringify(INDEX_TEMPLATE, null, 2));
   await putAsset(main.id, "templates/collection.json", JSON.stringify(COLLECTION_TEMPLATE, null, 2));
+  await putAsset(main.id, "templates/page.json", JSON.stringify(PAGE_TEMPLATE, null, 2));
+  await putAsset(main.id, "templates/cart.json", JSON.stringify(CART_TEMPLATE, null, 2));
 
   // templates/product.json : on garde le layout Horizon (product-information avec variant picker +
   // champ Lien + add-to-cart) et on ajoute des sections Vyrlo autour.

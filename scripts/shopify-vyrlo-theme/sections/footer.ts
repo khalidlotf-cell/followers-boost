@@ -65,9 +65,8 @@ export const SECTION = String.raw`{% comment %}
   <div class="vf-container">
     <div class="vf-grid">
       <div class="vf-brand-wrap">
-        <a href="/" class="vf-brand">
-          <span class="vf-brand-dot"></span>
-          <span>{{ section.settings.brand | default: 'Vyrlo' }}</span>
+        <a href="/" class="vf-brand" aria-label="{{ section.settings.brand | default: 'Vyrlo' }}">
+          <img src="{{ 'vyrlo-logo-dark.png' | asset_url }}" alt="{{ section.settings.brand | default: 'Vyrlo' }}" width="120" height="44" style="height:44px;width:auto;object-fit:contain;display:block;">
         </a>
         <p class="vf-tagline">{{ section.settings.tagline | default: 'Développez votre audience sur les réseaux sociaux rapidement et en toute sécurité.' }}</p>
       </div>
@@ -80,7 +79,6 @@ export const SECTION = String.raw`{% comment %}
         <a href="/collections/facebook" class="vf-col-link">Facebook</a>
         <a href="/collections/spotify" class="vf-col-link">Spotify</a>
         <a href="/collections/twitter" class="vf-col-link">X / Twitter</a>
-        <a href="/collections/threads" class="vf-col-link">Threads</a>
       </div>
 
       <div>

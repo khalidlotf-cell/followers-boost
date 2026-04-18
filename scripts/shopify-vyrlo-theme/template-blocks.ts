@@ -20,7 +20,6 @@ export const PLATFORMS_BLOCKS = blocks([
   ["fb", "platform", { slug: "facebook", label: "Facebook", color: "#1877F2", tags: "Abonnés, Likes, Vues", price: "À partir de 8,90 €", big: false }],
   ["tw", "platform", { slug: "twitter", label: "Twitter / X", color: "#14171A", tags: "Abonnés, Likes, Retweets", price: "À partir de 8,90 €", big: false }],
   ["sp", "platform", { slug: "spotify", label: "Spotify", color: "#1DB954", tags: "Streams, Auditeurs", price: "À partir de 8,90 €", big: false }],
-  ["th", "platform", { slug: "threads", label: "Threads", color: "#101010", tags: "Abonnés, Likes", price: "À partir de 8,90 €", big: false }],
 ]);
 
 export const STEPS_BLOCKS = blocks([
