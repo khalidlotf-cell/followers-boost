@@ -139,7 +139,7 @@ export const SECTION = String.raw`{% comment %}
           <div class="ct-trust">
             <div class="ct-trust-item">🔒 Paiement 100% sécurisé via Shopify</div>
             <div class="ct-trust-item">⚡ Démarrage sous 20 minutes</div>
-            <div class="ct-trust-item">↻ Remboursement garanti si non livré</div>
+            <div class="ct-trust-item">✓ Livraison garantie sous 72h</div>
           </div>
         </aside>
       </form>

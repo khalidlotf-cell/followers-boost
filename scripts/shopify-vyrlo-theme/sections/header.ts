@@ -15,14 +15,14 @@ export const SECTION = String.raw`{% comment %}
   .vyrlo-header-{{ section.id }} .vh-inner {
     max-width: 1180px; margin: 0 auto; padding: 0 20px;
     display: flex; align-items: center; justify-content: space-between;
-    height: 64px; gap: 16px;
+    height: 80px; gap: 16px;
   }
   .vyrlo-header-{{ section.id }} .vh-logo {
     display: flex; align-items: center;
     text-decoration: none; flex-shrink: 0;
   }
   .vyrlo-header-{{ section.id }} .vh-logo img {
-    height: 40px; width: auto; display: block; object-fit: contain;
+    height: 56px; width: auto; display: block; object-fit: contain;
   }
   .vyrlo-header-{{ section.id }} .vh-nav {
     display: flex; align-items: center; gap: 22px; flex: 1;
@@ -72,9 +72,10 @@ export const SECTION = String.raw`{% comment %}
   }
 
   @media (max-width: 860px) {
+    .vyrlo-header-{{ section.id }} .vh-inner { height: 64px; }
     .vyrlo-header-{{ section.id }} .vh-nav { display: none; }
     .vyrlo-header-{{ section.id }} .vh-hamburger { display: flex; }
-    .vyrlo-header-{{ section.id }} .vh-logo img { height: 32px; }
+    .vyrlo-header-{{ section.id }} .vh-logo img { height: 44px; }
   }
 
   .vyrlo-header-{{ section.id }} .vh-mobile-grid {

@@ -44,11 +44,11 @@ export const SECTION = String.raw`{% comment %}
       <div class="ch-logo-bg">{% render 'vyrlo-logo', slug: slug, size: 56 %}</div>
     </div>
     <h1 class="ch-h1">{{ section.settings.title_prefix | default: 'Services' }} {{ collection.title }}</h1>
-    <div class="ch-intro">{{ section.settings.intro | default: 'Livraison progressive · Zéro mot de passe · Remboursement garanti' }}</div>
+    <div class="ch-intro">{{ section.settings.intro | default: 'Livraison progressive · Zéro mot de passe · Démarrage sous 20 minutes' }}</div>
     <div class="ch-trust">
       <div class="ch-trust-item">⚡ Démarrage 20 min</div>
       <div class="ch-trust-item">🔒 Zéro mot de passe</div>
-      <div class="ch-trust-item">↻ Remboursement garanti</div>
+      <div class="ch-trust-item">✓ Livraison garantie</div>
       <div class="ch-trust-item">💬 Support 7j/7</div>
     </div>
   </div>
@@ -61,7 +61,7 @@ export const SECTION = String.raw`{% comment %}
   "class": "section-vyrlo-col-hero",
   "settings": [
     { "type": "text", "id": "title_prefix", "label": "Préfixe titre", "default": "Services" },
-    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Livraison progressive · Zéro mot de passe · Remboursement garanti" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Livraison progressive · Zéro mot de passe · Démarrage sous 20 minutes" },
     { "type": "color", "id": "fallback_color", "label": "Couleur par défaut", "default": "#7c3aed" }
   ],
   "presets": [{ "name": "Vyrlo · Hero collection", "category": "Vyrlo" }]

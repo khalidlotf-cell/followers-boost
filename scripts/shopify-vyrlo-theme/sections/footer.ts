@@ -66,7 +66,7 @@ export const SECTION = String.raw`{% comment %}
     <div class="vf-grid">
       <div class="vf-brand-wrap">
         <a href="/" class="vf-brand" aria-label="{{ section.settings.brand | default: 'Vyrlo' }}">
-          <img src="{{ 'vyrlo-logo-dark.png' | asset_url }}" alt="{{ section.settings.brand | default: 'Vyrlo' }}" width="120" height="44" style="height:44px;width:auto;object-fit:contain;display:block;">
+          <img src="{{ 'vyrlo-logo-dark.png' | asset_url }}" alt="{{ section.settings.brand | default: 'Vyrlo' }}" width="160" height="60" style="height:60px;width:auto;object-fit:contain;display:block;">
         </a>
         <p class="vf-tagline">{{ section.settings.tagline | default: 'Développez votre audience sur les réseaux sociaux rapidement et en toute sécurité.' }}</p>
       </div>
@@ -94,7 +94,6 @@ export const SECTION = String.raw`{% comment %}
         <a href="/pages/a-propos" class="vf-col-link">À propos</a>
         <a href="/pages/cgu" class="vf-col-link">CGU</a>
         <a href="/pages/confidentialite" class="vf-col-link">Confidentialité</a>
-        <a href="/pages/remboursement" class="vf-col-link">Remboursement</a>
         <a href="/pages/mentions-legales" class="vf-col-link">Mentions légales</a>
       </div>
     </div>

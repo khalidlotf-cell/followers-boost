@@ -57,11 +57,11 @@ export const SECTION = String.raw`{% comment %}
       </div>
     {% endif %}
     <h1>{{ product.title }}</h1>
-    <p class="pitch">{{ section.settings.pitch | default: 'Livraison progressive · Sans mot de passe · Remboursement garanti si non livré' }}</p>
+    <p class="pitch">{{ section.settings.pitch | default: 'Livraison progressive · Sans mot de passe · Démarrage sous 20 minutes' }}</p>
     <div class="trust">
       <div class="trust-item">⚡ Démarrage 20 min</div>
       <div class="trust-item">🔒 Zéro password</div>
-      <div class="trust-item">↻ Remboursement</div>
+      <div class="trust-item">✓ Livraison garantie</div>
       <div class="trust-item">💬 Support FR 7j/7</div>
     </div>
   </div>
@@ -73,7 +73,7 @@ export const SECTION = String.raw`{% comment %}
   "tag": "section",
   "class": "section-vyrlo-product-hero",
   "settings": [
-    { "type": "text", "id": "pitch", "label": "Pitch", "default": "Livraison progressive · Sans mot de passe · Remboursement garanti si non livré" }
+    { "type": "text", "id": "pitch", "label": "Pitch", "default": "Livraison progressive · Sans mot de passe · Démarrage sous 20 minutes" }
   ],
   "presets": [{ "name": "Vyrlo · Hero produit", "category": "Vyrlo" }]
 }
