@@ -149,12 +149,17 @@ export const SECTION = String.raw`{% comment %}
   </div>
 
   {% if platform_collection.products.size > 1 %}
+    {%- assign ptab_order = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
     <div class="phero-tabs-wrap">
       <div class="phero-tabs">
-        {%- for p in platform_collection.products -%}
-          <a href="{{ p.url }}" class="phero-tab {% if p.id == product.id %}phero-active{% endif %}">
-            <span>{{ p.title | remove: platform_label | strip }}</span>
-          </a>
+        {%- for ord in ptab_order -%}
+          {%- for p in platform_collection.products -%}
+            {%- if p.handle contains ord -%}
+              <a href="{{ p.url }}" class="phero-tab {% if p.id == product.id %}phero-active{% endif %}">
+                <span>{{ p.title | remove: platform_label | strip }}</span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
         {%- endfor -%}
       </div>
     </div>

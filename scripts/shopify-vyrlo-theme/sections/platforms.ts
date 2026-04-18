@@ -66,7 +66,21 @@ export const SECTION = String.raw`{% comment %}
     <div class="pf-grid">
       {%- for block in section.blocks -%}
         {%- assign b = block.settings -%}
-        <a href="/collections/{{ b.slug }}" class="pf-cell {% if b.big %}pf-big{% endif %}" {{ block.shopify_attributes }}>
+        {%- assign pf_col = collections[b.slug] -%}
+        {%- assign pf_url = '/collections/' | append: b.slug -%}
+        {%- assign pf_priority = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
+        {%- assign pf_match = '' -%}
+        {%- for ord in pf_priority -%}
+          {%- if pf_match == '' -%}
+            {%- for pp in pf_col.products -%}
+              {%- if pf_match == '' and pp.handle contains ord -%}
+                {%- assign pf_match = pp.url -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if pf_match != '' -%}{%- assign pf_url = pf_match -%}{%- endif -%}
+        <a href="{{ pf_url }}" class="pf-cell {% if b.big %}pf-big{% endif %}" {{ block.shopify_attributes }}>
           <div class="pf-top">
             <div class="pf-icon" style="background: {{ b.color }}18;">{% render 'vyrlo-logo', slug: b.slug, size: 32 %}</div>
             <span class="pf-price">{{ b.price }}</span>

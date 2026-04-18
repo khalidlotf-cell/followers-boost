@@ -103,10 +103,15 @@ export const SECTION = String.raw`{% comment %}
   </div>
 
   {% if collection.products.size > 0 %}
+    {%- assign tab_order = 'abonnes,likes,vues,commentaires,partages,enregistrements,retweets,auditeurs' | split: ',' -%}
     <div class="chero-tabs-wrap">
       <div class="chero-tabs">
-        {%- for p in collection.products -%}
-          <a href="{{ p.url }}" class="chero-tab">{{ p.title | remove: collection.title | strip }}</a>
+        {%- for ord in tab_order -%}
+          {%- for p in collection.products -%}
+            {%- if p.handle contains ord -%}
+              <a href="{{ p.url }}" class="chero-tab">{{ p.title | remove: collection.title | strip }}</a>
+            {%- endif -%}
+          {%- endfor -%}
         {%- endfor -%}
       </div>
     </div>
