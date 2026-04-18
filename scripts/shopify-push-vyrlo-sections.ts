@@ -16,6 +16,7 @@ import { SECTION as CTA_BANNER } from "./shopify-vyrlo-theme/sections/cta-banner
 import { SECTION as COLLECTION_HERO } from "./shopify-vyrlo-theme/sections/collection-hero";
 import { SECTION as COLLECTION_PRODUCTS } from "./shopify-vyrlo-theme/sections/collection-products";
 import { SECTION as PRODUCT_HERO } from "./shopify-vyrlo-theme/sections/product-hero";
+import { SECTION as PRODUCT_BUY } from "./shopify-vyrlo-theme/sections/product-buy";
 import { SECTION as HEADER } from "./shopify-vyrlo-theme/sections/header";
 import { SECTION as FOOTER } from "./shopify-vyrlo-theme/sections/footer";
 import { SECTION as PAGE_SEC } from "./shopify-vyrlo-theme/sections/page";
@@ -69,6 +70,7 @@ const SECTIONS_TO_PUSH: Array<{ key: string; content: string }> = [
   { key: "sections/vyrlo-collection-products.liquid", content: COLLECTION_PRODUCTS },
   // product
   { key: "sections/vyrlo-product-hero.liquid", content: PRODUCT_HERO },
+  { key: "sections/vyrlo-product-buy.liquid", content: PRODUCT_BUY },
   // header & footer
   { key: "sections/vyrlo-header.liquid", content: HEADER },
   { key: "sections/vyrlo-footer.liquid", content: FOOTER },
@@ -158,68 +160,20 @@ async function main() {
   await putAsset(main.id, "templates/page.json", JSON.stringify(PAGE_TEMPLATE, null, 2));
   await putAsset(main.id, "templates/cart.json", JSON.stringify(CART_TEMPLATE, null, 2));
 
-  // templates/product.json : on garde le layout Horizon (product-information avec variant picker +
-  // champ Lien + add-to-cart) et on ajoute des sections Vyrlo autour.
-  // Ordre final souhaité : announce → product-hero → product-information (native) → guarantees →
-  // reviews → faq → cta
-  const prodAsset = await shopify<{ asset: { value: string } }>(
-    "GET",
-    `/themes/${main.id}/assets.json?asset[key]=${encodeURIComponent("templates/product.json")}`
-  );
-  const tpl = JSON.parse(prodAsset.asset.value) as Record<string, unknown>;
-  const sections = tpl.sections as Record<string, unknown>;
-  const order = tpl.order as string[];
-
-  const EXTRAS = {
-    vyrlo_p_announce:   "vyrlo-announce",
-    vyrlo_p_hero:       "vyrlo-product-hero",
-    vyrlo_p_guarantees: "vyrlo-guarantees",
-    vyrlo_p_reviews:    "vyrlo-reviews",
-    vyrlo_p_faq:        "vyrlo-faq",
-    vyrlo_p_cta:        "vyrlo-cta-banner",
+  // templates/product.json : intégralement Vyrlo (on remplace le layout Horizon).
+  const PRODUCT_TEMPLATE = {
+    sections: {
+      announce:   { type: "vyrlo-announce" },
+      hero:       { type: "vyrlo-product-hero" },
+      buy:        { type: "vyrlo-product-buy" },
+      guarantees: { type: "vyrlo-guarantees", ...GUARANTEES_BLOCKS },
+      reviews:    { type: "vyrlo-reviews",    ...REVIEWS_BLOCKS },
+      faq:        { type: "vyrlo-faq",        ...FAQ_BLOCKS },
+      cta:        { type: "vyrlo-cta-banner" },
+    },
+    order: ["announce", "hero", "buy", "guarantees", "reviews", "faq", "cta"],
   };
-
-  // Nettoyer : supprimer les anciennes sections mono-bloc Vyrlo
-  for (const k of Object.keys(sections)) {
-    const s = sections[k] as Record<string, unknown>;
-    if (s.type === "vyrlo-home" || s.type === "vyrlo-collection") {
-      delete sections[k];
-      const idx = order.indexOf(k);
-      if (idx >= 0) order.splice(idx, 1);
-    }
-  }
-
-  // Retirer les clés Vyrlo existantes de order (mais garder les sections natives)
-  const vyrloKeys = Object.keys(EXTRAS);
-  const orderClean = order.filter(k => !vyrloKeys.includes(k) && !k.startsWith("vyrlo_product_hero"));
-  for (const k of [...vyrloKeys, "vyrlo_product_hero"]) {
-    if (sections[k]) delete sections[k];
-  }
-
-  // Injecter les sections Vyrlo (avec leurs blocks par défaut pour que ça s'affiche directement)
-  const EXTRAS_BLOCKS: Record<string, object> = {
-    vyrlo_p_guarantees: GUARANTEES_BLOCKS,
-    vyrlo_p_reviews:    REVIEWS_BLOCKS,
-    vyrlo_p_faq:        FAQ_BLOCKS,
-  };
-  for (const [key, type] of Object.entries(EXTRAS)) {
-    const extra = EXTRAS_BLOCKS[key];
-    sections[key] = extra ? { type, ...extra } : { type };
-  }
-
-  // Reconstruire l'ordre : announce, hero, [natives en place], guarantees, reviews, faq, cta
-  const finalOrder = [
-    "vyrlo_p_announce",
-    "vyrlo_p_hero",
-    ...orderClean,
-    "vyrlo_p_guarantees",
-    "vyrlo_p_reviews",
-    "vyrlo_p_faq",
-    "vyrlo_p_cta",
-  ];
-  tpl.order = finalOrder;
-
-  await putAsset(main.id, "templates/product.json", JSON.stringify(tpl, null, 2));
+  await putAsset(main.id, "templates/product.json", JSON.stringify(PRODUCT_TEMPLATE, null, 2));
 
   // Purger les anciens fichiers mono-bloc
   console.log("\n━━━ Purge anciennes sections mono-bloc ━━━");
