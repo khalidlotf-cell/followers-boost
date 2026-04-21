@@ -49,37 +49,38 @@ export async function GET(req: NextRequest) {
   let updated = 0;
   let fulfilled = 0;
 
-  for (const o of pending) {
-    const s = statuses[String(o.japOrderId)];
-    if (!s || s.error) continue;
+  await Promise.allSettled(
+    pending.map(async o => {
+      const s = statuses[String(o.japOrderId)];
+      if (!s || s.error) return;
 
-    const newStatus = statusMap[s.status] ?? o.status;
-    const startCount = s.start_count ? parseInt(s.start_count, 10) : undefined;
-    const remains = s.remains ? parseInt(s.remains, 10) : undefined;
+      const newStatus = statusMap[s.status] ?? o.status;
+      const startCount = s.start_count ? parseInt(s.start_count, 10) : undefined;
+      const remains = s.remains ? parseInt(s.remains, 10) : undefined;
 
-    if (newStatus !== o.status || startCount !== undefined || remains !== undefined) {
-      await prisma.order.update({
-        where: { id: o.id },
-        data: {
-          status: newStatus,
-          ...(startCount !== undefined ? { startCount } : {}),
-          ...(remains !== undefined ? { remains } : {}),
-        },
-      });
-      updated++;
-    }
-
-    if (newStatus === "COMPLETED" && o.shopifyOrderId) {
-      // shopifyOrderId stocké sous forme "<orderId>:<lineItemId>"
-      const realId = o.shopifyOrderId.split(":")[0];
-      try {
-        await fulfillShopifyOrder(realId);
-        fulfilled++;
-      } catch (e) {
-        console.error(`CRON_FULFILL_FAILED | order=${o.id} shopify=${realId} err=${e instanceof Error ? e.message : String(e)}`);
+      if (newStatus !== o.status || startCount !== undefined || remains !== undefined) {
+        await prisma.order.update({
+          where: { id: o.id },
+          data: {
+            status: newStatus,
+            ...(startCount !== undefined ? { startCount } : {}),
+            ...(remains !== undefined ? { remains } : {}),
+          },
+        });
+        updated++;
       }
-    }
-  }
+
+      if (newStatus === "COMPLETED" && o.shopifyOrderId) {
+        const realId = o.shopifyOrderId.split(":")[0];
+        try {
+          await fulfillShopifyOrder(realId);
+          fulfilled++;
+        } catch (e) {
+          console.error(`CRON_FULFILL_FAILED | order=${o.id} shopify=${realId} err=${e instanceof Error ? e.message : String(e)}`);
+        }
+      }
+    })
+  );
 
   return NextResponse.json({ checked: pending.length, updated, fulfilled, envMode: env().NODE_ENV });
 }
