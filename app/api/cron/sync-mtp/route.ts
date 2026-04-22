@@ -1,19 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { mtpGetMultipleStatus } from "@/lib/mtp";
 import { fulfillShopifyOrder } from "@/lib/shopify";
 import { env, shopifyEnv } from "@/lib/env";
 
-/**
- * Cron Vercel — appelé toutes les 15 min (config dans vercel.json).
- *
- * Pour chaque commande Shopify pas encore terminée (PENDING / IN_PROGRESS),
- * on interroge MTP en batch, on update le statut en DB, et on déclenche la
- * fulfillment Shopify quand MTP nous dit "Completed".
- *
- * Auth : header `authorization: Bearer ${CRON_SECRET}` (Vercel Cron envoie
- * automatiquement le bearer si on l'a configuré en env).
- */
+// cron-job.org (free) coupe la requête à 30s. Les fulfillments Shopify (2 API
+// calls REST par commande, rate-limitées ~2/s) dépassent facilement ce délai.
+// On répond vite à cron-job.org et on termine les fulfillments en background.
+export const maxDuration = 60;
+
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization");
   const expected = `Bearer ${shopifyEnv().CRON_SECRET}`;
@@ -47,7 +42,7 @@ export async function GET(req: NextRequest) {
   };
 
   let updated = 0;
-  let fulfilled = 0;
+  const toFulfill: Array<{ orderId: string; shopifyId: string }> = [];
 
   await Promise.allSettled(
     pending.map(async o => {
@@ -71,16 +66,29 @@ export async function GET(req: NextRequest) {
       }
 
       if (newStatus === "COMPLETED" && o.shopifyOrderId) {
-        const realId = o.shopifyOrderId.split(":")[0];
-        try {
-          await fulfillShopifyOrder(realId);
-          fulfilled++;
-        } catch (e) {
-          console.error(`CRON_FULFILL_FAILED | order=${o.id} shopify=${realId} err=${e instanceof Error ? e.message : String(e)}`);
-        }
+        toFulfill.push({ orderId: o.id, shopifyId: o.shopifyOrderId.split(":")[0] });
       }
     })
   );
 
-  return NextResponse.json({ checked: pending.length, updated, fulfilled, envMode: env().NODE_ENV });
+  if (toFulfill.length > 0) {
+    after(async () => {
+      await Promise.allSettled(
+        toFulfill.map(async ({ orderId, shopifyId }) => {
+          try {
+            await fulfillShopifyOrder(shopifyId);
+          } catch (e) {
+            console.error(`CRON_FULFILL_FAILED | order=${orderId} shopify=${shopifyId} err=${e instanceof Error ? e.message : String(e)}`);
+          }
+        })
+      );
+    });
+  }
+
+  return NextResponse.json({
+    checked: pending.length,
+    updated,
+    queuedFulfillments: toFulfill.length,
+    envMode: env().NODE_ENV,
+  });
 }
