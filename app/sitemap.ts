@@ -10,6 +10,7 @@ const PLATFORMS = [
   "twitter",
   "spotify",
   "threads",
+  "telegram",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -40,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${BASE}/a-propos`,
       lastModified: now,
       changeFrequency: "yearly",
-      priority: 0.5,
+      priority: 0.6,
     },
     {
       url: `${BASE}/contact`,
@@ -49,22 +50,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${BASE}/connexion`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
-    {
-      url: `${BASE}/inscription`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
-    {
       url: `${BASE}/cgu`,
       lastModified: now,
       changeFrequency: "yearly",
-      priority: 0.2,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/mentions-legales`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/confidentialite`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
 }

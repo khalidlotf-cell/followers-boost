@@ -1,9 +1,22 @@
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "../boutique/_components/Footer";
 
-export const metadata = {
-  title: "CGU — Zylis",
-  description: "Conditions Générales d'Utilisation de Zylis.",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "CGU — Conditions Générales d'Utilisation",
+  description:
+    "Conditions Générales d'Utilisation de Vyrlo : modalités, garanties, droits et obligations liés à nos services de croissance sur les réseaux sociaux.",
+  alternates: { canonical: "https://vyrlo.fr/cgu" },
+  openGraph: {
+    title: "CGU — Vyrlo",
+    description: "Conditions Générales d'Utilisation de Vyrlo.",
+    url: "https://vyrlo.fr/cgu",
+    siteName: "Vyrlo",
+    locale: "fr_FR",
+    type: "website",
+  },
 };
 
 export default function CGUPage() {
@@ -12,11 +25,8 @@ export default function CGUPage() {
       {/* Simple header */}
       <header style={{ borderBottom: "1px solid #f0f0f0", padding: "16px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none" }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 12 }}>Z</span>
-            </div>
-            <span style={{ fontWeight: 800, fontSize: 16, color: "#111" }}>Zylis</span>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Image src="/logo-dark.png" alt="Vyrlo" width={100} height={40} style={{ objectFit: "contain" }} />
           </Link>
           <Link href="/" style={{ fontSize: 14, color: "#888", textDecoration: "none" }}>← Retour</Link>
         </div>
@@ -32,15 +42,15 @@ export default function CGUPage() {
         {[
           {
             title: "1. Objet",
-            body: "Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation du site Zylis (ci-après « le Service »), proposant des prestations de marketing sur les réseaux sociaux (abonnés, likes, vues, etc.). En accédant au Service, l'utilisateur accepte sans réserve les présentes CGU.",
+            body: "Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation du site Vyrlo (ci-après « le Service »), proposant des prestations de marketing sur les réseaux sociaux (abonnés, likes, vues, etc.). En accédant au Service, l'utilisateur accepte sans réserve les présentes CGU.",
           },
           {
             title: "2. Identification de l'éditeur",
-            body: "Le Service est édité par Zylis. Pour toute question, vous pouvez nous contacter via la page /contact de notre site.",
+            body: "Le Service est édité par Vyrlo. Pour toute question, vous pouvez nous contacter via la page /contact de notre site.",
           },
           {
             title: "3. Description des services",
-            body: "Zylis propose des services de promotion sur les réseaux sociaux : augmentation du nombre d'abonnés, de likes, de vues, de streams, etc. Les résultats peuvent varier selon la plateforme et le service choisi. Zylis ne garantit pas de résultats organiques supplémentaires consécutifs à l'utilisation du Service.",
+            body: "Vyrlo propose des services de promotion sur les réseaux sociaux : augmentation du nombre d'abonnés, de likes, de vues, de streams, etc. Les résultats peuvent varier selon la plateforme et le service choisi. Vyrlo ne garantit pas de résultats organiques supplémentaires consécutifs à l'utilisation du Service.",
           },
           {
             title: "4. Conditions d'accès",
@@ -48,7 +58,7 @@ export default function CGUPage() {
           },
           {
             title: "5. Prix et paiement",
-            body: "Les prix sont indiqués en euros (€) toutes taxes comprises. Le paiement est effectué en ligne, de manière sécurisée. Zylis se réserve le droit de modifier ses tarifs à tout moment. Les commandes sont fermes dès validation du paiement.",
+            body: "Les prix sont indiqués en euros (€) toutes taxes comprises. Le paiement est effectué en ligne, de manière sécurisée. Vyrlo se réserve le droit de modifier ses tarifs à tout moment. Les commandes sont fermes dès validation du paiement.",
           },
           {
             title: "6. Droit de rétractation",
@@ -56,7 +66,7 @@ export default function CGUPage() {
           },
           {
             title: "7. Responsabilité",
-            body: "Zylis met en œuvre tous les moyens raisonnables pour assurer un service de qualité mais ne peut être tenu responsable des interruptions de service, des modifications de politique des plateformes tierces (Instagram, TikTok, YouTube, etc.) ou des pertes d'abonnés liées aux actions de ces plateformes.",
+            body: "Vyrlo met en œuvre tous les moyens raisonnables pour assurer un service de qualité mais ne peut être tenu responsable des interruptions de service, des modifications de politique des plateformes tierces (Instagram, TikTok, YouTube, etc.) ou des pertes d'abonnés liées aux actions de ces plateformes.",
           },
           {
             title: "8. Protection des données personnelles (RGPD)",
@@ -64,11 +74,11 @@ export default function CGUPage() {
           },
           {
             title: "9. Politique de remboursement",
-            body: "Si une commande n'est pas livrée dans les délais indiqués, Zylis proposera soit un remplacement, soit un remboursement intégral. Toute demande doit être adressée au support dans les 30 jours suivant la commande.",
+            body: "Si une commande n'est pas livrée dans les délais indiqués, Vyrlo proposera soit un remplacement, soit un remboursement intégral. Toute demande doit être adressée au support dans les 30 jours suivant la commande.",
           },
           {
             title: "10. Modification des CGU",
-            body: "Zylis se réserve le droit de modifier les présentes CGU à tout moment. Les modifications entrent en vigueur dès leur publication sur le site. Il appartient à l'utilisateur de les consulter régulièrement.",
+            body: "Vyrlo se réserve le droit de modifier les présentes CGU à tout moment. Les modifications entrent en vigueur dès leur publication sur le site. Il appartient à l'utilisateur de les consulter régulièrement.",
           },
           {
             title: "11. Droit applicable",

@@ -489,8 +489,8 @@ export default function PaymentClient() {
               Contactez-nous
             </Link>{" "}
             ·{" "}
-            <Link href="/cgv" style={{ color: "#111", fontWeight: 600, textDecoration: "underline" }}>
-              CGV
+            <Link href="/cgu" style={{ color: "#111", fontWeight: 600, textDecoration: "underline" }}>
+              CGU
             </Link>
           </div>
         </div>
