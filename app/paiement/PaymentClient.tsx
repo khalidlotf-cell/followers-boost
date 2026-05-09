@@ -107,7 +107,7 @@ export default function PaymentClient() {
   }, [orderIds]);
 
   const options: StripeElementsOptions | null = clientSecret
-    ? { clientSecret, appearance: APPEARANCE, loader: "auto" }
+    ? { clientSecret, appearance: APPEARANCE, loader: "auto", locale: "fr" }
     : null;
 
   return (
