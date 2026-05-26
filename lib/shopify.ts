@@ -123,4 +123,5 @@ export interface ShopifyOrderWebhookPayload {
   financial_status: string;
   created_at: string;
   note: string | null;
+  note_attributes?: Array<{ name: string; value: string }>;
 }

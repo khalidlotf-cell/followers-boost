@@ -31,4 +31,38 @@ export function slugify(str: string) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+// Transforme un input utilisateur (pseudo, @handle, ou URL) en URL complète attendue
+// par MTP. Si l'input est déjà une URL, on la conserve telle quelle.
+// Utilisé par le webhook Shopify orders/paid car le quiz funnel ne saisit qu'un pseudo
+// alors que les pages produit demandent un lien complet.
+export function normalizeProfileLink(input: string, platformSlug: string): string {
+  const raw = (input ?? "").trim();
+  if (!raw) return raw;
+  if (/^https?:\/\//i.test(raw)) return raw;
+
+  const handle = raw.replace(/^@+/, "").replace(/\s+/g, "");
+  const slug = (platformSlug ?? "").toLowerCase();
+
+  switch (slug) {
+    case "instagram": return `https://www.instagram.com/${handle}`;
+    case "tiktok":    return `https://www.tiktok.com/@${handle}`;
+    case "youtube":
+      if (/^UC[A-Za-z0-9_-]{22}$/.test(handle)) return `https://www.youtube.com/channel/${handle}`;
+      return `https://www.youtube.com/@${handle}`;
+    case "telegram":  return `https://t.me/${handle}`;
+    case "twitter":
+    case "x":         return `https://x.com/${handle}`;
+    case "facebook":  return `https://www.facebook.com/${handle}`;
+    case "spotify":   return `https://open.spotify.com/artist/${handle}`;
+    case "snapchat":  return `https://www.snapchat.com/add/${handle}`;
+    case "linkedin":  return `https://www.linkedin.com/in/${handle}`;
+    case "pinterest": return `https://www.pinterest.com/${handle}`;
+    case "twitch":    return `https://www.twitch.tv/${handle}`;
+    case "reddit":    return `https://www.reddit.com/user/${handle}`;
+    case "soundcloud":return `https://soundcloud.com/${handle}`;
+    case "discord":   return raw;
+    default:          return raw;
+  }
+}
+
 export { PLATFORMS };

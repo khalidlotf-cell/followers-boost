@@ -8,6 +8,21 @@ import {
   type ShopifyOrderWebhookPayload,
 } from "@/lib/shopify";
 import { mtpAddOrder } from "@/lib/mtp";
+import { normalizeProfileLink } from "@/lib/platforms";
+
+// Le quiz funnel (/pages/vq-*) écrit le pseudo sous des clés variables
+// ("Pseudo Instagram", "Pseudo tiktok", "URL chaîne", "Lien", …),
+// les pages produit classiques utilisent "Lien". On accepte large.
+const LINK_PROP_PATTERNS = [/^lien$/i, /^link$/i, /^url$/i, /^pseudo\b/i, /^url\s*cha[iî]ne/i, /\b(profile|profil|handle|username|pseudo|lien|url)\b/i];
+
+function findLinkInProperties(props?: Array<{ name: string; value: string }>): string | null {
+  if (!props?.length) return null;
+  for (const pat of LINK_PROP_PATTERNS) {
+    const hit = props.find(p => p?.name && pat.test(p.name) && p.value?.trim());
+    if (hit) return hit.value.trim();
+  }
+  return null;
+}
 
 /**
  * Webhook Shopify `orders/paid`.
@@ -48,13 +63,15 @@ export async function POST(req: NextRequest) {
 
   const shopifyOrderId = String(order.id);
 
-  // Lien peut être posé au niveau commande (note) ou par line_item (property).
-  const orderLink = order.note?.trim() || null;
+  // Lien peut être posé :
+  //  - en property au niveau line_item (pages produit + quiz funnel)
+  //  - en note_attributes au niveau commande (quiz funnel via cart/update.js)
+  //  - en note (legacy)
+  const orderLevelLink = findLinkInProperties(order.note_attributes) ?? order.note?.trim() ?? null;
 
   for (const item of order.line_items) {
-    const linkProp = item.properties?.find(p => p.name.toLowerCase() === "lien" || p.name.toLowerCase() === "link");
-    const link = linkProp?.value?.trim() || orderLink;
-    if (!link) {
+    const rawLink = findLinkInProperties(item.properties) ?? orderLevelLink;
+    if (!rawLink) {
       console.error(`SHOPIFY_WEBHOOK | missing_link order=${shopifyOrderId} item=${item.id}`);
       continue;
     }
@@ -94,6 +111,9 @@ export async function POST(req: NextRequest) {
       console.error(`SHOPIFY_WEBHOOK | qty_out_of_range service=${serviceId} qty=${finalQuantity} [min=${service.min} max=${service.max}]`);
       continue;
     }
+
+    // Le quiz funnel envoie un pseudo brut ("incop153"), MTP attend une URL complète.
+    const link = normalizeProfileLink(rawLink, service.platformSlug);
 
     const dbOrder = await prisma.order.create({
       data: {
